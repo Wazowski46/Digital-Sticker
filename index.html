@@ -1,0 +1,1750 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Digital Sticker · Community sticker web prototype</title>
+<!-- Digital Sticker — community sticker web app, concept prototype v2.0 (08 Nov 2026). UI: PrimeNG v21 Lara preset look, primary overridden to Aramco purple. Employee logins only: regular employee, Executive (Core Area), Ar-Rabiyah resident.
+     Functionality: Digital Sticker Community Sticker FDD V1.0. Visual language: mySecurity 2.0 tokens and the client web screenshots.
+     Self-contained, no network. Sample people, plates and numbers only. Not an approved design. -->
+<style>
+:root{
+  --purple:#643278;--purple-d:#4b265a;--purple-dd:#2c1637;--purple-l:#8f63a3;--lav:#efe8f3;--lav2:#f7f3f9;
+  --ink:#323232;--ink2:#5f636a;--ink3:#8a8d93;--line:#e6e3ea;--line2:#f0eef2;--field:#c9c4cf;--bg:#f7f6f9;
+  --green:#00843d;--green-d:#00632e;--mint:#e3f3ea;--gold:#bf9635;--gold-d:#7c5d12;--gold-l:#fbf2d9;
+  --red:#d22630;--red-d:#b01c26;--red-l:#fdecec;--coral-d:#c2401f;--grey-l:#eeeef1;
+  --sh:0 1px 2px rgba(30,16,40,.05),0 4px 14px rgba(30,16,40,.06);--sh-l:0 24px 60px rgba(44,22,55,.22);
+  --font:"Ghawar","Manifa Pro 2","Segoe UI Variable Text","Segoe UI",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+  --font-ar:"Ghawar","Geeza Pro","Segoe UI","Noto Sans Arabic",Tahoma,sans-serif;
+  --mono:ui-monospace,SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:var(--font);color:var(--ink);background:var(--bg);font-size:15px;line-height:1.4;-webkit-font-smoothing:antialiased}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;background:none;border:0;padding:0;text-align:inherit}
+button:disabled{cursor:not-allowed}
+h1,h2,h3,p,ul,ol{margin:0;padding:0}ul,ol{list-style:none}
+a{color:var(--purple);text-decoration:none}
+:focus-visible{outline:3px solid rgba(100,50,120,.45);outline-offset:2px;border-radius:8px}
+.ic{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.muted{color:var(--ink2)}
+
+/* presenter strip: graphite, monospace, never purple, so it is not read as product */
+.pres{display:flex;align-items:center;gap:14px;flex-wrap:wrap;padding:7px 24px;background:#15171c;color:#c9d1dc;font:12px/1.3 var(--mono)}
+.pres b{color:#6cc5ff;font-weight:600;letter-spacing:.06em}
+.pres label{display:flex;align-items:center;gap:6px}
+.pres select,.pres button{background:#1f232a;color:#e6edf5;border:1px dashed #4b5563;border-radius:4px;padding:4px 8px;font:12px var(--mono)}
+.pres button:hover:not(:disabled){border-color:#6cc5ff;color:#6cc5ff}
+.pres button:disabled{opacity:.4}
+.pres .sp{margin-left:auto}
+.pres .grp{display:flex;align-items:center;gap:6px}
+
+/* product header */
+.top{background:#fff;border-bottom:1px solid var(--line)}
+.top-in{max-width:1320px;margin:0 auto;padding:14px 32px;display:flex;align-items:center;gap:16px}
+.me{display:flex;align-items:center;gap:14px;position:relative}
+.avatar{display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:linear-gradient(145deg,#8f63a3,#643278);color:#fff;font-weight:700;font-size:17px;flex:none}
+.me-n{display:flex;align-items:center;gap:10px}.me-n b{font-size:19px;font-weight:600}
+.utype{font-size:13px;color:#3d4fb8;background:#eef0fb;padding:2px 9px;border-radius:6px}
+.me-b{display:flex;align-items:center;gap:6px;font-size:14px;color:var(--ink2);margin-top:2px}
+.me-b button{display:grid;place-items:center;width:26px;height:26px;border-radius:6px}.me-b button:hover{background:var(--lav2)}
+.me-b .ic{width:16px;height:16px}
+.pop{position:absolute;top:60px;left:66px;z-index:40;width:300px;background:#fff;border:1px solid var(--line);border-radius:14px;box-shadow:var(--sh-l);padding:16px}
+.pop dl{display:grid;grid-template-columns:auto 1fr;gap:6px 14px;margin:0;font-size:14px}.pop dt{color:var(--ink2)}.pop dd{margin:0;font-weight:600}
+
+/* page */
+.page{max-width:1320px;margin:0 auto;padding:22px 32px 72px}
+.crumbs{display:flex;gap:6px;font-size:15px;color:var(--ink2);margin-bottom:14px;flex-wrap:wrap}
+.crumbs button{color:var(--purple)}.crumbs button:hover{text-decoration:underline}
+.ph{display:flex;align-items:flex-start;gap:16px;padding-bottom:20px;border-bottom:1px solid var(--line);margin-bottom:22px;flex-wrap:wrap}
+.ph-t{display:flex;gap:8px;align-items:flex-start;flex:1;min-width:280px}
+.ph-t>button{display:grid;place-items:center;width:32px;height:32px;border-radius:8px;margin-top:-2px;color:var(--ink2)}.ph-t>button:hover{background:var(--lav2)}
+.ph h1{font-size:22px;font-weight:600}
+.ph p{font-size:14px;color:var(--ink2);margin-top:4px;max-width:560px}
+.tabs{display:flex;gap:6px;margin-top:18px;flex-wrap:wrap}
+.tabs button{display:flex;align-items:center;gap:8px;height:44px;padding:0 20px;border-radius:24px;font-size:14px;color:var(--ink);font-weight:500}
+.tabs button:hover{background:var(--lav2)}
+.tabs button[aria-selected="true"]{background:var(--purple-d);color:#fff}
+.tabs em{font-style:normal;font-size:12px;min-width:20px;height:20px;padding:0 6px;border-radius:10px;display:inline-grid;place-items:center;background:var(--gold-l);color:var(--gold-d);font-weight:700}
+.tabs button[aria-selected="true"] em{background:rgba(255,255,255,.2);color:#fff}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:46px;padding:0 22px;border-radius:12px;font-weight:600;font-size:15px;white-space:nowrap;transition:background .15s,box-shadow .15s}
+.btn .ic{width:19px;height:19px}
+.btn-p{background:var(--purple-d);color:#fff}.btn-p:hover{background:var(--purple)}
+.btn-o{background:#fff;color:var(--purple-d);box-shadow:inset 0 0 0 1.5px var(--purple-d)}.btn-o:hover{background:var(--lav2)}
+.btn-d{background:var(--coral-d);color:#fff}.btn-d:hover{background:#a8361a}
+.btn-g{background:var(--grey-l);color:var(--ink)}
+.btn-s{height:36px;padding:0 14px;font-size:14px;border-radius:10px}
+.btn:disabled{opacity:.45}
+.lnk{color:var(--purple);font-weight:600;font-size:14px}.lnk:hover{text-decoration:underline}
+
+.newwrap{position:relative;margin-left:auto}
+.menu{position:absolute;right:0;top:54px;z-index:30;width:320px;background:#fff;border:1px solid var(--line);border-radius:16px;box-shadow:var(--sh-l);padding:8px}
+.menu button{display:flex;align-items:center;gap:12px;width:100%;padding:14px 12px;border-radius:10px;font-size:15px;color:var(--ink)}
+.menu button+button{border-top:1px solid var(--line2)}
+.menu button:hover{background:var(--lav2)}
+.menu button span{flex:1}.menu small{display:block;color:var(--ink2);font-size:12px;margin-top:2px}
+.menu .ic{color:var(--ink2)}
+
+.bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.count{display:inline-flex;align-items:center;gap:8px;height:40px;padding:0 14px;border-radius:12px;background:var(--mint);color:var(--green-d);font-weight:600;font-size:14px}
+.count.full{background:var(--gold-l);color:var(--gold-d)}
+.count .ic{width:18px;height:18px;stroke-width:2.4}
+.count small{font-weight:500;opacity:.85}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chips button{height:36px;padding:0 14px;border-radius:18px;font-size:14px;color:var(--ink2);box-shadow:inset 0 0 0 1px var(--field);background:#fff}
+.chips button[aria-pressed="true"]{background:var(--lav);color:var(--purple-d);box-shadow:inset 0 0 0 1.5px var(--purple)}
+.bar .q{margin-left:auto;font-size:13px;color:var(--ink2)}
+
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(285px,1fr));gap:20px}
+.vcard{display:flex;flex-direction:column;gap:16px;background:#fff;border:1px solid var(--line);border-radius:18px;padding:22px 22px 20px;text-align:left;transition:box-shadow .15s,transform .15s;min-height:250px}
+.vcard:hover{box-shadow:var(--sh);transform:translateY(-1px)}
+.vcard-h{display:flex;justify-content:space-between;align-items:flex-start;gap:8px}
+.vic{display:grid;place-items:center;width:56px;height:56px;border-radius:50%;background:var(--lav2);color:var(--purple)}
+.vic .ic{width:24px;height:24px}
+.vic.t{background:var(--gold-l);color:var(--gold-d)}
+.vcard h3{font-size:18px;font-weight:600;line-height:1.2}
+.vcard h3+small{display:block;font-size:13px;font-weight:600;color:var(--ink2);margin-top:2px}
+.kv2{display:grid;grid-template-columns:1fr 1fr;gap:12px 0}
+.kv2>div{min-width:0}
+.kv2>div:nth-child(even){text-align:right;border-left:1px solid var(--line);padding-left:10px}
+.kv2 small{display:block;font-size:13px;color:var(--ink2)}
+.kv2 b{display:block;font-weight:500;font-size:15px;overflow-wrap:anywhere}
+.t-red{color:var(--red-d)!important}.t-gold{color:var(--gold-d)!important}
+.vcard .end{font-size:12px;color:var(--gold-d);font-weight:600;margin-top:-6px}
+.empty{grid-column:1/-1;display:grid;justify-items:center;gap:10px;padding:56px 16px;background:#fff;border:1px dashed var(--field);border-radius:18px;text-align:center;color:var(--ink2)}
+.empty .ic{width:40px;height:40px;color:#b9adc2}.empty b{font-size:17px;color:var(--ink)}
+
+.pill{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 12px;border-radius:8px;font-size:13px;font-weight:600;white-space:nowrap}
+.pill i{width:7px;height:7px;border-radius:50%;background:currentColor}
+.p-green{background:var(--mint);color:var(--green-d)}
+.p-grey{background:var(--grey-l);color:var(--ink2)}
+.p-gold{background:var(--gold-l);color:var(--gold-d)}
+.p-red{background:var(--red-l);color:var(--red-d)}
+.p-lav{background:var(--lav);color:var(--purple-d)}
+.tag{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 14px;border-radius:10px;background:var(--lav);color:var(--purple-d);font-size:14px;font-weight:600}
+.tag .ic{width:18px;height:18px}
+.tag.t{background:var(--gold-l);color:var(--gold-d)}
+
+.vic.core{background:var(--purple-dd);color:#fff}.vic.rab{background:var(--mint);color:var(--green-d)}
+.tag.core{background:var(--purple-dd);color:#fff}.tag.rab{background:var(--mint);color:var(--green-d)}
+.counts{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.count.rab{background:var(--mint);color:var(--green-d)}
+.chipsep{width:1px;height:26px;background:var(--line)}
+.plate.gcc{display:inline-flex;flex-direction:column;justify-content:center;align-items:center;gap:2px;width:220px;height:62px;border:1px solid #dadada;border-radius:6px;background:#fff}
+.plate.gcc small{font-size:10px;font-weight:600;color:var(--ink2);letter-spacing:.06em;text-transform:uppercase}
+.plate.gcc b{font-size:20px;font-weight:600;letter-spacing:.08em;display:flex;gap:10px}
+.plate.gcc.lg{width:300px;height:82px}
+.opt .plate.gcc{width:170px;height:48px}.opt .plate.gcc b{font-size:15px}
+.end.spn{color:var(--purple-d)}
+.holder{font-size:14px;color:var(--ink);margin:2px 0 10px}
+.sic{width:56px;height:56px;flex:none;display:block}
+.sic.card{width:58px;height:58px;margin:-4px 0 0 -6px}
+.sic.md{width:48px;height:48px}
+.sic.xs{width:24px;height:24px}
+/* white card; the sticker colour is a solid band clipped to the card's rounded top */
+.vcard.tinted,.panel.tinted{position:relative;overflow:hidden;background:#fff;border-color:var(--line)}
+.vcard.tinted::before,.panel.tinted::before{content:"";position:absolute;inset:0 0 auto 0;height:6px;background:var(--tc)}
+.vcard.tinted{padding-top:26px;-webkit-tap-highlight-color:transparent}
+.vcard.tinted:hover{background:#fff;border-color:var(--tbd);box-shadow:0 2px 4px rgba(30,16,40,.04),0 10px 24px var(--tsoft)}
+.vcard.tinted:active,.vcard.tinted:focus,.vcard.tinted:focus-visible{background:#fff}
+.vcard.tinted:active{transform:translateY(0)}
+.vcard.ended::before{background:#d6d3da}
+.vcard.ended:hover{border-color:var(--field);box-shadow:var(--sh)}
+.vcard.ended .sic{filter:grayscale(1);opacity:.55}
+.panel.tinted{padding-top:30px}
+.count.tc{background:var(--tsoft);color:var(--ink)}
+.count.tc .sic{margin-left:-4px}
+.count.tc.full{box-shadow:inset 0 0 0 1.5px var(--gold)}
+.tag.tc{background:var(--tsoft);color:var(--ink);padding-left:6px}
+.tcell{display:inline-flex;align-items:center;gap:8px}
+.stkprev{display:flex;align-items:center;gap:12px;margin-top:18px;padding:10px 16px 10px 10px;border-radius:14px;background:var(--tsoft);width:max-content;max-width:100%}
+.stkprev b{display:block;font-size:15px}.stkprev small{color:var(--ink2);font-size:13px}
+.okrow{display:flex;align-items:center;gap:14px}
+.vcard.tinted::before,.panel.tinted::before{background:var(--band,var(--tc))}
+.vcard .icons{display:flex;align-items:center}
+.sic.card.multi{width:48px;height:48px;margin:-2px 0 0 -4px}
+.sic.card.multi+.sic.card.multi{margin-left:-12px}
+.mrows{display:grid;gap:6px;margin-top:-4px}
+.mrows li{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:500}
+.mrows li span:not(.pill){flex:1;min-width:0}
+.mrows .pill{height:24px;font-size:12px;padding:0 9px}
+.dmain{display:grid;gap:20px}.dmain .panel+.panel{margin-top:0}
+.vtags{display:flex;gap:8px;flex-wrap:wrap}
+.sp-h{display:flex;align-items:center;gap:14px}
+.sp-t{flex:1;min-width:0}.sp-t b{display:block;font-size:18px;font-weight:600}.sp-t small{color:var(--ink2);font-size:13px}
+.spanel .kv3{margin-top:18px}
+.kv3 b.sm{font-size:15px}
+.vcard.ended::before,.panel.ended::before{background:#d6d3da}.panel.ended .sp-h .sic{filter:grayscale(1);opacity:.55}
+.sactions{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:20px;padding-top:18px;border-top:1px solid var(--line)}
+.sactions .btn .ic{width:17px;height:17px}
+.sactions .danger{color:var(--coral-d);box-shadow:inset 0 0 0 1.5px var(--coral-d)}.sactions .danger:hover{background:var(--red-l)}
+.sa-note{margin-left:auto;font-size:13px;color:var(--ink2)}
+.qa button .sic{margin-right:-2px}
+.hist2{display:grid;gap:10px;margin-top:12px}
+.hist2 li{display:flex;gap:10px;font-size:14px;align-items:flex-start}
+.hist2 small{display:block;color:var(--ink2);font-size:12px}
+/* detail */
+.dgrid{display:grid;grid-template-columns:minmax(0,1fr) 320px;gap:24px;align-items:start}
+.panel{background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px 30px}
+.panel+.panel{margin-top:20px}
+.panel h2{font-size:17px;font-weight:600}
+.d-top{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
+.d-top small{display:block;font-size:13px;color:var(--ink2)}
+.d-top b{display:block;font-size:20px;font-weight:600;margin:2px 0 12px}
+.d-top .r{display:flex;flex-direction:column;align-items:flex-end;gap:10px}
+.kv3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 24px;margin-top:22px}
+.kv3 small{display:block;font-size:14px;color:var(--ink2)}
+.kv3 b{display:block;font-weight:400;font-size:17px;margin-top:3px}
+.kv3 b em{font-style:normal;font-size:13px;font-weight:600;color:var(--coral-d);margin-left:14px}
+.sep{border:0;border-top:1px solid var(--line);margin:24px 0}
+.places{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px}
+.places h3{font-size:14px;font-weight:500;color:var(--ink2);margin-bottom:12px}
+.places li{font-size:16px;padding:5px 0}
+.places li small{display:block;font-size:13px;color:var(--gold-d);font-weight:600}
+.places .no li{color:var(--ink3)}
+.places .none{font-size:14px;color:var(--ink3)}
+.swrow{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.switch{position:relative;width:52px;height:30px;border-radius:15px;background:#cfcbd4;transition:background .2s;flex:none}
+.switch::after{content:"";position:absolute;top:3px;left:3px;width:24px;height:24px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.25);transition:transform .2s}
+.switch[aria-checked="true"]{background:var(--purple)}
+.switch[aria-checked="true"]::after{transform:translateX(22px)}
+.switch:disabled{opacity:.45}
+.swrow b{font-size:17px;font-weight:500}
+.swrow .muted{font-size:14px}
+.note{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:12px;font-size:14px;margin-top:16px}
+.note .ic{margin-top:1px}
+.note div{flex:1}.note b{display:block}
+.note button{font-weight:700;color:var(--purple);white-space:nowrap}
+.n-gold{background:var(--gold-l)}.n-gold>.ic{color:var(--gold-d)}
+.n-red{background:var(--red-l)}.n-red>.ic{color:var(--red-d)}
+.n-lav{background:var(--lav2)}.n-lav>.ic{color:var(--purple)}
+.n-grey{background:var(--grey-l)}.n-grey>.ic{color:var(--ink2)}
+.qa h2{margin-bottom:6px}
+.qa button{display:flex;align-items:center;gap:12px;width:100%;padding:15px 2px;font-size:16px;border-bottom:1px solid var(--line2)}
+.qa button:last-child{border-bottom:0}
+.qa button span{flex:1}.qa button small{display:block;font-size:12px;color:var(--ink2)}
+.qa button:hover:not(:disabled) span{color:var(--purple)}
+.qa button:disabled{opacity:.45}
+.qa .danger{color:var(--coral-d)}
+.qa .ic{color:var(--ink2)}.qa .danger .ic{color:var(--coral-d)}
+.side{display:grid;gap:20px}
+.hist li{display:grid;grid-template-columns:12px 1fr;gap:10px;font-size:14px;padding:7px 0}
+.hist li::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--purple-l);margin-top:6px}
+.hist small{display:block;color:var(--ink2);font-size:12px}
+.pager{display:flex;align-items:center;gap:6px;width:max-content;margin:28px auto 0;background:#262329;color:#fff;border-radius:22px;padding:4px 6px;font-size:14px;font-weight:600}
+.pager button{display:grid;place-items:center;width:34px;height:34px;border-radius:50%;color:#fff}.pager button:hover:not(:disabled){background:#3a3640}
+.pager button:disabled{opacity:.35}.pager .ic{width:18px;height:18px}
+
+/* plate: Arabic over Latin, as in the mobile prototype */
+.plate{display:inline-grid;grid-template-columns:1fr 22px 1fr;width:220px;height:62px;border:1px solid #dadada;border-radius:6px;background:#fff;font-weight:600;font-size:18px;line-height:1;overflow:hidden;vertical-align:middle}
+.plate>span{display:grid;grid-template-rows:1fr 1fr;align-items:center;padding:6px 3px}
+.plate-n>span,.plate-l>span{display:flex;justify-content:center;white-space:nowrap}
+.plate i{font-style:normal;display:inline-block;min-width:.95em;text-align:center}
+.plate-l i{min-width:1.4em}
+.plate .ar{font-family:var(--font-ar)}
+.plate-k{border-left:1px solid #dadada;border-right:1px solid #dadada}
+.plate.lg{width:300px;height:82px;font-size:23px;grid-template-columns:1fr 28px 1fr}
+
+/* wizard */
+.stepper{display:flex;flex-direction:column;align-items:center;gap:8px;margin-left:auto}
+.stepper ol{display:flex;align-items:center}
+.stepper li{display:flex;align-items:center}
+.stepper li+li::before{content:"";width:58px;height:2px;background:var(--lav)}
+.stepper li.done+li::before,.stepper li.done+li.now::before{background:var(--purple-l)}
+.stepper i{font-style:normal;display:grid;place-items:center;width:46px;height:46px;border-radius:50%;background:var(--lav);color:var(--purple-dd);font-weight:600;font-size:16px}
+.stepper .now i{background:var(--purple-l);color:#fff;box-shadow:0 0 0 4px rgba(143,99,163,.2)}
+.stepper .done i{background:var(--purple-d);color:#fff}
+.stepper small{font-size:14px;font-weight:600}
+.fcard{background:#fff;border:1px solid var(--line);border-radius:18px;padding:26px 30px}
+.fcard h2{font-size:17px;font-weight:600;margin-bottom:18px}
+.fcard h3{font-size:15px;font-weight:600;margin:24px 0 12px}
+.fgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 22px}
+.fgrid.two{grid-template-columns:repeat(2,minmax(0,1fr))}
+.fld{display:grid;gap:7px;align-content:start;min-width:0}
+.fld>span{font-size:15px;color:var(--ink2)}
+.fld>span small{font-size:13px}
+.fld>small{font-size:13px;color:var(--ink2)}
+.fld input,.fld select,.fld textarea{width:100%;height:46px;border:1px solid var(--field);border-radius:10px;padding:0 14px;background:#fff;font-size:15px}
+.fld textarea{height:auto;padding:10px 14px;resize:vertical;line-height:1.4}
+.fld select{appearance:none;padding-right:40px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23323232' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;background-size:20px}
+.fld select:disabled,.fld input:disabled{background-color:var(--bg);color:var(--ink2)}
+.fld input:focus,.fld select:focus,.fld textarea:focus{outline:0;border-color:var(--purple);box-shadow:0 0 0 3px rgba(100,50,120,.15)}
+.fld.bad input,.fld.bad select,.fld.bad textarea{border-color:var(--red)}
+.chars{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.ffoot{display:flex;justify-content:flex-end;gap:14px;border-top:1px solid var(--line);margin-top:26px;padding-top:22px}
+.ffoot .btn{min-width:150px}
+.ffoot .l{margin-right:auto}
+.opts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.opt{display:flex;gap:12px;align-items:flex-start;padding:16px;border-radius:14px;background:#fff;box-shadow:inset 0 0 0 1px var(--field);text-align:left}
+.opt>i{width:20px;height:20px;border-radius:50%;border:2px solid var(--field);flex:none;margin-top:1px}
+.opt b{display:block;font-size:15px;font-weight:600}.opt small{display:block;font-size:13px;color:var(--ink2);margin-top:3px;line-height:1.35}
+.opt[aria-checked="true"]{box-shadow:inset 0 0 0 2px var(--purple);background:var(--lav2)}
+.opt[aria-checked="true"]>i{border:6px solid var(--purple)}
+.opt:disabled{background:var(--bg);box-shadow:inset 0 0 0 1px var(--line)}.opt:disabled b,.opt:disabled small{color:var(--ink3)}
+.opts.list{grid-template-columns:repeat(2,minmax(0,1fr))}
+.opt .plate{width:170px;height:48px;font-size:14px;margin-top:8px}
+.ent{display:flex;align-items:center;gap:16px;padding:14px 18px;border-radius:14px;background:var(--bg);margin-top:20px;flex-wrap:wrap}
+.slots{display:flex;gap:6px}
+.slots i{width:34px;height:12px;border-radius:6px;border:1px solid var(--field);background:#fff}
+.slots i.on{background:var(--green);border-color:var(--green)}
+.slots i.off{background:var(--gold);border-color:var(--gold)}
+.ent b{font-size:15px}.ent small{color:var(--ink2);font-size:13px}
+.ent .pill{margin-left:auto}
+.sub{background:var(--bg);border-radius:14px;padding:18px;margin-top:14px}
+.route{display:flex;gap:8px;align-items:center;font-size:14px;color:var(--ink2);margin-bottom:12px;flex-wrap:wrap}
+.route .ic{color:var(--purple)}
+.seg{display:inline-flex;background:var(--grey-l);border-radius:12px;padding:4px;margin-bottom:20px}
+.seg button{height:40px;padding:0 18px;border-radius:9px;font-size:14px;font-weight:600;color:var(--ink2)}
+.seg button[aria-pressed="true"]{background:#fff;color:var(--purple-d);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+.fetched{background:var(--bg);border-radius:14px;padding:18px 20px;margin-top:18px}
+.fetched-h{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.fetched-h .ok{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--green);color:#fff}
+.fetched-h .ok .ic{width:15px;height:15px;stroke-width:2.8}
+.fetched-h small{margin-left:auto;color:var(--ink2);font-size:13px}
+.kv4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px 20px}
+.kv4 small{display:block;font-size:13px;color:var(--ink2)}.kv4 b{font-weight:500}
+.sk{height:12px;border-radius:6px;background:linear-gradient(90deg,#e6e3ea 25%,#f4f2f6 45%,#e6e3ea 65%);background-size:300% 100%;animation:sk 1.1s linear infinite;margin-top:10px}
+@keyframes sk{from{background-position:100% 0}to{background-position:0 0}}
+.err{display:flex;gap:8px;align-items:flex-start;color:var(--red-d);font-size:14px;font-weight:600;margin-top:14px}
+.err .ic{width:18px;height:18px;margin-top:1px}
+.hint{display:flex;gap:8px;align-items:flex-start;color:var(--ink2);font-size:14px;margin-top:12px}
+.hint .ic{width:17px;height:17px;color:var(--purple);margin-top:1px}
+.lockchip{display:inline-flex;align-items:center;gap:8px;height:46px;padding:0 14px;border-radius:10px;background:var(--lav2);font-weight:600;color:var(--purple-d)}
+.lockchip small{font-weight:500;color:var(--ink2)}
+.file{display:flex;align-items:center;gap:10px;height:46px;padding:0 14px;border:1px dashed var(--field);border-radius:10px;background:#fff;cursor:pointer;font-size:14px;color:var(--ink2)}
+.file.has{border-style:solid;color:var(--ink)}
+.file .ic{color:var(--purple)}
+.file input{display:none}
+.rev{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.revs{background:var(--lav2);border-radius:14px;padding:18px 20px}
+.revs-h{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+.revs-h h3{margin:0;font-size:15px}
+.revs .kv2>div:nth-child(even){text-align:left;border-left:0;padding-left:0}
+.revs .kv2 b{white-space:normal}
+.nextl{display:grid;gap:9px;counter-reset:n;margin-top:4px}
+.nextl li{display:flex;gap:10px;font-size:14px;align-items:flex-start}
+.nextl li::before{counter-increment:n;content:counter(n);width:22px;height:22px;border-radius:50%;background:var(--purple);color:#fff;font-size:12px;font-weight:700;display:grid;place-items:center;flex:none}
+.okbox{display:grid;justify-items:center;text-align:center;gap:12px;padding:40px 20px 8px}
+.okbox-ic{display:grid;place-items:center;width:78px;height:78px;border-radius:50%;background:var(--mint);color:var(--green)}
+.okbox-ic.t{background:var(--gold-l);color:var(--gold-d)}
+.okbox-ic .ic{width:38px;height:38px;stroke-width:2.4}
+.okbox h2{font-size:22px;color:var(--green-d);margin:0}
+.okbox h2.t{color:var(--gold-d)}
+.okbox p{font-size:15px;color:var(--ink2);max-width:560px}
+
+/* requests */
+.table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;font-size:14px}
+.table th{text-align:left;font-size:13px;font-weight:600;color:var(--ink2);padding:14px 16px;background:#fbfafc;border-bottom:1px solid var(--line)}
+.table td{padding:14px 16px;border-bottom:1px solid var(--line2);vertical-align:middle}
+.table tr:last-child td{border-bottom:0}
+.table tbody tr:hover{background:var(--lav2)}
+.table td b{display:block;font-weight:600}.table td small{color:var(--ink2)}
+.tbl-wrap{border-radius:18px;overflow:auto;border:1px solid var(--line)}
+.tbl-wrap .table{border:0;border-radius:0}
+.tl{display:grid;margin-top:6px}
+.tl li{display:grid;grid-template-columns:26px 1fr;gap:12px;position:relative;padding-bottom:16px}
+.tl li:last-child{padding-bottom:0}
+.tl li:not(:last-child)::before{content:"";position:absolute;left:12px;top:26px;bottom:0;width:2px;background:#ddd7e2}
+.tl li.ok:not(:last-child)::before{background:var(--green)}
+.tl i{width:26px;height:26px;border-radius:50%;border:2px solid #b9adc2;background:#fff;display:grid;place-items:center;position:relative;z-index:1}
+.tl i .ic{width:14px;height:14px;stroke-width:3}
+.tl .ok i{background:var(--green);border-color:var(--green);color:#fff}
+.tl .bad i{background:var(--red);border-color:var(--red);color:#fff}
+.tl .now i{border-color:var(--gold);box-shadow:0 0 0 5px rgba(191,150,53,.18)}
+.tl b{display:block;font-size:14px}.tl span{font-size:13px;color:var(--ink2)}
+.aae{background:var(--bg);border-radius:12px;padding:12px 14px;margin:2px 0 14px 38px}
+.aae small{display:block;font-size:12px;font-weight:600;color:var(--ink2);margin-bottom:8px}
+.chip-x{display:inline-flex;align-items:center;height:22px;padding:0 8px;border:1px dashed var(--field);border-radius:6px;font-size:12px;font-weight:600;color:var(--ink2)}
+
+/* modal + toast */
+.scrim{position:fixed;inset:0;background:rgba(29,18,36,.45);z-index:80;display:grid;place-items:center;padding:20px}
+.modal{width:min(560px,100%);max-height:calc(100vh - 40px);overflow:auto;background:#fff;border-radius:22px;box-shadow:var(--sh-l);padding:26px 28px}
+.modal.wide{width:min(680px,100%)}
+.modal-h{display:flex;align-items:flex-start;gap:14px;margin-bottom:14px}
+.modal-h .mi{display:grid;place-items:center;width:46px;height:46px;border-radius:14px;background:var(--lav2);color:var(--purple);flex:none}
+.modal-h .mi.red{background:var(--red-l);color:var(--coral-d)}.modal-h .mi.gold{background:var(--gold-l);color:var(--gold-d)}
+.modal-h h2{font-size:20px;font-weight:600;flex:1;padding-top:2px}
+.modal-h>button{display:grid;place-items:center;width:38px;height:38px;border-radius:10px;color:var(--ink2)}.modal-h>button:hover{background:var(--bg)}
+.modal-b{font-size:15px;color:var(--ink)}
+.modal-b p+p{margin-top:10px}
+.modal-f{display:flex;justify-content:flex-end;gap:12px;margin-top:24px;flex-wrap:wrap}
+.pick{display:grid;gap:8px;margin-top:14px}
+.pick .opt{width:100%}
+.pick h4{font-size:13px;color:var(--ink2);font-weight:600;margin:10px 0 2px}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);z-index:90;display:flex;align-items:center;gap:10px;background:#211a27;color:#fff;padding:13px 18px;border-radius:14px;box-shadow:var(--sh-l);font-size:14px;max-width:min(640px,calc(100% - 32px));animation:tin .25s ease-out}
+.toast .ic{color:#9ee2b8;width:18px;height:18px}
+.toast.warn .ic{color:#ffd27a}
+@keyframes tin{from{opacity:0;transform:translate(-50%,10px)}}
+
+@media (max-width:1100px){.dgrid{grid-template-columns:minmax(0,1fr)}.opts{grid-template-columns:1fr}.kv4{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:860px){.top-in,.page{padding-inline:18px}.fgrid,.kv3,.places,.rev,.opts.list{grid-template-columns:1fr}.search{display:none}.stepper{margin-left:0}.panel,.fcard{padding:20px}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* =====================================================================
+   PrimeNG v21 · Lara preset layer (styled mode), primary = Aramco purple.
+   Values follow the Lara design tokens; rem is on a 14px root as in PrimeNG.
+   ===================================================================== */
+:root{
+  /* primary palette, generated around #643278 as primary.500 */
+  --p-primary-50:#f7f2f9;--p-primary-100:#ecdff1;--p-primary-200:#d8bfe2;--p-primary-300:#bf97cf;--p-primary-400:#9563a9;
+  --p-primary-500:#643278;--p-primary-600:#57296a;--p-primary-700:#4b225b;--p-primary-800:#3e1c4b;--p-primary-900:#32163d;--p-primary-950:#1f0d26;
+  /* Lara surface = slate */
+  --p-surface-0:#fff;--p-surface-50:#f8fafc;--p-surface-100:#f1f5f9;--p-surface-200:#e2e8f0;--p-surface-300:#cbd5e1;--p-surface-400:#94a3b8;
+  --p-surface-500:#64748b;--p-surface-600:#475569;--p-surface-700:#334155;--p-surface-800:#1e293b;--p-surface-900:#0f172a;
+  --p-primary-color:var(--p-primary-500);--p-primary-hover-color:var(--p-primary-600);--p-primary-active-color:var(--p-primary-700);
+  --p-text-color:var(--p-surface-700);--p-text-muted-color:var(--p-surface-500);
+  --p-content-border-color:var(--p-surface-200);--p-content-hover-background:var(--p-surface-100);
+  --p-highlight-background:var(--p-primary-50);--p-highlight-color:var(--p-primary-700);
+  --p-focus-ring:0 0 0 .2rem var(--p-primary-200);
+  --p-radius-sm:4px;--p-radius-md:6px;--p-radius-lg:8px;--p-radius-xl:12px;
+  --p-overlay-shadow:0 1px 3px rgba(0,0,0,.3);
+  --p-card-shadow:0 .125rem .25rem rgba(0,0,0,.075);
+  /* severity scales (Tailwind palette used by Lara) */
+  --g50:#f0fdf4;--g100:#dcfce7;--g200:#bbf7d0;--g500:#22c55e;--g600:#16a34a;--g700:#15803d;
+  --o50:#fff7ed;--o100:#ffedd5;--o200:#fed7aa;--o500:#f97316;--o600:#ea580c;--o700:#c2410c;
+  --r50:#fef2f2;--r100:#fee2e2;--r200:#fecaca;--r400:#f87171;--r500:#ef4444;--r600:#dc2626;--r700:#b91c1c;
+  --b50:#eff6ff;--b100:#dbeafe;--b200:#bfdbfe;--b500:#3b82f6;--b700:#1d4ed8;--s100:#e0f2fe;--s700:#0369a1;
+
+  /* remap the prototype's own tokens onto Lara so untouched rules follow */
+  --purple:var(--p-primary-500);--purple-d:var(--p-primary-600);--purple-dd:var(--p-primary-800);--purple-l:var(--p-primary-400);
+  --lav:var(--p-primary-100);--lav2:var(--p-primary-50);
+  --ink:var(--p-surface-700);--ink2:var(--p-surface-500);--ink3:var(--p-surface-400);
+  --line:var(--p-surface-200);--line2:var(--p-surface-100);--field:var(--p-surface-300);--bg:var(--p-surface-50);
+  --green:var(--g500);--green-d:var(--g700);--mint:var(--g100);
+  --gold:var(--o500);--gold-d:var(--o700);--gold-l:var(--o100);
+  --red:var(--r500);--red-d:var(--r700);--red-l:var(--r100);--coral-d:var(--r500);--grey-l:var(--p-surface-100);
+  --sh:var(--p-card-shadow);--sh-l:var(--p-overlay-shadow);
+  --font:Inter,"Segoe UI Variable Text","Segoe UI",-apple-system,BlinkMacSystemFont,"Helvetica Neue",Arial,sans-serif;
+}
+html{font-size:14px}
+body{font-size:1rem;line-height:1.5;color:var(--p-text-color);background:var(--p-surface-50)}
+:focus-visible{outline:0;box-shadow:var(--p-focus-ring);border-radius:var(--p-radius-md)}
+
+/* ---------- Button (p-button) ---------- */
+.btn{height:auto;min-height:2.857rem;padding:.625rem 1rem;gap:.5rem;border-radius:var(--p-radius-md);font-size:1rem;font-weight:600;line-height:1.25;border:1px solid transparent;transition:background .2s,color .2s,border-color .2s,box-shadow .2s}
+.btn .ic{width:1.1rem;height:1.1rem}
+.btn-p{background:var(--p-primary-color);border-color:var(--p-primary-color);color:#fff}
+.btn-p:hover:not(:disabled){background:var(--p-primary-hover-color);border-color:var(--p-primary-hover-color)}
+.btn-p:active:not(:disabled){background:var(--p-primary-active-color)}
+.btn-p:focus-visible{box-shadow:var(--p-focus-ring)}
+/* outlined */
+.btn-o{background:transparent;color:var(--p-primary-color);border-color:var(--p-primary-200);box-shadow:none}
+.btn-o:hover:not(:disabled){background:var(--p-primary-50)}
+.btn-o:active:not(:disabled){background:var(--p-primary-100)}
+/* secondary */
+.btn-g{background:var(--p-surface-100);border-color:var(--p-surface-100);color:var(--p-surface-600)}
+.btn-g:hover:not(:disabled){background:var(--p-surface-200);border-color:var(--p-surface-200)}
+/* danger */
+.btn-d{background:var(--r500);border-color:var(--r500);color:#fff}
+.btn-d:hover:not(:disabled){background:var(--r600);border-color:var(--r600)}
+.btn-d:focus-visible{box-shadow:0 0 0 .2rem var(--r200)}
+/* small */
+.btn-s{min-height:2.43rem;padding:.5rem .875rem;font-size:.875rem;border-radius:var(--p-radius-md)}
+.btn:disabled{opacity:.6}
+/* outlined danger (sticker actions) */
+.sactions .danger{color:var(--r500);border-color:var(--r200);box-shadow:none;background:transparent}
+.sactions .danger:hover:not(:disabled){background:var(--r50)}
+.lnk{color:var(--p-primary-color)}
+/* rounded text icon buttons (back, close, profile) */
+.ph-t>button,.modal-h>button,.me-b button{width:2.5rem;height:2.5rem;border-radius:50%;color:var(--p-text-muted-color);margin-top:-4px}
+.ph-t>button:hover,.modal-h>button:hover,.me-b button:hover{background:var(--p-surface-100);color:var(--p-text-color)}
+.me-b button{width:2rem;height:2rem;margin:0}
+
+/* ---------- Toolbar / topbar + Avatar ---------- */
+.top{background:var(--p-surface-0);border-bottom:1px solid var(--p-content-border-color)}
+.top-in{padding:.75rem 2rem}
+.avatar{width:3rem;height:3rem;background:var(--p-primary-color);font-size:1.1rem;font-weight:600}
+.me-n b{font-size:1.25rem;font-weight:600;color:var(--p-surface-800)}
+.utype{font-size:.875rem;font-weight:700;padding:.25rem .5rem;border-radius:var(--p-radius-md);background:var(--s100);color:var(--s700)}
+.me-b{font-size:1rem;color:var(--p-text-muted-color)}
+/* Popover */
+.pop{top:58px;left:60px;border:1px solid var(--p-content-border-color);border-radius:var(--p-radius-md);box-shadow:var(--p-overlay-shadow);padding:1rem}
+.pop dl{font-size:1rem}
+
+/* ---------- Breadcrumb ---------- */
+.page{padding:1.5rem 2rem 5rem}
+.crumbs{align-items:center;gap:.5rem;font-size:1rem;color:var(--p-text-color);margin-bottom:1rem}
+.crumbs button{color:var(--p-text-muted-color)}
+.crumbs button:hover{color:var(--p-text-color);text-decoration:none}
+.crumbs .sep-i{display:inline-flex;color:var(--p-surface-400)}
+.crumbs .sep-i .ic{width:14px;height:14px}
+.ph{border-bottom:1px solid var(--p-content-border-color);padding-bottom:0;margin-bottom:1.5rem}
+.ph h1{font-size:1.5rem;font-weight:600;color:var(--p-surface-800)}
+.ph p{font-size:1rem;color:var(--p-text-muted-color)}
+.ph-t{padding-bottom:1.25rem}
+.ph-t:has(.tabs){padding-bottom:0}
+
+/* ---------- Tabs (p-tabs, Lara: folder tabs, 2px top bar on the active tab) ---------- */
+.tabs{gap:0;margin-top:1.25rem;margin-bottom:-1px}
+.tabs button{height:auto;padding:1rem 1.25rem;border-radius:var(--p-radius-md) var(--p-radius-md) 0 0;gap:.5rem;font-size:1rem;font-weight:700;color:var(--p-text-muted-color);background:var(--p-surface-50);border:1px solid var(--p-content-border-color);border-top:2px solid transparent;margin-right:-1px}
+.tabs button:hover{background:var(--p-surface-100);color:var(--p-text-color)}
+.tabs button[aria-selected="true"]{background:var(--p-surface-0);color:var(--p-primary-color);border-top-color:var(--p-primary-color);border-bottom-color:var(--p-surface-0);position:relative;z-index:1}
+.tabs button .ic{width:1.1rem;height:1.1rem}
+/* Badge inside a tab (warn severity) */
+.tabs em{font-size:.75rem;font-weight:700;min-width:1.5rem;height:1.5rem;padding:0 .5rem;border-radius:.75rem;background:var(--o500);color:#fff}
+.tabs button[aria-selected="true"] em{background:var(--o500);color:#fff}
+
+/* ---------- Menu (p-menu popup) ---------- */
+.menu{top:3.4rem;width:22rem;border:1px solid var(--p-content-border-color);border-radius:var(--p-radius-md);box-shadow:var(--p-overlay-shadow);padding:.25rem 0}
+.menu button{padding:.75rem 1rem;border-radius:0;font-size:1rem;color:var(--p-text-color);gap:.5rem}
+.menu button+button{border-top:0}
+.menu button:hover{background:var(--p-content-hover-background)}
+.menu small{color:var(--p-text-muted-color);font-size:.875rem}
+.menu .ic{color:var(--p-text-muted-color)}
+
+/* ---------- Entitlement counters → Tag (large) ---------- */
+.counts{gap:.5rem}
+.count{height:auto;padding:.5rem .75rem;border-radius:var(--p-radius-md);font-size:.875rem;font-weight:700;gap:.5rem}
+.count.tc{background:var(--p-surface-0);color:var(--p-text-color);box-shadow:inset 0 0 0 1px var(--p-content-border-color)}
+.count.tc.full{background:var(--o50);color:var(--o700);box-shadow:inset 0 0 0 1px var(--o200)}
+.count small{font-weight:500}
+
+/* ---------- Filter chips → ToggleButton ---------- */
+.chips{gap:.5rem}
+.chips button{height:auto;padding:.5rem .875rem;border-radius:var(--p-radius-md);font-size:.875rem;font-weight:600;color:var(--p-surface-600);background:var(--p-surface-100);box-shadow:inset 0 0 0 1px var(--p-surface-100);transition:background .2s,color .2s}
+.chips button:hover{background:var(--p-surface-200)}
+.chips button[aria-pressed="true"]{background:var(--p-primary-color);color:#fff;box-shadow:inset 0 0 0 1px var(--p-primary-color)}
+.chipsep{background:var(--p-content-border-color)}
+.bar .q{font-size:.875rem;color:var(--p-text-muted-color)}
+
+/* ---------- Card (p-card) ---------- */
+.grid{gap:1.25rem}
+.vcard,.panel,.fcard{border:0;border-radius:var(--p-radius-lg);box-shadow:var(--p-card-shadow);background:var(--p-surface-0)}
+.vcard{padding:1.5rem;gap:.75rem 1rem}
+.vcard:hover{box-shadow:0 .25rem .75rem rgba(0,0,0,.1)}
+.vcard.tinted{padding-top:1.75rem}
+.vcard.tinted:hover{border-color:transparent;box-shadow:0 .25rem .75rem rgba(0,0,0,.1)}
+.vcard.ended:hover{box-shadow:0 .25rem .75rem rgba(0,0,0,.1)}
+.vcard.tinted::before,.panel.tinted::before{height:4px}
+.vcard h3{font-size:1.25rem;font-weight:700;color:var(--p-surface-800)}
+.vcard h3+small{font-size:.875rem;font-weight:500;color:var(--p-text-muted-color)}
+.kv2 small,.kv3 small,.kv4 small,.d-top small{color:var(--p-text-muted-color);font-size:.875rem}
+.kv2>div:nth-child(even){border-left-color:var(--p-content-border-color)}
+.panel,.fcard{padding:1.5rem}
+.panel.tinted{padding-top:1.75rem}
+.panel h2,.fcard h2{font-size:1.25rem;font-weight:700;color:var(--p-surface-800)}
+.fcard h3{font-size:1rem;font-weight:700}
+.empty{border:1px dashed var(--p-surface-300);border-radius:var(--p-radius-lg);box-shadow:none}
+.dmain,.side{gap:1.25rem}
+
+/* ---------- Tag (p-tag) — status pills ---------- */
+.pill{height:auto;padding:.25rem .5rem;border-radius:var(--p-radius-md);font-size:.875rem;font-weight:700;gap:.25rem;line-height:1.25}
+.pill i{display:none}
+.p-green{background:var(--g100);color:var(--g700)}
+.p-gold{background:var(--o100);color:var(--o700)}
+.p-red{background:var(--r100);color:var(--r700)}
+.p-grey{background:var(--p-surface-100);color:var(--p-surface-600)}
+.p-lav{background:var(--p-primary-100);color:var(--p-primary-700)}
+.mrows .pill{height:auto;font-size:.75rem;padding:.15rem .4rem}
+.vcard .end{color:var(--o700)}
+.end.spn{color:var(--p-primary-700)}
+
+/* ---------- Chip (p-chip, with image) — sticker type labels ---------- */
+.tag{height:auto;padding:.375rem .75rem;border-radius:1rem;gap:.5rem;font-size:1rem;font-weight:500;background:var(--p-surface-100);color:var(--p-surface-800)}
+.tag.tc{background:var(--tsoft);color:var(--p-surface-800);padding-left:.375rem}
+.tag.t{background:var(--o100);color:var(--o700)}
+.lockchip{height:auto;padding:.5rem .875rem;border-radius:1rem;background:var(--p-surface-100);color:var(--p-surface-800)}
+.chip-x{border-radius:var(--p-radius-sm);border-color:var(--p-surface-300);color:var(--p-text-muted-color)}
+
+/* ---------- ToggleSwitch (p-toggleswitch) ---------- */
+.switch{width:3rem;height:1.75rem;border-radius:30px;background:var(--p-surface-300);transition:background .2s}
+.switch:hover:not(:disabled){background:var(--p-surface-400)}
+.switch::after{top:.25rem;left:.25rem;width:1.25rem;height:1.25rem;box-shadow:none;background:var(--p-surface-0)}
+.switch[aria-checked="true"]{background:var(--p-primary-color)}
+.switch[aria-checked="true"]:hover:not(:disabled){background:var(--p-primary-hover-color)}
+.switch[aria-checked="true"]::after{transform:translateX(1.25rem)}
+.switch:focus-visible{box-shadow:var(--p-focus-ring);border-radius:30px}
+.switch:disabled{opacity:.6}
+.swrow b{font-size:1.15rem}
+
+/* ---------- Message (p-message, Lara: 6px start border) ---------- */
+.note{padding:.75rem 1rem;border-radius:var(--p-radius-md);border:solid;border-width:0 0 0 6px;font-size:1rem;gap:.5rem;margin-top:1rem}
+.note button{color:inherit;text-decoration:underline}
+.n-gold{background:var(--o50);border-color:var(--o500);color:var(--o700)}.n-gold>.ic{color:var(--o600)}
+.n-red{background:var(--r50);border-color:var(--r500);color:var(--r700)}.n-red>.ic{color:var(--r600)}
+.n-lav{background:var(--b50);border-color:var(--b500);color:var(--b700)}.n-lav>.ic{color:var(--b500)}
+.n-grey{background:var(--p-surface-100);border-color:var(--p-surface-400);color:var(--p-surface-700)}.n-grey>.ic{color:var(--p-surface-500)}
+.err{color:var(--r600);font-weight:500;font-size:.875rem}
+.hint{font-size:.875rem;color:var(--p-text-muted-color)}
+.hint .ic{color:var(--p-text-muted-color)}
+
+/* ---------- Menu (static) — quick actions panel ---------- */
+.qa button{padding:.75rem .25rem;font-size:1rem;border-bottom:1px solid var(--p-surface-100);border-radius:0;gap:.5rem}
+.qa button:hover:not(:disabled){background:var(--p-content-hover-background)}
+.qa button:hover:not(:disabled) span{color:var(--p-text-color)}
+.qa button small{font-size:.875rem;color:var(--p-text-muted-color)}
+.qa .danger,.qa .danger .ic{color:var(--r500)}
+.sactions{gap:.5rem;padding-top:1.25rem;border-top-color:var(--p-content-border-color)}
+.sa-note{font-size:.875rem;color:var(--p-text-muted-color)}
+.sep{border-top-color:var(--p-content-border-color)}
+
+/* ---------- Paginator (p-paginator) ---------- */
+.pager{background:var(--p-surface-0);color:var(--p-text-color);border-radius:var(--p-radius-md);padding:.5rem 1rem;box-shadow:var(--p-card-shadow);gap:.25rem;font-weight:500}
+.pager button{width:2.5rem;height:2.5rem;color:var(--p-text-muted-color)}
+.pager button:hover:not(:disabled){background:var(--p-surface-100);color:var(--p-text-color)}
+.pager span{min-width:2.5rem;height:2.5rem;display:grid;place-items:center;padding:0 .5rem;border-radius:var(--p-radius-md);background:var(--p-highlight-background);color:var(--p-highlight-color);font-weight:600}
+
+/* ---------- Stepper (p-stepper, horizontal) ---------- */
+.stepper{align-items:flex-end}
+.stepper ol{align-items:flex-start}
+.stepper li{flex-direction:row;align-items:center;gap:.5rem}
+.stepper li+li::before{width:3rem;height:2px;background:var(--p-surface-200);margin:0 .5rem}
+.stepper li.done+li::before,.stepper li.done+li.now::before,.stepper li.done+li.done::before{background:var(--p-primary-color)}
+.stepper i{width:2rem;height:2rem;font-size:1rem;font-weight:500;background:var(--p-surface-0);color:var(--p-text-muted-color);box-shadow:inset 0 0 0 1px var(--p-surface-200)}
+.stepper .now i{background:var(--p-surface-0);color:var(--p-primary-color);box-shadow:inset 0 0 0 1px var(--p-primary-color),0 2px 4px rgba(0,0,0,.08)}
+.stepper .done i{background:var(--p-primary-color);color:#fff;box-shadow:none}
+.stepper .st-t{font-size:1rem;font-weight:500;color:var(--p-text-muted-color);white-space:nowrap}
+.stepper .now .st-t,.stepper .done .st-t{color:var(--p-primary-color)}
+.stepper>small{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- Form fields: InputText / Select / DatePicker / Textarea ---------- */
+.fgrid{gap:1.25rem 1.25rem}
+.fld{gap:.5rem}
+.fld>span{font-size:1rem;color:var(--p-text-color);font-weight:500}
+.fld>small{font-size:.875rem;color:var(--p-text-muted-color)}
+.fld input,.fld select,.fld textarea{height:auto;min-height:2.857rem;padding:.625rem .75rem;border:1px solid var(--p-surface-300);border-radius:var(--p-radius-md);background-color:var(--p-surface-0);color:var(--p-text-color);font-size:1rem;transition:border-color .2s,box-shadow .2s}
+.fld select{padding-right:2.5rem;background-position:right .75rem center;background-size:16px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2364748b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")}
+.fld input::placeholder,.fld textarea::placeholder{color:var(--p-surface-500)}
+.fld input:hover:not(:disabled),.fld select:hover:not(:disabled),.fld textarea:hover:not(:disabled){border-color:var(--p-primary-color)}
+.fld input:focus,.fld select:focus,.fld textarea:focus{border-color:var(--p-primary-color);box-shadow:var(--p-focus-ring)}
+.fld select:disabled,.fld input:disabled{background-color:var(--p-surface-200);color:var(--p-surface-500);border-color:var(--p-surface-300)}
+.fld.bad input,.fld.bad select,.fld.bad textarea{border-color:var(--r400)}
+.fld.bad input:focus,.fld.bad select:focus{box-shadow:0 0 0 .2rem var(--r200)}
+/* FileUpload (basic) */
+.file{min-height:2.857rem;height:auto;padding:.625rem .75rem;border:1px dashed var(--p-surface-300);border-radius:var(--p-radius-md);font-size:1rem;color:var(--p-text-muted-color)}
+.file:hover{border-color:var(--p-primary-color)}
+.file .ic{color:var(--p-primary-color)}
+.ffoot{gap:.5rem;border-top-color:var(--p-content-border-color);margin-top:1.5rem;padding-top:1.25rem}
+.ffoot .btn{min-width:9rem}
+
+/* ---------- RadioButton cards ---------- */
+.opts{gap:.75rem}
+.opt{padding:1rem;border-radius:var(--p-radius-md);box-shadow:inset 0 0 0 1px var(--p-content-border-color);gap:.75rem;transition:box-shadow .2s,background .2s}
+.opt:hover:not(:disabled){box-shadow:inset 0 0 0 1px var(--p-primary-color)}
+.opt>i{width:1.25rem;height:1.25rem;border:1px solid var(--p-surface-300);background:var(--p-surface-0);position:relative;margin-top:2px}
+.opt[aria-checked="true"]{box-shadow:inset 0 0 0 2px var(--p-primary-color);background:var(--p-highlight-background)}
+.opt[aria-checked="true"]>i{border:1px solid var(--p-primary-color);background:var(--p-primary-color)}
+.opt[aria-checked="true"]>i::after{content:"";position:absolute;inset:0;margin:auto;width:.5rem;height:.5rem;border-radius:50%;background:#fff}
+.opt b{font-size:1rem;color:var(--p-surface-800)}.opt small{font-size:.875rem;color:var(--p-text-muted-color)}
+.opt:disabled{background:var(--p-surface-50);box-shadow:inset 0 0 0 1px var(--p-surface-200)}
+.opt:disabled>i{background:var(--p-surface-200)}
+
+/* ---------- SelectButton (p-selectbutton) ---------- */
+.seg{background:transparent;padding:0;border-radius:var(--p-radius-md);gap:0;margin-bottom:1.25rem}
+.seg button{height:auto;padding:.625rem 1rem;border-radius:0;font-size:1rem;font-weight:600;color:var(--p-surface-600);background:var(--p-surface-100);border:1px solid var(--p-surface-100);box-shadow:none}
+.seg button:first-child{border-radius:var(--p-radius-md) 0 0 var(--p-radius-md)}
+.seg button:last-child{border-radius:0 var(--p-radius-md) var(--p-radius-md) 0}
+.seg button:hover{background:var(--p-surface-200)}
+.seg button[aria-pressed="true"]{background:var(--p-primary-color);border-color:var(--p-primary-color);color:#fff;box-shadow:none}
+
+/* neutral inner surfaces (Fieldset-like blocks) */
+.ent,.sub,.fetched{background:var(--p-surface-50);border:1px solid var(--p-content-border-color);border-radius:var(--p-radius-md)}
+.revs{background:var(--p-surface-50);border:1px solid var(--p-content-border-color);border-radius:var(--p-radius-md)}
+.fetched-h .ok{background:var(--g500)}
+.slots i{border-radius:var(--p-radius-sm);border-color:var(--p-surface-300)}
+.slots i.on{background:var(--g500);border-color:var(--g500)}.slots i.off{background:var(--o500);border-color:var(--o500)}
+.route .ic{color:var(--p-primary-color)}
+.sk{background:linear-gradient(90deg,var(--p-surface-200) 25%,var(--p-surface-100) 45%,var(--p-surface-200) 65%);background-size:300% 100%;border-radius:var(--p-radius-md)}
+.nextl li::before{background:var(--p-primary-color);width:1.5rem;height:1.5rem;font-size:.75rem}
+.okbox-ic{background:var(--g100);color:var(--g600)}
+.okbox-ic.t{background:var(--o100);color:var(--o600)}
+.okbox h2{color:var(--g700);font-size:1.5rem}.okbox h2.t{color:var(--o700)}
+.stkprev{border-radius:var(--p-radius-md)}
+
+/* ---------- DataTable (p-datatable) ---------- */
+.tbl-wrap{border:1px solid var(--p-content-border-color);border-radius:var(--p-radius-md);background:var(--p-surface-0)}
+.table{font-size:1rem}
+.table th{padding:.75rem 1rem;background:var(--p-surface-50);color:var(--p-text-color);font-size:1rem;font-weight:700;border-bottom:1px solid var(--p-content-border-color)}
+.table td{padding:.75rem 1rem;border-bottom:1px solid var(--p-content-border-color)}
+.table tbody tr:hover{background:var(--p-content-hover-background)}
+.table td small{color:var(--p-text-muted-color)}
+
+/* ---------- Timeline (p-timeline, custom markers) ---------- */
+.tl li{grid-template-columns:1.5rem 1fr;gap:.75rem;padding-bottom:1.25rem}
+.tl li:not(:last-child)::before{left:calc(.75rem - 1px);top:1.5rem;width:2px;background:var(--p-surface-200)}
+.tl li.ok:not(:last-child)::before{background:var(--p-surface-200)}
+.tl i{width:1.5rem;height:1.5rem;border:2px solid var(--p-primary-color);background:var(--p-surface-0)}
+.tl .ok i{background:var(--g500);border-color:var(--g500)}
+.tl .bad i{background:var(--r500);border-color:var(--r500)}
+.tl .now i{border-color:var(--o500);box-shadow:0 0 0 .2rem var(--o200)}
+.tl span{font-size:.875rem;color:var(--p-text-muted-color)}
+.aae{background:var(--p-surface-50);border:1px solid var(--p-content-border-color);border-radius:var(--p-radius-md);margin-left:2.25rem}
+.hist li::before{background:var(--p-primary-color)}
+
+/* ---------- Dialog (p-dialog) ---------- */
+.scrim{background:rgba(0,0,0,.4)}
+.modal{border-radius:var(--p-radius-xl);box-shadow:var(--p-overlay-shadow);padding:0;border:1px solid var(--p-content-border-color)}
+.modal-h{padding:1.5rem 1.5rem 0;margin-bottom:0;align-items:center;gap:.75rem}
+.modal-h h2{font-size:1.25rem;font-weight:600;color:var(--p-surface-800);padding-top:0}
+.modal-h .mi{width:2.5rem;height:2.5rem;border-radius:50%;background:var(--p-primary-50);color:var(--p-primary-color)}
+.modal-h .mi.red{background:var(--r100);color:var(--r600)}.modal-h .mi.gold{background:var(--o100);color:var(--o600)}
+.modal-b{padding:1rem 1.5rem 0;font-size:1rem;color:var(--p-text-color)}
+.modal-f{padding:1.5rem;margin-top:0;gap:.5rem}
+.pick h4{font-size:.875rem;color:var(--p-text-muted-color);font-weight:600}
+
+/* ---------- Toast (p-toast, top-right) ---------- */
+.toast{left:auto;right:1.25rem;top:1.25rem;bottom:auto;transform:none;width:25rem;max-width:calc(100% - 2.5rem);align-items:flex-start;gap:.75rem;padding:1rem;border-radius:var(--p-radius-md);border:solid var(--g500);border-width:0 0 0 6px;background:rgba(240,253,244,.97);color:var(--g700);box-shadow:0 4px 8px rgba(0,0,0,.04),0 2px 6px rgba(0,0,0,.08);font-size:1rem;font-weight:500;animation:tin2 .25s ease-out}
+.toast .ic{color:var(--g600);width:1.25rem;height:1.25rem;margin-top:1px}
+.toast.warn{border-color:var(--o500);background:rgba(255,247,237,.97);color:var(--o700)}
+.toast.warn .ic{color:var(--o600)}
+@keyframes tin2{from{opacity:0;transform:translateY(-8px)}}
+
+@media (max-width:860px){.top-in,.page{padding-inline:1rem}.tabs button{padding:.75rem .9rem}.stepper .st-t{display:none}.stepper li+li::before{width:1.5rem}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="toast-root" aria-live="polite"></div>
+<noscript><p style="padding:24px">This prototype needs JavaScript.</p></noscript>
+<script>
+(function () {
+  'use strict';
+  /* ================= helpers ================= */
+  const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const dt = (y, m, d) => new Date(y, m - 1, d);
+  const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
+  const addMonths = (d, n) => { const x = new Date(d); x.setMonth(x.getMonth() + n); return x; };
+  const fmt = (d) => (d ? String(d.getDate()).padStart(2, '0') + ' ' + MON[d.getMonth()] + ' ' + d.getFullYear() : '—');
+  const iso = (d) => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
+  const parseISO = (s) => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(s || ''); return m ? dt(+m[1], +m[2], +m[3]) : null; };
+  const minD = (a, b) => (!a ? b : !b ? a : a < b ? a : b);
+  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const wait = (ms) => new Promise((r) => setTimeout(r, window.__fast ? 30 : ms));
+
+  const ICON = {
+    back: '<path d="M15 5l-7 7 7 7"/>', chev: '<path d="M9 5l7 7-7 7"/>', chevl: '<path d="M15 5l-7 7 7 7"/>', chevd: '<path d="M6 9l6 6 6-6"/>',
+    plus: '<path d="M12 5v14M5 12h14"/>', x: '<path d="M6 6l12 12M18 6L6 18"/>', check: '<path d="M5 12.5l4.5 4.5L19 7.5"/>',
+    car: '<path d="M5 16H4a1 1 0 0 1-1-1v-2.5a2 2 0 0 1 1.4-1.9l2-.6 1.7-2.6a2 2 0 0 1 1.7-.9h4.9a2 2 0 0 1 1.6.8l2 2.7 1.5.5a2 2 0 0 1 1.2 1.9V15a1 1 0 0 1-1 1h-1"/><circle cx="7.5" cy="16" r="2"/><circle cx="16.5" cy="16" r="2"/><path d="M9.5 16h5M7.5 10h9.5"/>',
+    clock: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>', search: '<circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/>',
+    info: '<circle cx="12" cy="12" r="8.5"/><path d="M12 11v5M12 8h.01"/>', alert: '<path d="M12 4l9 16H3z"/><path d="M12 10v4.5M12 17.5h.01"/>',
+    user: '<circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c.8-3.6 3.4-5.5 7-5.5s6.2 1.9 7 5.5"/>', refresh: '<path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3"/><path d="M19.5 4.5v4h-4"/>',
+    xc: '<circle cx="12" cy="12" r="8.5"/><path d="M9 9l6 6M15 9l-6 6"/>', power: '<path d="M12 4v8"/><path d="M7 7a7 7 0 1 0 10 0"/>',
+    doc: '<path d="M7 3h7l4 4v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v4h4M9 12h6M9 16h6"/>',
+    upload: '<path d="M12 16V5M7.5 9.5L12 5l4.5 4.5"/><path d="M5 16v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2"/>',
+    flow: '<circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M6 8.5V14a4 4 0 0 0 4 4h5.5"/>',
+    shield: '<path d="M12 3l7 3v5c0 4.6-2.9 8.3-7 10-4.1-1.7-7-5.4-7-10V6z"/><path d="M9 12l2.2 2.2 4-4.2"/>',
+    headset: '<path d="M4 14v-2a8 8 0 0 1 16 0v2"/><rect x="3" y="13" width="4" height="6" rx="1.5"/><rect x="17" y="13" width="4" height="6" rx="1.5"/><path d="M19 19c0 1.5-1.5 2.5-4 2.5h-2"/>',
+    gate: '<path d="M5 21V9M5 12h15M8.5 12l2-3M12.5 12l2-3M16.5 12l2-3M3 21h4"/><circle cx="5" cy="7" r="2"/>',
+    inbox: '<path d="M4 13l2.5-7.5A2 2 0 0 1 8.4 4h7.2a2 2 0 0 1 1.9 1.5L20 13v5a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M4 13h4.5l1 2.5h5l1-2.5H20"/>',
+    lock: '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>', zap: '<path d="M13 3L5 14h6l-1 7 8-11h-6z"/>',
+    building: '<path d="M5 21V5a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v16M15 10h3a1 1 0 0 1 1 1v10M3 21h18M9 8h2M9 12h2M9 16h2"/>',
+    home: '<path d="M4 11l8-6 8 6v8a1 1 0 0 1-1 1h-4v-5h-6v5H5a1 1 0 0 1-1-1z"/>', star: '<path d="M12 4l2.4 5 5.4.6-4 3.7 1.1 5.3L12 16l-4.9 2.6 1.1-5.3-4-3.7 5.4-.6z"/>',
+  };
+  const I = (n) => '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true" focusable="false">' + (ICON[n] || '') + '</svg>';
+
+  /* ================= reference data (FDD V1.0) ================= */
+  const AR_LETTER = { A: 'ا', B: 'ب', J: 'ح', D: 'د', R: 'ر', S: 'س', X: 'ص', T: 'ط', E: 'ع', G: 'ق', K: 'ك', L: 'ل', Z: 'م', N: 'ن', H: 'هـ', U: 'و', V: 'ى' };
+  const LETTERS = Object.keys(AR_LETTER);
+  const AR_DIGIT = '٠١٢٣٤٥٦٧٨٩';
+  /* Saudi plates: 1-4 digits and 3 letters. GCC plates (SOW: same rules for gulf-country vehicles): a code and up to 6 digits. */
+  const GCC = { SA: 'Saudi Arabia', AE: 'United Arab Emirates', KW: 'Kuwait', BH: 'Bahrain', QA: 'Qatar', OM: 'Oman' };
+  const isGcc = (p) => !!p.c && p.c !== 'SA';
+  const plateKey = (p) => (isGcc(p) ? p.c + ' ' : '') + p.d + ' ' + p.l;
+  const plateOK = (p) => (isGcc(p) ? /^\d{1,6}$/.test(p.d || '') && /^[A-Z0-9]{1,3}$/.test(p.l || '') : /^\d{1,4}$/.test(p.d || '') && (p.l || '').length === 3);
+
+  /* sticker types (FDD section 5). Community follows the grade of the entitlement owner. */
+  const TYPES = {
+    c3: { name: '3-10 Community', fam: 'comm', icon: 'car' }, c9: { name: '9-10 Community', fam: 'comm', icon: 'car' }, c11: { name: '11+ Community', fam: 'comm', icon: 'car' },
+    core: { name: 'Core Area', fam: 'core', icon: 'star' }, rab: { name: 'Ar-Rabiyah', fam: 'rab', icon: 'home' },
+  };
+  const FAM = { comm: 'Community', core: 'Core Area', rab: 'Ar-Rabiyah' };
+  /* sticker icons supplied by the client (60x60). 9-10 uses the olive hexagon with the same SA letters. */
+  const SICON = {"sa_blue": "<path d=\"M8,20.9c0-2.2,1.2-4.1,3-5.2l16-9.1c1.8-1.1,4.1-1.1,6,0l16,9.1c1.9,1.1,3,3.1,3,5.2v18.2c0,2.2-1.2,4.1-3,5.2l-16,9.1c-1.8,1.1-4.1,1.1-6,0l-16-9.1c-1.9-1.1-3-3.1-3-5.2v-18.2Z\" fill=\"#0033a0\"/><g><path d=\"M16.3,38.1v-2.9c1.2.6,2.4.8,3.6.8,1.8,0,3.3-.7,3.3-2.2,0-3.4-7.1-2.9-7.1-8s2.6-5,5.9-5,2.7.2,3.9.7v2.9c-1.3-.4-2.6-.7-3.6-.7-1.6,0-2.7.7-2.7,2.1,0,3.5,7.1,2.1,7.1,7.8s-2.8,5.4-6.5,5.4-2.8-.3-4-.8Z\" fill=\"#fff\"/><path d=\"M34.9,21h3.6l7.2,17.5h-3.6l-1.6-4h-7.7l-1.5,4h-3.6l7.2-17.5ZM33.9,31.7h5.5l-2.7-7.1-2.7,7.1Z\" fill=\"#fff\"/></g>", "sa_green": "<path d=\"M8,20.9c0-2.2,1.2-4.1,3-5.2l16-9.1c1.8-1.1,4.1-1.1,6,0l16,9.1c1.9,1.1,3,3.1,3,5.2v18.2c0,2.2-1.2,4.1-3,5.2l-16,9.1c-1.8,1.1-4.1,1.1-6,0l-16-9.1c-1.9-1.1-3-3.1-3-5.2v-18.2Z\" fill=\"#00843d\"/><g><path d=\"M16.3,38.1v-2.9c1.2.6,2.4.8,3.6.8,1.8,0,3.3-.7,3.3-2.2,0-3.4-7.1-2.9-7.1-8s2.6-5,5.9-5,2.7.2,3.9.7v2.9c-1.3-.4-2.6-.7-3.6-.7-1.6,0-2.7.7-2.7,2.1,0,3.5,7.1,2.1,7.1,7.8s-2.8,5.4-6.5,5.4-2.8-.3-4-.8Z\" fill=\"#fff\"/><path d=\"M34.9,21h3.6l7.2,17.5h-3.6l-1.6-4h-7.7l-1.5,4h-3.6l7.2-17.5ZM33.9,31.7h5.5l-2.7-7.1-2.7,7.1Z\" fill=\"#fff\"/></g>", "sa": "<path d=\"M8,21.1c0-2.3,1.2-4.3,3.2-5.5l15.7-9c1.9-1.1,4.3-1.1,6.2,0l15.7,9c2,1.1,3.2,3.2,3.2,5.5v17.8c0,2.3-1.2,4.3-3.2,5.5l-15.7,9c-1.9,1.1-4.3,1.1-6.2,0l-15.7-9c-2-1.1-3.2-3.2-3.2-5.5v-17.8Z\" fill=\"#638e00\"/><g><path d=\"M16.3,38.1v-2.9c1.2.6,2.4.8,3.6.8,1.8,0,3.3-.7,3.3-2.2,0-3.4-7.1-2.9-7.1-8s2.6-5,5.9-5,2.7.2,3.9.7v2.9c-1.3-.4-2.6-.7-3.6-.7-1.6,0-2.7.7-2.7,2.1,0,3.5,7.1,2.1,7.1,7.8s-2.8,5.4-6.5,5.4-2.8-.3-4-.8Z\" fill=\"#fff\"/><path d=\"M34.9,21h3.6l7.2,17.5h-3.6l-1.6-4h-7.7l-1.5,4h-3.6l7.2-17.5ZM33.9,31.7h5.5l-2.7-7.1-2.7,7.1Z\" fill=\"#fff\"/></g>", "core": "<circle cx=\"30\" cy=\"30\" r=\"24\" fill=\"#f05f41\"/><path d=\"M22.4,29.9c0-5.4,3.5-9,9-9s3,.3,4.1.8v3c-1.2-.5-2.5-.8-3.9-.8-3.5,0-5.7,2.3-5.7,6.1s2.2,6,5.7,6,2.4-.2,3.9-.7v3.1c-1.4.4-2.9.7-4.2.7-5.5,0-9-3.6-9-9Z\" fill=\"#fff\"/>", "rab": "<path d=\"M18,4h24c3.3,0,6,2.7,6,6v40c0,3.3-2.7,6-6,6H12V10c0-3.3,2.7-6,6-6Z\" fill=\"#f68930\"/><path d=\"M36.9,38.6h-3.7l-3.3-6.6h-2v6.6h-3.5v-17.5h4.6c4.2,0,7,1.7,7,5.4s-1.2,4-3,4.8l3.7,7.3ZM28,24v5h2c1.4,0,2.6-.8,2.6-2.5s-1.3-2.4-3.2-2.4h-1.4Z\" fill=\"#fff\"/>", "temp_blue": "<path d=\"M50,30c0-9.7,1.9-19.5,2-19.6h0c.3-1.4-1-2.6-2.4-2.4h0c0,0-9.9,2-19.6,2s-19.5-1.9-19.6-2h0c-1.4-.3-2.6,1-2.4,2.4h0c0,0,2,9.9,2,19.6s-1.9,19.5-2,19.6h0c-.3,1.4,1,2.6,2.4,2.4h0c0,0,9.9-2,19.6-2s19.5,1.9,19.6,2h0c1.4.3,2.6-1,2.4-2.4h0c0,0-2-9.9-2-19.6Z\" fill=\"#0033a0\"/><path d=\"M39.8,27.2c0,0,.1,0,.2,0,.7,0,1.2-.6,1.2-1.2s-.6-1.2-1.2-1.2-.5.1-.7.3l-.9-3.7c-.3-1.3-1.5-2.3-2.9-2.3h-10.9c-1.4,0-2.6.9-2.9,2.2l-1,3.7c-.2-.1-.4-.2-.7-.2-.7,0-1.2.6-1.2,1.2s.6,1.2,1.2,1.2,0,0,0,0v.5c-.1,0,0,0,0,0-.6.5-1,1.3-1,2.2v8c0,1.7,1.3,3,3,3s3-1.3,3-3v-1h10v1c0,1.7,1.3,3,3,3s3-1.3,3-3v-8c0-.9-.4-1.7-1-2.2v-.5ZM23.6,21.7c.1-.4.5-.7,1-.7h10.9c.5,0,.9.3,1,.8l1.3,5.2h-15.5l1.4-5.3ZM23,38c0,.6-.4,1-1,1s-1-.4-1-1v-1h2v1ZM39,38c0,.6-.4,1-1,1s-1-.4-1-1v-1h2v1ZM39,35h-18v-5c0-.6.4-1,1-1h16c.6,0,1,.4,1,1v5ZM36,30.5c-.8,0-1.5.7-1.5,1.5s.7,1.5,1.5,1.5,1.5-.7,1.5-1.5-.7-1.5-1.5-1.5ZM24,30.5c-.8,0-1.5.7-1.5,1.5s.7,1.5,1.5,1.5,1.5-.7,1.5-1.5-.7-1.5-1.5-1.5Z\" fill=\"#fff\"/>", "temp_green": "<path d=\"M50,30c0-9.7,1.9-19.5,2-19.6h0c.3-1.4-1-2.6-2.4-2.4h0c0,0-9.9,2-19.6,2s-19.5-1.9-19.6-2h0c-1.4-.3-2.6,1-2.4,2.4h0c0,0,2,9.9,2,19.6s-1.9,19.5-2,19.6h0c-.3,1.4,1,2.6,2.4,2.4h0c0,0,9.9-2,19.6-2s19.5,1.9,19.6,2h0c1.4.3,2.6-1,2.4-2.4h0c0,0-2-9.9-2-19.6Z\" fill=\"#84bd00\"/><path d=\"M39.8,27.2c0,0,.1,0,.2,0,.7,0,1.2-.6,1.2-1.2s-.6-1.2-1.2-1.2-.5.1-.7.3l-.9-3.7c-.3-1.3-1.5-2.3-2.9-2.3h-10.9c-1.4,0-2.6.9-2.9,2.2l-1,3.7c-.2-.1-.4-.2-.7-.2-.7,0-1.2.6-1.2,1.2s.6,1.2,1.2,1.2,0,0,0,0v.5c-.1,0,0,0,0,0-.6.5-1,1.3-1,2.2v8c0,1.7,1.3,3,3,3s3-1.3,3-3v-1h10v1c0,1.7,1.3,3,3,3s3-1.3,3-3v-8c0-.9-.4-1.7-1-2.2v-.5ZM23.6,21.7c.1-.4.5-.7,1-.7h10.9c.5,0,.9.3,1,.8l1.3,5.2h-15.5l1.4-5.3ZM23,38c0,.6-.4,1-1,1s-1-.4-1-1v-1h2v1ZM39,38c0,.6-.4,1-1,1s-1-.4-1-1v-1h2v1ZM39,35h-18v-5c0-.6.4-1,1-1h16c.6,0,1,.4,1,1v5ZM36,30.5c-.8,0-1.5.7-1.5,1.5s.7,1.5,1.5,1.5,1.5-.7,1.5-1.5-.7-1.5-1.5-1.5ZM24,30.5c-.8,0-1.5.7-1.5,1.5s.7,1.5,1.5,1.5,1.5-.7,1.5-1.5-.7-1.5-1.5-1.5Z\" fill=\"#fff\"/>", "temp_camp_blue": "<path d=\"M50,30c0-9.7,1.9-19.5,2-19.6h0c.3-1.4-1-2.6-2.4-2.4h0c0,0-9.9,2-19.6,2s-19.5-1.9-19.6-2h0c-1.4-.3-2.6,1-2.4,2.4h0c0,0,2,9.9,2,19.6s-1.9,19.5-2,19.6h0c-.3,1.4,1,2.6,2.4,2.4h0c0,0,9.9-2,19.6-2s19.5,1.9,19.6,2h0c1.4.3,2.6-1,2.4-2.4h0c0,0-2-9.9-2-19.6Z\" fill=\"#0033a0\"/><path d=\"M41.7,28.3l-11.7-10.6-11.7,10.6c-.4.4-.4,1,0,1.4.4.4,1,.4,1.4,0l1.3-1.2v9.5c0,1.7,1.3,3,3,3h12c1.7,0,3-1.3,3-3v-9.5l1.3,1.2c.2.2.4.3.7.3s.5-.1.7-.3c.4-.4.3-1,0-1.4ZM37,38c0,.6-.4,1-1,1h-12c-.6,0-1-.4-1-1v-11.3l7-6.4,7,6.4v11.3Z\" fill=\"#fff\"/>", "temp_camp_green": "<path d=\"M50,30c0-9.7,1.9-19.5,2-19.6h0c.3-1.4-1-2.6-2.4-2.4h0c0,0-9.9,2-19.6,2s-19.5-1.9-19.6-2h0c-1.4-.3-2.6,1-2.4,2.4h0c0,0,2,9.9,2,19.6s-1.9,19.5-2,19.6h0c-.3,1.4,1,2.6,2.4,2.4h0c0,0,9.9-2,19.6-2s19.5,1.9,19.6,2h0c1.4.3,2.6-1,2.4-2.4h0c0,0-2-9.9-2-19.6Z\" fill=\"#84bd00\"/><path d=\"M41.7,28.3l-11.7-10.6-11.7,10.6c-.4.4-.4,1,0,1.4.4.4,1,.4,1.4,0l1.3-1.2v9.5c0,1.7,1.3,3,3,3h12c1.7,0,3-1.3,3-3v-9.5l1.3,1.2c.2.2.4.3.7.3s.5-.1.7-.3c.4-.4.3-1,0-1.4ZM37,38c0,.6-.4,1-1,1h-12c-.6,0-1-.4-1-1v-11.3l7-6.4,7,6.4v11.3Z\" fill=\"#fff\"/>"};
+  const SCOLOR = { sa_blue: '#0033a0', sa: '#638e00', sa_green: '#00843d', core: '#f05f41', rab: '#f68930', temp_blue: '#0033a0', temp_green: '#84bd00' };
+  const TYPE_ICON = { c3: 'sa_blue', c9: 'sa', c11: 'sa_green', core: 'core', rab: 'rab' };
+  /* temporary community sticker: car icon in the holder's grade colour (3-10 and 9-10 blue, 11+ green) */
+  const iconKey = (x) => { const temp = x.temp || x.kind === 'temporary'; if (temp && TYPES[x.typeId].fam === 'comm') return x.typeId === 'c11' ? 'temp_green' : 'temp_blue'; return TYPE_ICON[x.typeId]; };
+  const sIcon = (key, cls) => '<svg class="sic ' + (cls || '') + '" viewBox="0 0 60 60" aria-hidden="true" focusable="false">' + SICON[key] + '</svg>';
+  const rgba = (hex, a) => { const n = parseInt(hex.slice(1), 16); return 'rgba(' + (n >> 16) + ',' + ((n >> 8) & 255) + ',' + (n & 255) + ',' + a + ')'; };
+  const tint = (key) => '--tc:' + SCOLOR[key] + ';--tbg:' + rgba(SCOLOR[key], 0.07) + ';--tbd:' + rgba(SCOLOR[key], 0.28) + ';--tsoft:' + rgba(SCOLOR[key], 0.12);
+  /* places and conditions, starting configuration (FDD section 6) */
+  const PLACES = [
+    ['Bachelor camps', { c3: 1, c9: 1, c11: 1, core: 1, rab: 0 }], ['Administrative offices', { c3: 1, c9: 1, c11: 1, core: 1, rab: 0 }],
+    ['Hospitals', { c3: 1, c9: 1, c11: 1, core: 1, rab: 0 }], ['Clinics', { c3: 1, c9: 1, c11: 1, core: 1, rab: 0 }],
+    ['Non-restricted areas', { c3: 1, c9: 1, c11: 1, core: 1, rab: 0 }], ['Family camps', { c3: 'For business, in business hours', c9: 1, c11: 1, core: 1, rab: 0 }],
+    ['Beaches', { c3: 0, c9: 0, c11: 1, core: 1, rab: 0 }], ['Dhahran core area', { c3: 0, c9: 0, c11: 0, core: 1, rab: 0 }],
+    ['Warehouses', { c3: 0, c9: 0, c11: 0, core: 1, rab: 0 }], ['Ar-Rabiyah compound', { c3: 0, c9: 0, c11: 0, core: 1, rab: 'Through designated gates' }],
+  ];
+  const OWNER = {
+    own: 'Own vehicle', dep: 'Dependent’s vehicle', rent: 'Rented vehicle', absher: 'Another person’s vehicle (Absher permission)', company: 'Aramco company car',
+    family: 'Family member’s vehicle', famco: 'Family company vehicle (no company logo)', husband: 'Husband’s vehicle', helper: 'Helper’s own vehicle',
+  };
+  const ARAMCO = 'Saudi Aramco';
+  const RELS = ['Father', 'Mother', 'Husband', 'Brother', 'Sister', 'Son', 'Guardian'];
+  const CATALOG = {
+    Toyota: ['Camry', 'Corolla', 'Hilux', 'Land Cruiser', 'Yaris'], Nissan: ['Patrol', 'Sunny', 'X-Trail'], Hyundai: ['Accent', 'Elantra', 'Sonata', 'Tucson'],
+    Kia: ['K5', 'Sorento', 'Sportage'], Ford: ['Explorer', 'F-150', 'Taurus'], GMC: ['Sierra', 'Yukon'], Lexus: ['ES', 'LX'], Mazda: ['6', 'CX-5'],
+    'Mercedes-Benz': ['E-Class', 'GLE', 'S-Class'],
+  };
+  const COLORS = ['White', 'Black', 'Silver', 'Grey', 'Blue', 'Red', 'Pearl', 'Beige', 'Green', 'Brown'];
+  const VTYPES = ['Sedan', 'SUV', 'Pickup', 'Van', 'Coupe'];
+  const YEARS = Array.from({ length: 18 }, (_, i) => 2027 - i);
+  /* what the simulated Government API (through the Aramco wrapper class) returns */
+  const GOV = {
+    '7302 DNL': { make: 'Kia', model: 'Sportage', year: 2022, color: 'Grey', color2: 'Black', type: 'SUV', regOwner: 'Faisal Al-Harbi' },
+    '6620 NHA': { make: 'Toyota', model: 'Camry', year: 2021, color: 'Pearl', color2: '', type: 'Sedan', regOwner: 'Noura Al-Harbi' },
+    '5858 BLN': { make: 'Mazda', model: 'CX-5', year: 2024, color: 'Red', color2: '', type: 'SUV', regOwner: 'Abdulaziz Al-Shammari' },
+    '3131 NRS': { make: 'Nissan', model: 'Sunny', year: 2023, color: 'White', color2: '', type: 'Sedan', regOwner: 'Mohammed Al-Shehri' },
+    '4400 SAX': { make: 'Ford', model: 'Taurus', year: 2024, color: 'White', color2: '', type: 'Sedan', regOwner: ARAMCO },
+    '2200 SAX': { make: 'Toyota', model: 'Land Cruiser', year: 2025, color: 'White', color2: '', type: 'SUV', regOwner: ARAMCO },
+    '9150 HZE': { make: 'Hyundai', model: 'Elantra', year: 2024, color: 'White', color2: '', type: 'Sedan', regOwner: 'Masar Car Rental' },
+    '4477 DKL': { make: 'Toyota', model: 'Hilux', year: 2022, color: 'White', color2: 'Grey', type: 'Pickup', regOwner: 'Rashed Trading Est.' },
+    '7171 RKN': { make: 'Toyota', model: 'Hilux', year: 2019, color: 'White', color2: '', type: 'Pickup', regOwner: 'Ramesh Kumar' },
+    '3939 KHL': { make: 'Nissan', model: 'Patrol', year: 2021, color: 'Silver', color2: '', type: 'SUV', regOwner: 'Abdullah Al-Qahtani' },
+    '5252 BKR': { make: 'Ford', model: 'Explorer', year: 2023, color: 'Black', color2: '', type: 'SUV', regOwner: 'Al-Qahtani Trading Co.' },
+    '1919 RHN': { make: 'Toyota', model: 'Camry', year: 2022, color: 'White', color2: '', type: 'Sedan', regOwner: 'Imtiaz Rahman' },
+    '2121 SAX': { make: 'Lexus', model: 'ES', year: 2025, color: 'White', color2: '', type: 'Sedan', regOwner: ARAMCO },
+    '9001 GTB': null,
+  };
+  function govLookup(p) {
+    const k = plateKey(p); if (k in GOV) return GOV[k] ? Object.assign({}, GOV[k]) : null;
+    let h = 0; for (const c of k) h = (h * 31 + c.charCodeAt(0)) >>> 0;
+    const makes = Object.keys(CATALOG); const mk = makes[h % makes.length]; const md = CATALOG[mk][h % CATALOG[mk].length];
+    return { make: mk, model: md, year: 2018 + (h % 8), color: COLORS[h % COLORS.length], color2: '', type: VTYPES[h % VTYPES.length], regOwner: null };
+  }
+  /* any ID badge holder, for the temporary driver search */
+  const BADGES = [
+    { name: 'Omar Al-Qahtani', badge: '801455' }, { name: 'Sara Al-Otaibi', badge: '801233' }, { name: 'Hassan Al-Dossary', badge: '776120' },
+    { name: 'Turki Al-Anazi', badge: '790512' }, { name: 'Reem Al-Ghamdi', badge: '812906' },
+  ];
+
+  /* entitlement buckets per applicant type (FDD section 7: entitlement, validity and approvals) */
+  const DIRECTOR = 'ISSD or AISOD Director', ISOVP = 'ISO VP';
+  const B = {
+    comm: (typeId, max, owners) => ({ key: 'comm', typeId, label: 'Community', max, approver: DIRECTOR, beyond: true, toggle: true, owners: owners || ['own', 'dep', 'rent', 'absher'] }),
+    /* Acting VP: Core Area for Saudi Aramco vehicles only, while acting (SOW); ends with the assignment (SRS AOD-14) */
+    acore: (until) => ({ key: 'acore', typeId: 'core', label: 'Core Area · company car (acting)', max: 1, approver: ISOVP, beyond: true, toggle: true, owners: ['company'], until }),
+    corep: { key: 'corep', typeId: 'core', label: 'Core Area · private', max: 2, approver: ISOVP, beyond: true, toggle: true, owners: ['own', 'rent'] }, /* SRS AOD-13, AOD-15 */
+    corec: { key: 'corec', typeId: 'core', label: 'Core Area · company car', max: 1, approver: ISOVP, beyond: true, toggle: true, owners: ['company'] }, /* SRS AOD-16; SDD 12.3 */
+    rab: { key: 'rab', typeId: 'rab', label: 'Ar-Rabiyah', max: null, approver: null, beyond: false, toggle: false, owners: ['own', 'dep', 'rent'] },
+  };
+
+  /* ================= sample records ================= */
+  const START = dt(2026, 11, 6);
+  function seed() {
+    const people = {
+      g3: { id: 'g3', name: 'Saad Al-Dosari', initials: 'SD', badge: '826431', type: 'Employee', classes: ['Regular employee'], grade: 'SC 3-8', marital: 'Married', org: 'Abqaiq Plants Dept.', residence: 'Community (Abqaiq)',
+        ent: [B.comm('c3', 3)], dependents: [{ name: 'Maha Al-Dosari', rel: 'Spouse' }], drivers: [] },
+      g9: { id: 'g9', name: 'Yousef Al-Otaibi', initials: 'YO', badge: '809157', type: 'Employee', classes: ['Regular employee'], grade: 'SC 9-10', marital: 'Single', org: 'Northern Area Oil Operations', residence: 'Community (Ras Tanura)',
+        ent: [B.comm('c9', 2)], dependents: [], drivers: [] },
+      emp: { id: 'emp', name: 'Faisal Al-Harbi', initials: 'FA', badge: '784512', type: 'Employee', classes: ['Regular employee'], grade: 'SC 11+', marital: 'Married', org: 'Engineering Services Dept.', residence: 'Community (Dhahran)',
+        ent: [B.comm('c11', 3)], dependents: [{ name: 'Noura Al-Harbi', rel: 'Spouse' }, { name: 'Ahmed Al-Harbi', rel: 'Son' }], drivers: [{ name: 'Ramesh Kumar', rel: 'Family driver', badge: 'D-55120' }],
+        helpers: [{ name: 'Ramesh Kumar', badge: 'D-55120', rel: 'Family driver', idExpiry: dt(2027, 4, 30) }] },
+      fem: { id: 'fem', name: 'Noor Al-Qahtani', initials: 'NQ', badge: '818204', type: 'Employee', classes: ['Regular employee', 'Female employee'], grade: 'SC 9-10', marital: 'Married', org: 'Community Services Dept.', residence: 'Community (Dhahran)',
+        ent: [B.comm('c9', 3, ['own', 'dep', 'rent', 'absher', 'family', 'famco'])], dependents: [{ name: 'Lama Al-Qahtani', rel: 'Daughter' }], drivers: [{ name: 'Sunil Perera', rel: 'Family driver', badge: 'D-58810' }],
+        family: [{ name: 'Khalid Al-Qahtani', rel: 'Husband' }, { name: 'Abdullah Al-Qahtani', rel: 'Father' }, { name: 'Al-Qahtani Trading Co.', rel: 'Family company' }] },
+      iklh: { id: 'iklh', name: 'Ayesha Rahman', initials: 'AR', badge: '845221', type: 'Employee', classes: ['Regular employee', 'IKLH expatriate female'], grade: 'SC 11+', marital: 'Married', org: 'Medical Services Org.', residence: 'Local community (Al-Khobar)',
+        ent: [B.comm('c11', 1, ['husband'])], husband: 'Imtiaz Rahman', dependents: [], drivers: [] },
+      exe: { id: 'exe', name: 'Abdulaziz Al-Shammari', initials: 'AS', badge: '512044', type: 'Executive', classes: ['Regular employee', 'Executive'], grade: 'SC 11+ · Executive', marital: 'Married', org: 'Southern Area Oil Operations', residence: 'Community (Dhahran)',
+        ent: [B.comm('c11', 3), B.corep, B.corec], dependents: [{ name: 'Hessa Al-Shammari', rel: 'Spouse' }], drivers: [{ name: 'Joseph Mathew', rel: 'Family driver', badge: 'D-61822' }],
+        helpers: [{ name: 'Joseph Mathew', badge: 'D-61822', rel: 'Family driver', idExpiry: dt(2027, 8, 15) }] },
+      act: { id: 'act', name: 'Hamad Al-Rashid', initials: 'HR', badge: '498310', type: 'Acting VP', classes: ['Regular employee', 'Acting Vice President'], grade: 'SC 11+ · Acting VP', marital: 'Married', org: 'Industrial Security Operations', residence: 'Community (Dhahran)',
+        ent: [B.comm('c11', 3), B.acore(dt(2027, 1, 31))], actingUntil: dt(2027, 1, 31), dependents: [{ name: 'Sara Al-Rashid', rel: 'Spouse' }], drivers: [] },
+      rab: { id: 'rab', name: 'Mohammed Al-Shehri', initials: 'MS', badge: '803317', type: 'Employee', classes: ['Regular employee', 'Ar-Rabiyah resident'], grade: 'SC 3-8', marital: 'Single', org: 'Ras Tanura Refinery', residence: 'Ar-Rabiyah',
+        ent: [B.comm('c3', 2), B.rab], dependents: [{ name: 'Fatimah Al-Shehri', rel: 'Mother' }], drivers: [] },
+    };
+    const V = (id, holder, d, l, make, model, year, color, color2, type, regOwner, owner, dependent, extra) => Object.assign({ id, holder, plate: { c: 'SA', d, l }, origin: 'Saudi Arabia', plateType: 'Private', make, model, year, color, color2, type, regOwner, owner, source: 'api', dependent: dependent || null, rel: null }, extra || {});
+    const vehicles = [
+      V('v1', 'emp', '4821', 'RKS', 'Toyota', 'Land Cruiser', 2023, 'White', 'Black', 'SUV', 'Faisal Al-Harbi', 'own'),
+      V('v2', 'emp', '1234', 'ABJ', 'Nissan', 'X-Trail', 2020, 'Blue', '', 'SUV', 'Faisal Al-Harbi', 'own'),
+      V('v4', 'emp', '2290', 'EGK', 'Kia', 'K5', 2025, 'Grey', '', 'Sedan', 'Masar Car Rental', 'rent'),
+      V('v5', 'emp', '6044', 'TGU', 'Hyundai', 'Sonata', 2019, 'Silver', '', 'Sedan', 'Noura Al-Harbi', 'dep', 'Noura Al-Harbi'),
+      V('v6', 'emp', '3333', 'ZZZ', 'Ford', 'Explorer', 2020, 'Red', 'Black', 'SUV', 'Budget Saudi', 'rent'),
+      V('v7', 'emp', '8810', 'HBA', 'GMC', 'Yukon', 2018, 'Black', '', 'SUV', 'Faisal Al-Harbi', 'own'),
+      V('v10', 'emp', '5190', 'GLD', 'Mazda', 'CX-5', 2023, 'Blue', '', 'SUV', 'Faisal Al-Harbi', 'own'),
+      V('e1', 'exe', '1100', 'SAX', 'Lexus', 'LX', 2025, 'Black', '', 'SUV', ARAMCO, 'company'),
+      V('e2', 'exe', '7007', 'ADR', 'GMC', 'Yukon', 2024, 'White', '', 'SUV', 'Abdulaziz Al-Shammari', 'own'),
+      V('e3', 'exe', '3500', 'KHD', 'Toyota', 'Land Cruiser', 2024, 'Pearl', '', 'SUV', 'Abdulaziz Al-Shammari', 'own'),
+      V('e4', 'exe', '6262', 'BRA', 'Lexus', 'ES', 2023, 'Silver', '', 'Sedan', 'Abdulaziz Al-Shammari', 'own'),
+      V('e5', 'exe', '8181', 'LSD', 'Nissan', 'Patrol', 2022, 'White', '', 'SUV', 'Hessa Al-Shammari', 'dep', 'Hessa Al-Shammari'),
+      V('e6', 'exe', '4545', 'TRV', 'Hyundai', 'Sonata', 2024, 'Grey', '', 'Sedan', 'Budget Saudi', 'rent'),
+      V('e7', 'exe', '9999', 'ZND', 'Mercedes-Benz', 'S-Class', 2025, 'Black', '', 'Sedan', 'Abdulaziz Al-Shammari', 'own'),
+      V('g31', 'g3', '3456', 'BJA', 'Toyota', 'Corolla', 2021, 'White', '', 'Sedan', 'Saad Al-Dosari', 'own'),
+      V('g32', 'g3', '7788', 'KRN', 'Hyundai', 'Accent', 2022, 'Silver', '', 'Sedan', 'Saad Al-Dosari', 'own'),
+      V('g33', 'g3', '2468', 'TNS', 'Nissan', 'Sunny', 2019, 'Beige', '', 'Sedan', 'Maha Al-Dosari', 'dep', 'Maha Al-Dosari'),
+      V('g34', 'g3', '1357', 'ZLH', 'Kia', 'Sportage', 2023, 'Red', '', 'SUV', 'Saad Al-Dosari', 'own'),
+      V('g35', 'g3', '9753', 'RSD', 'Mazda', '6', 2018, 'Grey', '', 'Sedan', 'Yelo Rental', 'rent'),
+      V('n1', 'g9', '5050', 'HDA', 'Toyota', 'Camry', 2022, 'Black', '', 'Sedan', 'Yousef Al-Otaibi', 'own'),
+      V('n2', 'g9', '6161', 'GLX', 'Ford', 'Explorer', 2021, 'Blue', '', 'SUV', 'Saleh Al-Otaibi', 'absher'),
+      V('n3', 'g9', '8282', 'NJK', 'Hyundai', 'Elantra', 2020, 'White', '', 'Sedan', 'Yousef Al-Otaibi', 'own'),
+      V('n4', 'g9', '4646', 'BDN', 'Nissan', 'Patrol', 2019, 'Silver', '', 'SUV', 'Yousef Al-Otaibi', 'own'),
+      V('e8', 'exe', '6262', 'JNT', 'Hyundai', 'Accent', 2021, 'White', '', 'Sedan', 'Joseph Mathew', 'helper'),
+      V('f1', 'fem', '2727', 'NHS', 'Toyota', 'Land Cruiser', 2022, 'White', '', 'SUV', 'Khalid Al-Qahtani', 'family', null, { rel: 'Husband' }),
+      V('f2', 'fem', '5151', 'BKR', 'GMC', 'Yukon', 2023, 'Black', '', 'SUV', 'Al-Qahtani Trading Co.', 'famco'),
+      V('f3', 'fem', '48213', 'B', 'Kia', 'Sorento', 2022, 'Pearl', '', 'SUV', 'Noor Al-Qahtani', 'own', null, { plate: { c: 'AE', d: '48213', l: 'B' }, origin: 'United Arab Emirates', source: 'manual' }),
+      V('i1', 'iklh', '3838', 'RHN', 'Hyundai', 'Tucson', 2023, 'Grey', '', 'SUV', 'Imtiaz Rahman', 'husband'),
+      V('a1', 'act', '1212', 'SAX', 'Lexus', 'ES', 2025, 'Black', '', 'Sedan', ARAMCO, 'company'),
+      V('a2', 'act', '7272', 'HRD', 'Toyota', 'Land Cruiser', 2021, 'Black', '', 'SUV', 'Hamad Al-Rashid', 'own'),
+      V('a3', 'act', '3030', 'HRS', 'Hyundai', 'Sonata', 2020, 'White', '', 'Sedan', 'Hamad Al-Rashid', 'own'),
+      V('r1', 'rab', '2525', 'RNT', 'Hyundai', 'Tucson', 2022, 'Blue', '', 'SUV', 'Mohammed Al-Shehri', 'own'),
+      V('r2', 'rab', '1717', 'GAS', 'Toyota', 'Yaris', 2020, 'White', '', 'Sedan', 'Mohammed Al-Shehri', 'own'),
+      V('r3', 'rab', '9090', 'UDN', 'Toyota', 'Camry', 2023, 'Grey', '', 'Sedan', 'Mohammed Al-Shehri', 'own'),
+      V('r4', 'rab', '4040', 'EZL', 'Kia', 'Sorento', 2021, 'Black', '', 'SUV', 'Fatimah Al-Shehri', 'dep', 'Fatimah Al-Shehri'),
+      V('r5', 'rab', '6363', 'HLK', 'Ford', 'Taurus', 2019, 'Silver', '', 'Sedan', 'Mohammed Al-Shehri', 'own'),
+      V('n5', 'g9', '2121', 'GLR', 'Hyundai', 'Accent', 2024, 'White', '', 'Sedan', 'Yelo Rental', 'rent'),
+      V('v11', 'emp', '7474', 'RKD', 'Toyota', 'Hilux', 2018, 'White', '', 'Pickup', 'Ramesh Kumar', 'helper'),
+      V('a5', 'act', '1313', 'SAX', 'Chevrolet', 'Tahoe', 2024, 'Black', '', 'SUV', ARAMCO, 'company'),
+      V('f4', 'fem', '6868', 'NRA', 'Toyota', 'Camry', 2021, 'Silver', '', 'Sedan', 'Noor Al-Qahtani', 'own'),
+      V('i2', 'iklh', '5959', 'RHD', 'Nissan', 'Altima', 2020, 'White', '', 'Sedan', 'Imtiaz Rahman', 'husband'),
+      V('a4', 'act', '8484', 'HZD', 'Honda', 'Accord', 2019, 'Grey', '', 'Sedan', 'Hamad Al-Rashid', 'own'),
+    ];
+    const K = (no, vehId, holder, bucket, typeId, status, start, end, extra) => Object.assign({ no, vehId, holder, bucket, typeId, temp: false, status, start, end, ver: 1, pendingOff: null, pendingCancel: null, driver: null, doc: null,
+      hist: [{ at: start, txt: 'Sticker issued' }] }, extra || {});
+    const stickers = [
+      K('DS-26-000311', 'v1', 'emp', 'comm', 'c11', 'active', dt(2025, 3, 14), null),
+      K('DS-26-000312', 'v2', 'emp', 'comm', 'c11', 'active', dt(2025, 3, 22), null, { driver: { name: 'Ramesh Kumar', badge: 'D-55120', rel: 'Family driver' } }),
+      K('DS-26-000313', 'v4', 'emp', 'comm', 'c11', 'active', dt(2026, 5, 18), null),
+      K('DS-26-000314', 'v5', 'emp', 'comm', 'c11', 'inactive', dt(2025, 8, 9), null),
+      K('DS-26-000315', 'v6', 'emp', 'comm', 'c11', 'expired', dt(2025, 10, 30), dt(2026, 10, 30), { temp: true }),
+      K('DS-26-000309', 'v7', 'emp', 'comm', 'c11', 'cancelled', dt(2024, 6, 2), null, { closed: dt(2026, 9, 15) }),
+      K('DS-26-000201', 'e1', 'exe', 'corec', 'core', 'active', dt(2025, 1, 5), null),
+      K('DS-26-000202', 'e2', 'exe', 'corep', 'core', 'active', dt(2024, 11, 20), null, { driver: { name: 'Joseph Mathew', badge: 'D-61822', rel: 'Family driver' } }),
+      K('DS-26-000203', 'e3', 'exe', 'corep', 'core', 'active', dt(2025, 4, 2), null),
+      K('DS-26-000204', 'e4', 'exe', 'comm', 'c11', 'active', dt(2024, 2, 11), null),
+      K('DS-26-000208', 'e3', 'exe', 'comm', 'c11', 'inactive', dt(2025, 4, 2), null),
+      K('DS-26-000205', 'e5', 'exe', 'comm', 'c11', 'inactive', dt(2025, 9, 1), null),
+      K('DS-26-000206', 'e6', 'exe', 'comm', 'c11', 'active', dt(2026, 6, 20), null),
+      K('DS-26-000207', 'e8', 'exe', 'comm', 'c11', 'active', dt(2026, 2, 1), dt(2027, 8, 15), { sponsored: { name: 'Joseph Mathew', badge: 'D-61822', rel: 'Family driver' } }),
+      K('DS-26-000291', 'f1', 'fem', 'comm', 'c9', 'active', dt(2025, 4, 3), null),
+      K('DS-26-000292', 'f2', 'fem', 'comm', 'c9', 'active', dt(2026, 1, 19), null),
+      K('DS-26-000293', 'f3', 'fem', 'comm', 'c9', 'inactive', dt(2025, 11, 2), null),
+      K('DS-26-000295', 'i1', 'iklh', 'comm', 'c11', 'active', dt(2025, 7, 21), null),
+      K('DS-26-000301', 'a1', 'act', 'acore', 'core', 'active', dt(2026, 8, 1), dt(2027, 1, 31)),
+      K('DS-26-000302', 'a2', 'act', 'comm', 'c11', 'active', dt(2023, 5, 14), null),
+      K('DS-26-000303', 'a3', 'act', 'comm', 'c11', 'inactive', dt(2024, 1, 9), null),
+      K('DS-26-000271', 'g31', 'g3', 'comm', 'c3', 'active', dt(2024, 9, 1), null),
+      K('DS-26-000272', 'g32', 'g3', 'comm', 'c3', 'active', dt(2025, 2, 17), null),
+      K('DS-26-000273', 'g33', 'g3', 'comm', 'c3', 'active', dt(2025, 6, 30), null),
+      K('DS-26-000274', 'g34', 'g3', 'comm', 'c3', 'active', dt(2026, 6, 10), dt(2027, 6, 10), { temp: true }),
+      K('DS-26-000270', 'g35', 'g3', 'comm', 'c3', 'cancelled', dt(2026, 3, 1), null, { closed: dt(2026, 8, 31) }),
+      K('DS-26-000281', 'n1', 'g9', 'comm', 'c9', 'active', dt(2025, 1, 12), null),
+      K('DS-26-000282', 'n2', 'g9', 'comm', 'c9', 'active', dt(2026, 3, 15), null),
+      K('DS-26-000283', 'n3', 'g9', 'comm', 'c9', 'inactive', dt(2024, 10, 5), null),
+      K('DS-26-000251', 'r1', 'rab', 'comm', 'c3', 'active', dt(2025, 7, 7), null),
+      K('DS-26-000252', 'r2', 'rab', 'comm', 'c3', 'inactive', dt(2024, 3, 3), null),
+      K('DS-26-000253', 'r3', 'rab', 'rab', 'rab', 'active', dt(2025, 2, 14), null),
+      K('DS-26-000255', 'r1', 'rab', 'rab', 'rab', 'active', dt(2025, 7, 7), null),
+      K('DS-26-000254', 'r4', 'rab', 'rab', 'rab', 'active', dt(2025, 10, 1), null),
+      K('DS-26-000250', 'r5', 'rab', 'rab', 'rab', 'cancelled', dt(2023, 5, 9), null, { closed: dt(2026, 8, 10) }),
+      K('DS-26-000284', 'n5', 'g9', 'comm', 'c9', 'active', dt(2026, 9, 1), dt(2027, 3, 1), { temp: true }),
+      K('DS-26-000316', 'v11', 'emp', 'comm', 'c11', 'active', dt(2026, 8, 10), dt(2027, 4, 30), { temp: true, sponsored: { name: 'Ramesh Kumar', badge: 'D-55120', rel: 'Family driver' } }),
+      K('DS-26-000304', 'a5', 'act', 'acore', 'core', 'active', dt(2026, 10, 15), dt(2027, 1, 31), { temp: true }),
+      K('DS-26-000280', 'n4', 'g9', 'comm', 'c9', 'cancelled', dt(2023, 2, 1), null, { closed: dt(2026, 7, 20) }),
+      K('DS-26-000290', 'f4', 'fem', 'comm', 'c9', 'cancelled', dt(2024, 5, 6), null, { closed: dt(2026, 9, 2) }),
+      K('DS-26-000294', 'i2', 'iklh', 'comm', 'c11', 'cancelled', dt(2024, 3, 10), null, { closed: dt(2026, 9, 28) }),
+      K('DS-26-000300', 'a4', 'act', 'comm', 'c11', 'cancelled', dt(2022, 4, 12), null, { closed: dt(2026, 6, 30) }),
+    ];
+    const H = (no, at, txt) => stickers.find((s) => s.no === no).hist.unshift({ at, txt });
+    H('DS-26-000312', dt(2026, 1, 10), 'Temporary driver set: Ramesh Kumar');
+    [['DS-26-000284', 'DSR-26-00384'], ['DS-26-000316', 'DSR-26-00379'], ['DS-26-000304', 'DSR-26-00398']].forEach(([no, rq]) => { const k = stickers.find((x) => x.no === no); k.hist = [{ at: k.start, txt: 'Temporary sticker issued after approval in AAE (' + rq + '), valid to ' + fmt(k.end) }]; });
+    H('DS-26-000314', dt(2026, 7, 2), 'Deactivated by holder');
+    stickers.find((s) => s.no === 'DS-26-000315').hist = [{ at: dt(2026, 10, 31), txt: 'Expired at the end of the temporary period' }, { at: dt(2025, 10, 30), txt: 'Temporary sticker issued after approval in AAE' }];
+    H('DS-26-000309', dt(2026, 9, 15), 'Cancelled by holder');
+    H('DS-26-000205', dt(2026, 2, 3), 'Deactivated by holder');
+    H('DS-26-000250', dt(2026, 8, 10), 'Cancelled by holder');
+    stickers.find((s) => s.no === 'DS-26-000274').hist = [{ at: dt(2026, 6, 10), txt: 'Temporary sticker issued after approval in AAE (DSR-26-00371)' }];
+    H('DS-26-000270', dt(2026, 8, 31), 'Cancelled by holder');
+    H('DS-26-000207', dt(2026, 2, 1), 'Sponsored helper: Joseph Mathew, valid to his ID expiry');
+    H('DS-26-000301', dt(2026, 8, 1), 'Issued for the acting assignment, ends 31 Jan 2027');
+    H('DS-26-000282', dt(2026, 3, 15), 'Absher permission checked');
+    const requests = [
+      { id: 'DSR-26-00412', vehId: 'v10', holder: 'emp', bucket: 'comm', typeId: 'c11', kind: 'temporary', approver: DIRECTOR, status: 'pending', created: dt(2026, 11, 2), just: 'Fourth family vehicle, used for the school run.', decided: null, reason: '' },
+      { id: 'DSR-26-00350', vehId: 'v4', holder: 'emp', bucket: 'comm', typeId: 'c11', kind: 'new', status: 'issued', created: dt(2026, 5, 18), decided: dt(2026, 5, 18), stkNo: 'DS-26-000313' },
+      { id: 'DSR-26-00417', vehId: 'e7', holder: 'exe', bucket: 'corep', typeId: 'core', kind: 'temporary', approver: ISOVP, status: 'pending', created: dt(2026, 11, 3), just: 'Third private car, used for official visitors to the Dhahran core area.', decided: null, reason: '' },
+      { id: 'DSR-26-00360', vehId: 'e6', holder: 'exe', bucket: 'comm', typeId: 'c11', kind: 'new', status: 'issued', created: dt(2026, 6, 20), decided: dt(2026, 6, 20), stkNo: 'DS-26-000206' },
+      { id: 'DSR-26-00371', vehId: 'g34', holder: 'g3', bucket: 'comm', typeId: 'c3', kind: 'temporary', approver: DIRECTOR, status: 'approved', created: dt(2026, 6, 8), decided: dt(2026, 6, 10), just: 'Fourth car for the family while the eldest son commutes to college.', stkNo: 'DS-26-000274' },
+      { id: 'DSR-26-00405', vehId: 'n4', holder: 'g9', bucket: 'comm', typeId: 'c9', kind: 'temporary', approver: DIRECTOR, status: 'rejected', created: dt(2026, 10, 20), decided: dt(2026, 10, 22), just: 'Third vehicle for weekend use.', reason: 'Justification does not support a vehicle beyond entitlement.' },
+      { id: 'DSR-26-00384', vehId: 'n5', holder: 'g9', bucket: 'comm', typeId: 'c9', kind: 'temporary', approver: DIRECTOR, status: 'approved', created: dt(2026, 8, 30), decided: dt(2026, 9, 1), just: 'Rental while my own car is in the workshop for three months.', stkNo: 'DS-26-000284' },
+      { id: 'DSR-26-00379', vehId: 'v11', holder: 'emp', bucket: 'comm', typeId: 'c11', kind: 'temporary', approver: DIRECTOR, status: 'approved', created: dt(2026, 8, 7), decided: dt(2026, 8, 10), just: 'Family driver’s own pickup for school runs while all three slots are in use.', stkNo: 'DS-26-000316', helper: { name: 'Ramesh Kumar', badge: 'D-55120', rel: 'Family driver' } },
+      { id: 'DSR-26-00398', vehId: 'a5', holder: 'act', bucket: 'acore', typeId: 'core', kind: 'temporary', approver: ISOVP, status: 'approved', created: dt(2026, 10, 12), decided: dt(2026, 10, 15), just: 'Second pool car for visiting delegations during the acting period.', stkNo: 'DS-26-000304' },
+      { id: 'DSR-26-00338', vehId: 'r4', holder: 'rab', bucket: 'rab', typeId: 'rab', kind: 'new', status: 'issued', created: dt(2025, 10, 1), decided: dt(2025, 10, 1), stkNo: 'DS-26-000254' },
+    ];
+    return { today: START, persona: 'emp', entry: 'api', people, vehicles, stickers, requests, seqR: 420, seqS: 330, seqV: 1,
+      ui: { tab: 'private', filter: 'all', tfilter: 'all', q: '', menu: false, pop: false, modal: null, wiz: null, done: null } };
+  }
+  let S = seed();
+
+  /* ================= domain ================= */
+  const me = () => S.people[S.persona];
+  const bucket = (key, p) => (p || me()).ent.find((b) => b.key === key);
+  const veh = (id) => S.vehicles.find((v) => v.id === id);
+  const myVehicles = () => S.vehicles.filter((v) => v.holder === S.persona);
+  const stkOf = (vehId) => S.stickers.filter((s) => s.vehId === vehId && s.holder === S.persona).sort((a, b) => b.start - a.start);
+  const reqOf = (vehId) => S.requests.filter((r) => r.vehId === vehId && r.holder === S.persona).sort((a, b) => b.created - a.created);
+  const myReqs = () => S.requests.filter((r) => r.holder === S.persona).sort((a, b) => b.created - a.created);
+  const live = (s) => s.status === 'active' || s.status === 'inactive';
+  /* active count per entitlement bucket; a deactivation counts until it takes effect tomorrow */
+  const used = (key) => S.stickers.filter((s) => s.holder === S.persona && !s.temp && s.bucket === key && s.status === 'active').length;
+  const left = (key) => { const b = bucket(key); return !b || b.max == null ? Infinity : Math.max(0, b.max - used(key)); };
+  const tempActive = () => S.stickers.filter((s) => s.holder === S.persona && s.temp && s.status === 'active').length;
+  const tomorrow = () => addDays(S.today, 1);
+  const vName = (v) => v.make + ' ' + v.model + ' ' + v.year;
+  const pText = (v) => (isGcc(v.plate) ? v.plate.c + ' · ' + v.plate.l + ' ' + v.plate.d : v.plate.d + ' ' + v.plate.l);
+  const pLabel = (v) => (isGcc(v.plate) ? v.plate.c + ' ' + v.plate.l + ' ' + v.plate.d : v.plate.d + ' - ' + v.plate.l);
+  const ownerText = (v) => OWNER[v.owner] + (v.rel ? ' · ' + v.rel : '') + (v.owner === 'dep' && v.dependent ? ' · ' + v.dependent : '');
+  const famOf = (x) => TYPES[x.typeId].fam;
+  const typeLabel = (x) => (x.temp || x.kind === 'temporary' ? 'Temporary · ' : '') + TYPES[x.typeId].name + (x.bucket === 'corec' ? ' · company car' : '');
+  const FAM_ORDER = ['core', 'rab', 'comm'];
+  /* every sticker type on a vehicle: live stickers and open requests; a type with neither shows its latest ended record */
+  function records(v) {
+    const ss = stkOf(v.id), rr = reqOf(v.id), out = [];
+    FAM_ORDER.forEach((f) => {
+      const fs = ss.filter((s) => famOf(s) === f), fr = rr.filter((r) => famOf(r) === f);
+      const lv = fs.filter(live).sort((a, b) => (a.status === 'active' ? 0 : 1) - (b.status === 'active' ? 0 : 1));
+      const pend = fr.filter((r) => r.status === 'pending');
+      lv.forEach((s) => out.push({ s, x: s, fam: f, temp: s.temp, ended: false }));
+      pend.forEach((r) => out.push({ r, x: r, fam: f, temp: r.kind === 'temporary', ended: false }));
+      if (!lv.length && !pend.length) {
+        const lastS = fs[0], lastR = fr.find((r) => r.status === 'rejected' || r.status === 'withdrawn');
+        const sD = lastS ? (lastS.closed || lastS.end || lastS.start) : null, rD = lastR ? (lastR.decided || lastR.created) : null;
+        if (lastR && (!lastS || rD > sD)) out.push({ r: lastR, x: lastR, fam: f, temp: lastR.kind === 'temporary', ended: true });
+        else if (lastS) out.push({ s: lastS, x: lastS, fam: f, temp: lastS.temp, ended: true });
+      }
+    });
+    return out;
+  }
+  /* what a card shows: the open records, or the most recent ended one */
+  function display(v) {
+    const all = records(v), open = all.filter((i) => !i.ended);
+    if (open.length) return open;
+    const d = (i) => (i.s ? i.s.closed || i.s.end || i.s.start : i.r.decided || i.r.created);
+    return all.sort((a, b) => d(b) - d(a)).slice(0, 1);
+  }
+  /* can this vehicle take a sticker of this family? no live sticker and no open request of the same type */
+  const freeFor = (v, fam) => !records(v).some((i) => i.fam === fam && !i.ended);
+  /* sticker types that can still be added to a vehicle */
+  function addable(v) {
+    const p = me(); if (v.owner === 'helper') return [];
+    return p.ent.filter((b) => freeFor(v, TYPES[b.typeId].fam) && b.owners.indexOf(v.owner) > -1)
+      .filter((b, i, a) => a.findIndex((x) => TYPES[x.typeId].fam === TYPES[b.typeId].fam) === i);
+  }
+  function status(c) {
+    if (c.s && live(c.s)) {
+      const s = c.s;
+      if (s.pendingCancel) return ['Cancelled from ' + fmt(s.pendingCancel), 'p-red'];
+      if (s.pendingOff) return ['Active until tonight', 'p-gold'];
+      return s.status === 'active' ? ['Active', 'p-green'] : ['Inactive', 'p-grey'];
+    }
+    if (c.r && c.r.status === 'pending') return ['Pending approval', 'p-gold'];
+    if (c.r && c.r.status === 'rejected') return ['Rejected', 'p-red'];
+    if (c.r && c.r.status === 'withdrawn') return ['Withdrawn', 'p-grey'];
+    if (c.s) return c.s.status === 'expired' ? ['Expired', 'p-red'] : ['Cancelled', 'p-red'];
+    return ['No sticker', 'p-grey'];
+  }
+  const pill = (st) => '<span class="pill ' + st[1] + '"><i></i>' + esc(st[0]) + '</span>';
+  const soon = (s) => s && s.end && s.status === 'active' && (s.end - S.today) / 864e5 <= 30;
+  const driverName = (s) => (s && s.driver ? s.driver.name : s && s.sponsored ? s.sponsored.name : me().name);
+  const log = (s, txt) => s.hist.unshift({ at: S.today, txt });
+  /* rented Core Area and Ar-Rabiyah vehicles are permanent (SRS AOD-15, AOD-19); only rented Community has an end date */
+  /* SOW To-Be validity. Within entitlement: permanent whatever the ownership (registration check deferred, FDD might-have).
+     Beyond entitlement: the period ISO configures (1 year here). Sponsored helper: to the helper's ID expiry. Acting VP: end of assignment. */
+  /* Temporary (beyond entitlement) end date. SOW: valid for a period ISO controls through configuration tables.
+     End = the earliest of: approval date + ISO beyond-entitlement period for the entitlement (ZDS_C_ENTL, 1 year here);
+     the ownership cap from the duration table (SRS AOD: rented 6 months, Absher / family / family company / husband 1 year);
+     the sponsored helper's ID expiry (AOD-2); the end of the acting assignment (AOD-14). */
+  const ISO_TEMP_MONTHS = { comm: 12, corep: 12, corec: 12, acore: 12 };
+  const OWNER_CAP = { rent: [6, 'Rented vehicle: up to 6 months (AOD-5)'], absher: [12, 'Absher permission: up to 1 year (AOD-6)'], family: [12, 'Family member’s vehicle: up to 1 year (AOD-8)'],
+    famco: [12, 'Family company vehicle: up to 1 year (AOD-7, AOD-11)'], husband: [12, 'Husband’s vehicle: up to 1 year (AOD-9)'] };
+  function tempEnd(b, owner, helper, from) {
+    const f = from || S.today, m = ISO_TEMP_MONTHS[b.key] || 12;
+    const c = [{ d: addMonths(f, m), why: 'ISO period for a temporary sticker: ' + (m === 12 ? '1 year' : m + ' months') + ' from approval' }];
+    if (OWNER_CAP[owner]) c.push({ d: addMonths(f, OWNER_CAP[owner][0]), why: OWNER_CAP[owner][1] });
+    if (helper && helper.idExpiry) c.push({ d: helper.idExpiry, why: 'Sponsored helper’s ID expiry' });
+    if (b.until) c.push({ d: b.until, why: 'End of the acting assignment' });
+    return c.reduce((a, x) => (x.d < a.d ? x : a));
+  }
+  const helperOf = (x, person) => (x && (x.helper || x.sponsored) ? ((person || me()).helpers || []).find((h) => h.name === (x.helper || x.sponsored).name) || null : null);
+  /* the rule that set a temporary sticker's end date, worked out again from its start */
+  function tempWhy(s) { const P = S.people[s.holder], b = bucket(s.bucket, P), v = veh(s.vehId); return b ? tempEnd(b, v.owner, helperOf(s, P), s.start).why : ''; }
+  function validity(b, owner, temp, helper) {
+    if (temp) return tempEnd(b, owner, helper).d;
+    if (helper) return helper.idExpiry;
+    if (b.until) return b.until;
+    return null;
+  }
+  function endText(s, v) {
+    if (!s) return '—';
+    if (s.end) return fmt(s.end);
+    if (v.owner === 'company') return 'While assigned';
+    return 'Permanent';
+  }
+  /* SOW To-Be: Community stickers (incl. Core Area and Ar-Rabiyah) are permanent within entitlement; a temporary sticker is not renewed */
+  const renewable = () => false;
+  const newStkNo = () => 'DS-26-000' + (S.seqS++);
+  const newReqNo = () => 'DSR-26-00' + (S.seqR++);
+
+  function nextDay() {
+    S.today = addDays(S.today, 1); let n = 0;
+    S.stickers.forEach((s) => {
+      if (s.pendingCancel && s.pendingCancel <= S.today) { s.status = 'cancelled'; s.closed = S.today; s.pendingCancel = null; s.pendingOff = null; log(s, 'Cancelled (effective today)'); n++; return; }
+      if (s.pendingOff && s.pendingOff <= S.today) { s.status = 'inactive'; s.pendingOff = null; log(s, 'Inactive (effective today); slot freed'); n++; }
+      if (s.status === 'active' && s.end && s.end < S.today) { s.status = 'expired'; s.closed = S.today; log(s, 'Expired at end of validity'); n++; }
+    });
+    return n;
+  }
+  function aaeDecide(approve) {
+    const r = S.requests.find((x) => x.holder === S.persona && x.status === 'pending'); if (!r) return null;
+    r.decided = S.today;
+    if (!approve) { r.status = 'rejected'; r.reason = 'Justification does not support a vehicle beyond entitlement.'; return r; }
+    const v = veh(r.vehId), b = bucket(r.bucket);
+    /* SAP re-checks the vehicle and issues the temporary sticker beyond entitlement */
+    const s = { no: newStkNo(), vehId: v.id, holder: r.holder, bucket: r.bucket, typeId: r.typeId, temp: true, status: 'active', start: S.today, end: tempEnd(b, v.owner, helperOf(r, S.people[r.holder])).d, ver: 1,
+      pendingOff: null, pendingCancel: null, driver: null, doc: r.doc || null, hist: [{ at: S.today, txt: 'Temporary sticker issued after approval in AAE (' + r.id + '), valid to ' + fmt(tempEnd(b, v.owner, helperOf(r, S.people[r.holder])).d) }] };
+    if (r.helper) s.sponsored = r.helper;
+    S.stickers.push(s); r.status = 'approved'; r.stkNo = s.no; return r;
+  }
+
+  /* ================= router ================= */
+  function route() {
+    const m = (location.hash || '').replace(/^#\/?/, '').split(/[-/]/);
+    if (m[0] === 'vehicle' && m[1] && veh(m[1]) && veh(m[1]).holder === S.persona) return { page: 'vehicle', id: m[1] };
+    if (m[0] === 'new' && S.ui.wiz) return { page: 'new', step: Math.min(+m[1] || 1, S.ui.wiz.max) };
+    if (m[0] === 'done' && S.ui.done) return { page: 'done' };
+    return { page: 'list', tab: ['private', 'temporary', 'requests'].indexOf(m[1]) > -1 ? m[1] : S.ui.tab };
+  }
+  const go = (h) => { S.ui.menu = false; S.ui.pop = false; if (location.hash !== '#' + h) location.hash = '#' + h; else render(); };
+  window.addEventListener('hashchange', () => { S.ui.modal = null; render(); });
+
+  /* ================= components ================= */
+  function plate(p, cls) {
+    if (isGcc(p)) return '<span class="plate gcc ' + (cls || '') + '" role="img" aria-label="' + esc(GCC[p.c] + ' plate ' + (p.l || '') + ' ' + (p.d || '')) + '"><small>' + esc(GCC[p.c]) + '</small><b>' + esc(p.l || '··') + '<i></i>' + esc(p.d || '·····') + '</b></span>';
+    const d = (p.d || '').split(''), l = (p.l || '').toUpperCase().split('');
+    const cells = (arr, f, n) => (arr.length ? arr.map(f) : Array(n).fill('·')).map((c) => '<i>' + esc(c) + '</i>').join('');
+    return '<span class="plate ' + (cls || '') + '" role="img" aria-label="Plate ' + esc((d.join('') + ' ' + l.join('')).trim() || 'not entered') + '">' +
+      '<span class="plate-n"><span class="ar" lang="ar">' + cells(d, (c) => AR_DIGIT[+c] || c, 4) + '</span><span>' + cells(d, (c) => c, 4) + '</span></span><span class="plate-k"></span>' +
+      '<span class="plate-l"><span class="ar" lang="ar">' + cells(l, (c) => AR_LETTER[c] || c, 3) + '</span><span>' + cells(l, (c) => c, 3) + '</span></span></span>';
+  }
+  function presenter() {
+    const pend = S.requests.some((r) => r.holder === S.persona && r.status === 'pending');
+    const lab = { g3: 'Employee · SC 3-8 · Saad Al-Dosari', g9: 'Employee · SC 9-10 · Yousef Al-Otaibi', emp: 'Employee · SC 11+ · sponsor · Faisal Al-Harbi', fem: 'Female employee · SC 9-10 · Noor Al-Qahtani',
+      iklh: 'IKLH expatriate female · SC 11+ · Ayesha Rahman', exe: 'Executive · Core Area · sponsor · Abdulaziz Al-Shammari', act: 'Acting VP · Core Area · Hamad Al-Rashid', rab: 'Employee · SC 3-8 · Ar-Rabiyah resident · Mohammed Al-Shehri' };
+    return '<div class="pres" role="region" aria-label="Presenter controls, not part of the product"><b>PROTOTYPE · SAMPLE DATA</b>' +
+      '<label>view as <select data-change="persona" aria-label="View as">' + Object.keys(S.people).map((k) => '<option value="' + k + '"' + (k === S.persona ? ' selected' : '') + '>' + esc(lab[k]) + '</option>').join('') + '</select></label>' +
+      '<label>ISO vehicle entry <select data-change="entry" aria-label="ISO setting: vehicle entry"><option value="api"' + (S.entry === 'api' ? ' selected' : '') + '>Government API</option><option value="manual"' + (S.entry === 'manual' ? ' selected' : '') + '>Manual entry</option></select></label>' +
+      '<span class="grp">AAE <button data-act="aae" data-arg="1"' + (pend ? '' : ' disabled') + ' title="Play the approver decision returned by AAE">Approve</button><button data-act="aae" data-arg="0"' + (pend ? '' : ' disabled') + '>Reject</button></span>' +
+      '<span class="grp sp">demo date ' + fmt(S.today) + ' <button data-act="nextDay">Next day ›</button><button data-act="reset" aria-label="Reset demo data">Reset</button></span></div>';
+  }
+  const entText = (b) => b.max == null ? 'Unlimited' : used(b.key) + ' of ' + b.max;
+  function header() {
+    const p = me();
+    return '<header class="top"><div class="top-in"><div class="me"><span class="avatar" aria-hidden="true">' + esc(p.initials) + '</span><div>' +
+      '<div class="me-n"><b>' + esc(p.name) + '</b><span class="utype">' + esc(p.type) + '</span></div>' +
+      '<div class="me-b">Badge no: ' + esc(p.badge) + '<button data-act="pop" aria-label="Profile details" aria-expanded="' + !!S.ui.pop + '">' + I('chevd') + '</button></div></div>' +
+      (S.ui.pop ? '<div class="pop" role="dialog" aria-label="Profile"><dl><dt>Applicant types</dt><dd>' + esc(p.classes.join(', ')) + '</dd><dt>Organization</dt><dd>' + esc(p.org) + '</dd><dt>Grade</dt><dd>' + esc(p.grade) + '</dd><dt>Marital status</dt><dd>' + esc(p.marital) + '</dd><dt>Residence</dt><dd>' + esc(p.residence) + '</dd>' +
+        p.ent.map((b) => '<dt>' + esc(b.label) + '</dt><dd>' + esc(TYPES[b.typeId].name) + ' · max ' + (b.max == null ? 'unlimited' : b.max) + '</dd>').join('') + '</dl><p class="hint">' + I('info') + '<span>Classified at sign-in from AD, SAP HR and the person profile. One person can hold several applicant types.</span></p></div>' : '') +
+      '</div></div></header>';
+  }
+  const crumbs = (items) => '<nav class="crumbs" aria-label="Breadcrumb">' + items.map((x, i) => (i < items.length - 1 ? '<button data-act="' + x[1] + '"' + (x[2] ? ' data-arg="' + x[2] + '"' : '') + '>' + esc(x[0]) + '</button><span class="sep-i" aria-hidden="true">' + I('chev') + '</span>' : '<span>' + esc(x[0]) + '</span>')).join('') + '</nav>';
+
+  /* ================= list ================= */
+  function card(v) {
+    const items = display(v), keys = items.map((i) => iconKey(i.x)), ended = items.every((i) => i.ended);
+    const one = items.length === 1 ? items[0] : null, s = one && one.s;
+    const st = one ? status(one) : ['' + items.length + ' stickers', 'p-lav'];
+    const band = keys.length > 1 ? ';--band:linear-gradient(90deg,' + keys.map((k, i) => SCOLOR[k] + ' ' + (i * 100 / keys.length) + '% ' + ((i + 1) * 100 / keys.length) + '%').join(',') + ')' : '';
+    const exp = one ? (s ? endText(s, v) : one.r && one.r.status === 'pending' ? (one.r.kind === 'temporary' && bucket(one.r.bucket) ? 'Up to ' + fmt(tempEnd(bucket(one.r.bucket), v.owner, helperOf(one.r)).d) : 'After approval') : '—') : '';
+    const expCls = s && (soon(s) || s.status === 'expired') ? ' class="t-red"' : '';
+    const types = items.map((i) => typeLabel(i.x)).join(' + ');
+    return '<button class="vcard tinted' + (ended ? ' ended' : '') + '" style="' + tint(keys[0]) + band + '" data-act="open" data-arg="' + v.id + '" aria-label="' + esc(vName(v) + ', ' + pText(v) + ', ' + types + ', ' + st[0]) + '">' +
+      '<div class="vcard-h"><span class="icons">' + keys.map((k) => sIcon(k, items.length > 1 ? 'card multi' : 'card')).join('') + '</span>' + pill(st) + '</div>' +
+      '<div><h3>' + esc(v.model + ' ' + v.year) + '</h3><small>' + esc(v.make) + '</small></div>' +
+      '<div class="kv2"><div><small>Plate No</small><b>' + esc(pLabel(v)) + '</b></div><div><small>Sticker Type</small><b>' + esc(types || '—') + '</b></div>' +
+      (one ? '<div><small>Driver</small><b>' + esc(driverName(s)) + '</b></div><div><small>Expiry Date</small><b' + expCls + '>' + exp + '</b></div></div>'
+        : '</div><ul class="mrows">' + items.map((i) => '<li>' + sIcon(iconKey(i.x), 'xs') + '<span>' + esc(typeLabel(i.x)) + '</span>' + pill(status(i)) + '</li>').join('') + '</ul>') +
+      (s && s.sponsored ? '<div class="end spn">Sponsored helper · counts against your entitlement</div>' : '') +
+      (s && s.pendingOff ? '<div class="end">Slot frees ' + fmt(s.pendingOff) + '</div>' : s && soon(s) ? '<div class="end">Ends ' + fmt(s.end) + '</div>' : '') + '</button>';
+  }
+  const F = { all: () => true, active: (v) => display(v).some((i) => i.s && i.s.status === 'active'), inactive: (v) => display(v).some((i) => i.s && i.s.status === 'inactive'), ended: (v) => display(v).every((i) => i.ended) };
+  function matches(v) {
+    const q = S.ui.q.trim().toLowerCase(); if (!q) return true;
+    return (pText(v) + ' ' + v.plate.d + v.plate.l + ' ' + vName(v) + ' ' + display(v).map((i) => driverName(i.s) + ' ' + typeLabel(i.x)).join(' ')).toLowerCase().indexOf(q) > -1;
+  }
+  function countChips() {
+    const p = me(); const tA = tempActive();
+    return p.ent.map((b) => { const full = b.max != null && used(b.key) >= b.max;
+      return '<span class="count tc ' + (full ? 'full' : '') + '" style="' + tint(TYPE_ICON[b.typeId]) + '">' + sIcon(TYPE_ICON[b.typeId], 'xs') + esc(b.label) + ': ' + (b.max == null ? used(b.key) + ' <small>· unlimited</small>' : used(b.key) + '/' + b.max) + '</span>'; }).join('') +
+      (tA ? '<span class="count tc" style="' + tint(p.ent[0].typeId === 'c11' ? 'temp_green' : 'temp_blue') + '">' + sIcon(p.ent[0].typeId === 'c11' ? 'temp_green' : 'temp_blue', 'xs') + 'Temporary: ' + tA + '</span>' : '');
+  }
+  function listPage(rt) {
+    const p = me(); S.ui.tab = rt.tab;
+    const all = myVehicles(); const priv = all.filter((v) => display(v).some((i) => !i.temp)), temp = all.filter((v) => display(v).some((i) => i.temp));
+    const fams = [...new Set(p.ent.map((b) => TYPES[b.typeId].fam))];
+    const pendN = myReqs().filter((r) => r.status === 'pending').length;
+    let body;
+    if (rt.tab === 'requests') body = requestsTable();
+    else {
+      const src = (rt.tab === 'temporary' ? temp : priv).filter(matches);
+      const tf = (v) => S.ui.tfilter === 'all' || display(v).some((i) => i.fam === S.ui.tfilter);
+      const shown = rt.tab === 'private' ? src.filter((v) => F[S.ui.filter](v) && tf(v)) : src;
+      body = '<div class="counts">' + countChips() + '</div><div class="bar">' +
+        (rt.tab === 'private' ? (fams.length > 1 ? '<div class="chips" role="group" aria-label="Filter by sticker type">' + [['all', 'All types']].concat(fams.map((f) => [f, FAM[f]])).map((x) => '<button data-act="tfilter" data-arg="' + x[0] + '" aria-pressed="' + (S.ui.tfilter === x[0]) + '">' + x[1] + '</button>').join('') + '</div><span class="chipsep" aria-hidden="true"></span>' : '') +
+          '<div class="chips" role="group" aria-label="Filter by status">' + [['all', 'All'], ['active', 'Active'], ['inactive', 'Inactive'], ['ended', 'Ended']].map((x) => '<button data-act="filter" data-arg="' + x[0] + '" aria-pressed="' + (S.ui.filter === x[0]) + '">' + x[1] + '</button>').join('') + '</div>' : '') +
+        (S.ui.q ? '<span class="q">Search: “' + esc(S.ui.q) + '” · <button class="lnk" data-act="clearQ">Clear</button></span>' : '') + '</div>' +
+        '<div class="grid">' + (shown.length ? shown.map(card).join('') :
+          '<div class="empty">' + I(rt.tab === 'temporary' ? 'clock' : 'car') + '<b>' + (rt.tab === 'temporary' ? 'No digital temporary stickers' : 'No vehicles in this view') + '</b><span>' +
+          (rt.tab === 'temporary' ? 'A temporary sticker is raised when you need one more active vehicle than your entitlement allows. It needs approval in AAE and lasts up to 1 year: 6 months for a rented car, and never past a sponsored helper’s ID expiry or the end of an acting assignment. It cannot be renewed.' : 'Change the filter or search.') + '</span></div>') + '</div>';
+    }
+    const canTemp = p.ent.some((b) => b.beyond);
+    return crumbs([['Dashboard', 'soon', 'Dashboard'], ['Car Sticker']]) +
+      '<div class="ph"><div class="ph-t"><button data-act="soon" data-arg="Dashboard" aria-label="Back to dashboard">' + I('back') + '</button><div><h1>Car Sticker</h1><p>In here, you can view your vehicle stickers and request a fully digital sticker for one or multiple vehicles.</p>' +
+      '<div class="tabs" role="tablist">' + [['private', 'car', 'Private Sticker', 0], ['temporary', 'clock', 'Digital Temporary Sticker', 0], ['requests', 'inbox', 'My Requests', pendN]].map((t) => '<button role="tab" data-act="tab" data-arg="' + t[0] + '" aria-selected="' + (rt.tab === t[0]) + '">' + I(t[1]) + t[2] + (t[3] ? '<em>' + t[3] + '</em>' : '') + '</button>').join('') + '</div></div></div>' +
+      '<div class="newwrap"><button class="btn btn-p" data-act="menu" aria-expanded="' + !!S.ui.menu + '" aria-haspopup="menu">' + I('plus') + 'New Car Sticker</button>' +
+      (S.ui.menu ? '<div class="menu" role="menu"><button role="menuitem" data-act="startNew">' + I('car') + '<span>New Car Sticker<small>' + esc(p.ent.map((b) => TYPES[b.typeId].name).filter((x, i, a) => a.indexOf(x) === i).join(' · ')) + ' · within entitlement</small></span>' + I('chev') + '</button>' +
+        (canTemp ? '<button role="menuitem" data-act="startTemp">' + I('clock') + '<span>Digital Temporary Sticker<small>Beyond entitlement · approval in AAE · up to 1 year</small></span>' + I('chev') + '</button>' : '') + '</div>' : '') + '</div></div>' + body;
+  }
+  function requestsTable() {
+    const rs = myReqs();
+    if (!rs.length) return '<div class="grid"><div class="empty">' + I('inbox') + '<b>No requests yet</b></div></div>';
+    const lab = { pending: ['Pending approval', 'p-gold'], approved: ['Approved', 'p-green'], issued: ['Completed', 'p-green'], rejected: ['Rejected', 'p-red'], withdrawn: ['Withdrawn', 'p-grey'] };
+    return '<div class="tbl-wrap"><table class="table"><thead><tr><th>Request</th><th>Vehicle</th><th>Type</th><th>Submitted</th><th>Status</th><th>Outcome</th><th><span class="vh">Action</span></th></tr></thead><tbody>' +
+      rs.map((r) => { const v = veh(r.vehId); return '<tr><td><b>' + r.id + '</b></td><td><b>' + esc(vName(v)) + '</b><small>' + esc(pText(v)) + (r.helper ? ' · for ' + esc(r.helper.name) : '') + '</small></td><td><span class="tcell">' + sIcon(iconKey(r), 'xs') + '<span>' + (r.kind === 'renew' ? 'Renewal · ' : r.kind === 'temporary' ? '' : 'New · ') + esc(typeLabel(r)) + '</span></span></td>' +
+        '<td>' + fmt(r.created) + '</td><td>' + pill(lab[r.status]) + '</td><td><small>' + (r.status === 'pending' ? 'In AAE with ' + esc(r.approver) : r.stkNo ? 'Sticker ' + r.stkNo : r.status === 'rejected' ? 'No sticker issued' : 'Closed ' + fmt(r.decided)) + '</small></td>' +
+        '<td style="text-align:right;white-space:nowrap"><button class="lnk" data-act="viewReq" data-arg="' + r.id + '">View</button>' + (r.status === 'pending' ? ' · <button class="lnk" data-act="askWithdraw" data-arg="' + r.id + '">Withdraw</button>' : '') + '</td></tr>'; }).join('') + '</tbody></table></div>';
+  }
+  function timeline(r) {
+    const rows = ['<li class="ok"><i>' + I('check') + '</i><div><b>Submitted</b><span>' + fmt(r.created) + ' · Web · ' + esc(S.people[r.holder].name) + '</span></div></li>',
+      '<li class="ok"><i>' + I('check') + '</i><div><b>Vehicle and entitlement checked</b><span>' + fmt(r.created) + ' · re-run by SAP at submit</span></div></li>'];
+    if (r.kind === 'temporary') {
+      const st = r.status === 'pending' ? 'now' : r.status === 'approved' ? 'ok' : r.status === 'rejected' ? 'bad' : '';
+      rows.push('<li class="' + st + '"><i>' + (st === 'ok' ? I('check') : st === 'bad' ? I('x') : '') + '</i><div><b>' + esc(r.approver) + ' <span class="chip-x">AAE · external system</span></b><span>' +
+        (r.status === 'pending' ? 'Waiting for decision · approvers act in AAE; this page shows the status only' : r.status === 'approved' ? 'Approved ' + fmt(r.decided) : r.status === 'rejected' ? 'Rejected ' + fmt(r.decided) + ' · ' + esc(r.reason) : 'Withdrawn by you ' + fmt(r.decided) + ' before the decision') + '</span></div></li>');
+    }
+    const issued = r.stkNo; const end = r.status === 'rejected' || r.status === 'withdrawn';
+    rows.push('<li class="' + (issued ? 'ok' : end ? 'bad' : '') + '"><i>' + (issued ? I('check') : end ? I('x') : '') + '</i><div><b>' + (end ? 'No sticker issued' : 'Sticker issued') + '</b><span>' + (issued ? r.stkNo + ' · sent to the gates' : end ? 'You can raise a new request' : 'Only after the final approval') + '</span></div></li>');
+    return '<ol class="tl">' + rows.join('') + '</ol>' + (r.just ? '<p class="hint">' + I('doc') + '<span><b>Justification:</b> ' + esc(r.just) + '</span></p>' : '');
+  }
+
+  /* ================= vehicle detail ================= */
+  function placesHTML(typeId) {
+    const yes = [], cond = [], no = [];
+    PLACES.forEach((p) => { const x = p[1][typeId]; if (x === 1) yes.push(p[0]); else if (x) cond.push([p[0], x]); else no.push(p[0]); });
+    const ul = (a) => (a.length ? '<ul>' + a.join('') + '</ul>' : '<p class="none">None</p>');
+    return '<div class="places"><div><h3>Access area</h3>' + ul(yes.map((x) => '<li>' + x + '</li>')) + '</div>' +
+      '<div><h3>With conditions</h3>' + ul(cond.map((x) => '<li>' + x[0] + '<small>' + x[1] + '</small></li>')) + '</div>' +
+      '<div class="no"><h3>Not included</h3>' + ul(no.map((x) => '<li>' + x + '</li>')) + '</div></div>';
+  }
+  function stickerPanel(it, v) {
+    const p = me();
+    if (!it.s) {
+      const r = it.r, ik = iconKey(r);
+      return '<section class="panel tinted spanel' + (it.ended ? ' ended' : '') + '" style="' + tint(ik) + '"><div class="sp-h">' + sIcon(ik, 'md') + '<div class="sp-t"><b>' + esc(typeLabel(r)) + ' Sticker</b><small>Request ' + r.id + (r.helper ? ' · for ' + esc(r.helper.name) : '') + '</small></div>' + pill(status({ r })) + '</div>' +
+        (r.kind === 'temporary' && r.status === 'pending' && bucket(r.bucket) ? (() => { const t = tempEnd(bucket(r.bucket), v.owner, helperOf(r)); return '<div class="note n-lav">' + I('clock') + '<div><b>Valid up to ' + fmt(t.d) + ' if approved today</b>' + esc(t.why) + '. The end date is set on the approval date and the sticker cannot be renewed.</div></div>'; })() : '') + timeline(r) +
+        '<div class="sactions">' + (r.status === 'pending' ? '<button class="btn btn-o btn-s" data-act="askWithdraw" data-arg="' + r.id + '">' + I('xc') + 'Withdraw request</button>' : '<button class="btn btn-p btn-s" data-act="again" data-arg="' + v.id + '|' + r.bucket + '">' + I('plus') + 'Raise a new request</button>') + '</div></section>';
+    }
+    const s = it.s, b = bucket(s.bucket), ik = iconKey(s), isLive = live(s), st = status({ s });
+    const holder = s.sponsored ? esc(s.sponsored.name) + ' · Badge ' + esc(s.sponsored.badge) + ' · ' + esc(s.sponsored.rel) + ' · sponsored by ' + esc(p.name) : esc(p.name) + ' · Badge ' + esc(p.badge);
+    let h = '<section class="panel tinted spanel' + (isLive ? '' : ' ended') + '" style="' + tint(ik) + '" id="stk-' + s.no + '"><div class="sp-h">' + sIcon(ik, 'md') + '<div class="sp-t"><b>' + esc(typeLabel(s)) + ' Sticker</b><small>' + esc(s.no) + ' · v' + s.ver + '</small></div>' + pill(st) + '</div>' +
+      '<div class="kv3"><div><small>Holder</small><b class="sm">' + holder + '</b></div><div><small>Driver</small><b>' + esc(driverName(s)) + (s.driver ? ' <span class="pill p-lav" style="vertical-align:middle">Temporary</span>' : '') + '</b></div>' +
+      '<div><small>Expiry Date</small><b' + (s.status === 'expired' ? ' class="t-red"' : '') + '>' + endText(s, v) + (soon(s) ? '<em>Ends soon</em>' : '') + '</b></div></div>' +
+      '<hr class="sep">' + placesHTML(s.typeId);
+    if (isLive && !s.pendingCancel && b && b.toggle) {
+      const on = s.status === 'active' && !s.pendingOff;
+      h += '<hr class="sep"><div class="swrow"><button class="switch" role="switch" aria-checked="' + on + '" aria-label="Activate ' + esc(typeLabel(s)) + ' sticker" data-act="toggle" data-arg="' + s.no + '"' + (s.temp && s.status === 'active' ? ' disabled' : '') + '></button><b>Activate this sticker</b>' +
+        '<span class="muted">' + (s.temp ? 'A temporary sticker stays active until it ends or is cancelled.' : on ? 'Counts toward your ' + esc(b.label) + ' entitlement (' + entText(b) + ').' : s.pendingOff ? 'Switched off: active until the end of today.' : 'Switch on when a ' + esc(b.label) + ' slot is free (' + left(b.key) + ' of ' + b.max + ' free). No approval needed.') + '</span></div>';
+      if (s.pendingOff) h += '<div class="note n-gold">' + I('clock') + '<div><b>Active until the end of today</b>The slot frees on ' + fmt(s.pendingOff) + '. The gates already have the end date.</div><button data-act="undoOff" data-arg="' + s.no + '">Undo</button></div>';
+    }
+    if (isLive && b && !b.toggle && !s.pendingCancel) h += '<div class="note n-lav">' + I('home') + '<div><b>Ar-Rabiyah sticker · always active</b>Ar-Rabiyah entitlement is unlimited, so there is no count and no switch. You can add and cancel it; no approval is needed.</div></div>';
+    if (s.pendingCancel) h += '<div class="note n-red">' + I('xc') + '<div><b>Cancelled from ' + fmt(s.pendingCancel) + '</b>This sticker stays valid today; the slot frees tomorrow. Other stickers on this vehicle are not affected.</div></div>';
+    if (!isLive) h += '<div class="note n-grey">' + I(s.status === 'expired' ? 'clock' : 'xc') + '<div><b>' + (s.status === 'expired' ? 'Expired on ' + fmt(s.end) : 'Cancelled on ' + fmt(s.closed)) + '</b>Raise a new request to use this sticker type on the vehicle again.</div></div>';
+    const canDrv = isLive && !s.pendingCancel && b && b.toggle;
+    h += '<div class="sactions">' +
+      (canDrv ? '<button class="btn btn-o btn-s" data-act="driver" data-arg="' + s.no + '">' + I('user') + (s.driver ? 'Change driver' : 'Add temporary driver') + '</button>' : '') +
+      (isLive && !s.pendingCancel ? '<button class="btn btn-o btn-s danger" data-act="askCancel" data-arg="' + s.no + '">' + I('xc') + 'Cancel sticker</button>' : '') +
+      (!isLive ? '<button class="btn btn-p btn-s" data-act="again" data-arg="' + v.id + '|' + s.bucket + '">' + I('plus') + 'Request again</button>' : '') +
+      '<span class="sa-note">' + (s.temp ? 'Ends ' + fmt(s.end) + ' · ' + esc(tempWhy(s)) + ' · not renewed' : s.sponsored ? 'Ends with the helper’s ID' : b && b.until ? 'Ends with the acting assignment' : 'Permanent within entitlement') + '</span></div></section>';
+    return h;
+  }
+  function vehiclePage(id) {
+    const v = veh(id), p = me(), items = records(v), shown = items.filter((i) => !i.ended), ended = items.filter((i) => i.ended);
+    const list = myVehicles(); const ix = list.indexOf(v);
+    const backTab = shown.length && shown.every((i) => i.temp) ? 'temporary' : 'private';
+    const add = addable(v);
+    const vpanel = '<section class="panel vpanel"><div class="d-top"><div><small>Vehicle</small><b>' + esc(vName(v)) + '</b><div class="vtags">' +
+      (shown.length ? shown : ended).map((i) => '<span class="tag tc" style="' + tint(iconKey(i.x)) + '">' + sIcon(iconKey(i.x), 'xs') + esc(typeLabel(i.x)) + '</span>').join('') + '</div></div>' +
+      '<div class="r">' + plate(v.plate) + '</div></div>' +
+      '<div class="kv3"><div><small>Plate Origin</small><b>' + esc(v.origin) + '</b></div><div><small>Plate Number</small><b>' + esc(pLabel(v)) + '</b></div><div><small>Type</small><b>' + esc(v.type) + '</b></div>' +
+      '<div><small>Primary Color</small><b>' + esc(v.color) + '</b></div><div><small>Secondary Color</small><b>' + esc(v.color2 || '—') + '</b></div><div><small>Ownership Type</small><b>' + esc(ownerText(v)) + '</b></div>' +
+      '<div><small>Registered owner</small><b>' + esc(v.regOwner || 'Not returned') + '</b></div><div><small>Stickers on this vehicle</small><b>' + shown.length + ' active or pending</b></div></div></section>';
+    const qa = '<section class="panel qa"><h2>Add a sticker to this vehicle</h2>' + (add.length ? add.map((b) => {
+        const k = TYPE_ICON[b.typeId];
+        return '<button data-act="addTo" data-arg="' + v.id + '|' + b.key + '">' + sIcon(k, 'xs') + '<span>Add ' + esc(TYPES[b.typeId].name) + (b.owners[0] === 'company' ? ' · company car' : '') + '<small>' + (b.max == null ? 'Unlimited · no approval' : entText(b) + ' ' + esc(b.label) + ' active') + '</small></span>' + I('chev') + '</button>';
+      }).join('') : '<p class="hint" style="margin-top:6px">' + I('info') + '<span>' + (v.owner === 'helper' ? 'A sponsored helper’s vehicle carries only the Community sticker.' : 'This vehicle already has every sticker type you are eligible for, or its owner type allows no other.') + '</span></p>') +
+      '<p class="hint">' + I('info') + '<span>One vehicle can carry one sticker of each type. Each counts against its own entitlement and has its own actions.</span></p></section>';
+    const hs = stkOf(v.id).flatMap((s) => s.hist.map((h) => ({ at: h.at, txt: h.txt, k: iconKey(s), t: typeLabel(s) }))).sort((a, b) => b.at - a.at).slice(0, 8);
+    const hist = hs.length ? '<section class="panel"><h2>Sticker history</h2><ul class="hist2">' + hs.map((h) => '<li>' + sIcon(h.k, 'xs') + '<div>' + esc(h.txt) + '<small>' + esc(h.t) + ' · ' + fmt(h.at) + '</small></div></li>').join('') + '</ul><p class="hint">' + I('gate') + '<span>Every change is sent to iGATE, iGATE Lite and SAIF with its effective date.</span></p></section>' : '';
+    const title = (v.make + ' - ' + v.model + ' ' + v.year).toUpperCase();
+    return crumbs([['Dashboard', 'soon', 'Dashboard'], ['Car Sticker', 'tab', backTab], [title]]) +
+      '<div class="ph" style="border:0;padding-bottom:4px"><div class="ph-t"><button data-act="tab" data-arg="' + backTab + '" aria-label="Back to Car Sticker">' + I('back') + '</button><h1>' + esc(title) + '</h1></div></div>' +
+      '<div class="dgrid"><div class="dmain">' + vpanel + shown.map((i) => stickerPanel(i, v)).join('') + ended.map((i) => stickerPanel(i, v)).join('') + '</div><div class="side">' + qa + hist + '</div></div>' +
+      '<nav class="pager" aria-label="Vehicles"><button data-act="open" data-arg="' + (list[ix - 1] ? list[ix - 1].id : '') + '"' + (ix > 0 ? '' : ' disabled') + ' aria-label="Previous vehicle">' + I('chevl') + '</button><span>' + (ix + 1) + ' / ' + list.length + '</span><button data-act="open" data-arg="' + (list[ix + 1] ? list[ix + 1].id : '') + '"' + (ix < list.length - 1 ? '' : ' disabled') + ' aria-label="Next vehicle">' + I('chev') + '</button></nav>';
+  }
+  /* ================= new car sticker wizard ================= */
+  const STEPS = ['Sticker Details', 'Vehicle Details', 'Review'];
+  function defaultMode(b, wantTemp) {
+    if (!b.toggle) return 'activate'; /* Ar-Rabiyah: unlimited, issued active */
+    const full = left(b.key) < 1;
+    if (wantTemp && b.beyond && full) return 'temp';
+    return full ? 'inactive' : 'activate';
+  }
+  function freshWiz(o) {
+    const p = me();
+    let b = o.bucket ? bucket(o.bucket) : null;
+    if (!b && o.temp) b = p.ent.find((x) => x.beyond && left(x.key) < 1) || p.ent.find((x) => x.beyond);
+    if (!b) b = p.ent[0];
+    const w = { step: 1, max: 1, bucket: b.key, mode: defaultMode(b, o.temp), askedTemp: !!o.temp, just: '', forWho: '',
+      src: o.vehId ? 'saved' : 'new', vehId: o.vehId || null, origin: 'SA', plateType: 'Private', digits: '', l1: '', l2: '', l3: '', gcode: '', gnum: '',
+      busy: false, fetched: null, noRecord: false, manual: { make: '', model: '', year: '', type: '', color: '', color2: '' },
+      owner: null, ownerLocked: false, dependent: '', rel: '', famco: '', err: {}, errMsg: '' };
+    resetVehicle(w);
+    if (o.vehId) { const v = veh(o.vehId); w.vehId = v.id; w.owner = v.owner; w.dependent = v.dependent || ''; w.rel = v.rel || ''; w.ownerLocked = true;
+      const s = stkOf(v.id)[0]; if (s && s.sponsored) w.forWho = s.sponsored.name; }
+    return w;
+  }
+  const wB = (w) => bucket(w.bucket);
+  const wPlate = (w) => (w.src === 'saved' && w.vehId ? veh(w.vehId).plate : w.origin !== 'SA' ? { c: w.origin, d: w.gnum, l: (w.gcode || '').toUpperCase() } : { c: 'SA', d: w.digits, l: (w.l1 || '') + (w.l2 || '') + (w.l3 || '') });
+  const wHelper = (w) => (w.forWho ? (me().helpers || []).find((h) => h.name === w.forWho) : null);
+  const manualEntry = (w) => w.src === 'new' && (S.entry === 'manual' || w.origin !== 'SA');
+  const allowedOwners = (w) => (w.forWho ? ['helper'] : wB(w).owners);
+  function wVehicle(w) {
+    if (w.src === 'saved') return w.vehId ? veh(w.vehId) : null;
+    if (!manualEntry(w)) return w.fetched;
+    const m = w.manual; return m.make && m.model && m.year && m.type && m.color ? Object.assign({ regOwner: null }, m) : null;
+  }
+  function resetVehicle(w) {
+    w.vehId = null; w.fetched = null; w.noRecord = false; w.dependent = ''; w.rel = ''; w.famco = ''; w.errMsg = ''; w.err = {};
+    const only = allowedOwners(w);
+    if (only.length === 1 && (only[0] === 'company' || only[0] === 'helper' || only[0] === 'husband')) { w.owner = only[0]; w.ownerLocked = true; } else { w.owner = null; w.ownerLocked = false; }
+  }
+  /* the owner type is set when the registered owner is the holder, a dependent in HR, or Saudi Aramco for an assigned company car */
+  /* The owner type follows the registered owner: the holder, a dependent or family member in government/HR records, the IKLH holder's husband,
+     the sponsored helper, or Saudi Aramco for an assigned company car. Otherwise the user picks rented or Absher where allowed. */
+  function autoOwner(w) {
+    const p = me(), g = w.fetched, al = allowedOwners(w);
+    resetVehicle(w); w.fetched = g;
+    if (!g || !g.regOwner || w.ownerLocked) return;
+    const fam = (p.family || []).find((f) => f.name === g.regOwner);
+    if (g.regOwner === p.name && al.indexOf('own') > -1) { w.owner = 'own'; w.ownerLocked = true; }
+    else if (p.dependents.some((d) => d.name === g.regOwner) && al.indexOf('dep') > -1) { w.owner = 'dep'; w.dependent = g.regOwner; w.ownerLocked = true; }
+    else if (fam && fam.rel === 'Family company' && al.indexOf('famco') > -1) { w.owner = 'famco'; w.famco = g.regOwner; w.ownerLocked = true; }
+    else if (fam && al.indexOf('family') > -1) { w.owner = 'family'; w.rel = fam.rel; w.ownerLocked = true; }
+  }
+  const sel = (model, opts, val, ph, attrs) => '<select data-w="' + model + '"' + (attrs || '') + '>' + (ph ? '<option value="">' + ph + '</option>' : '') + opts.map((o) => { const v = Array.isArray(o) ? o[0] : o, t = Array.isArray(o) ? o[1] : o; return '<option value="' + esc(v) + '"' + (String(val) === String(v) ? ' selected' : '') + '>' + esc(t) + '</option>'; }).join('') + '</select>';
+  const fld = (label, inner, key, w, hint) => '<label class="fld' + (w.err[key] ? ' bad' : '') + '"><span>' + label + '</span>' + inner + (w.err[key] ? '<small class="t-red">' + esc(w.err[key]) + '</small>' : hint ? '<small>' + hint + '</small>' : '') + '</label>';
+  const radio = (on, act, arg, title, sub, dis) => '<button class="opt" role="radio" aria-checked="' + !!on + '"' + (dis ? ' disabled' : ' data-act="' + act + '" data-arg="' + esc(arg) + '"') + '><i></i><span><b>' + title + '</b><small>' + sub + '</small></span></button>';
+  const slotsBar = (b) => b.max == null ? '' : '<span class="slots" aria-hidden="true">' + Array.from({ length: b.max }, (_, i) => '<i class="' + (i < used(b.key) ? 'on' : '') + '"></i>').join('') + '</span>';
+
+  function wizStep1(w) {
+    const p = me(), b = wB(w), hp = wHelper(w);
+    const typeIds = p.ent.map((x) => x.typeId).filter((x, i, a) => a.indexOf(x) === i);
+    const forOpts = [['', 'Myself · ' + p.name]].concat((p.helpers || []).map((h) => [h.name, h.name + ' · ' + h.rel + ' (sponsored)']));
+    let h = '<section class="fcard"><h2>Sticker Details</h2><div class="fgrid">' +
+      fld('Requested for', sel('forWho', forOpts, w.forWho, '', (p.helpers || []).length ? '' : ' disabled'), 'forWho', w, (p.helpers || []).length ? 'You can sponsor your domestic helper or driver; the sticker counts against your Community entitlement' : 'Sponsoring a helper is for Executives, VPs and SC11-14 / SC15+ employees') +
+      fld('Sticker Type', sel('ftype', typeIds.map((t) => [t, TYPES[t].name]), b.typeId, '', hp ? ' disabled' : ''), 'ftype', w, hp ? 'A sponsored helper gets your Community sticker grade' : 'Only the stickers your applicant types allow: ' + esc(p.classes.join(', '))) + '</div>';
+    if (hp) h += '<p class="hint">' + I('user') + '<span><b>' + esc(hp.name) + '</b> · badge ' + esc(hp.badge) + ' · ID valid to ' + fmt(hp.idExpiry) + '. The sticker is for the helper’s own vehicle and ends with the helper’s ID.</span></p>';
+    const pk = iconKey({ typeId: b.typeId, temp: w.mode === 'temp' });
+    h += '<div class="stkprev" style="' + tint(pk) + '">' + sIcon(pk, 'md') + '<div><b>' + esc((w.mode === 'temp' ? 'Temporary · ' : '') + TYPES[b.typeId].name + (b.owners[0] === 'company' ? ' · company car' : '')) + '</b><small>The sticker this request issues</small></div></div>';
+    if (b.typeId === 'core' && (bucket('corep') || bucket('corec'))) {
+      h += '<h3>Core Area vehicle</h3><div class="opts list" role="radiogroup" aria-label="Core Area vehicle">' +
+        radio(w.bucket === 'corep', 'wbucket', 'corep', 'Private vehicle', 'Own or leased · ' + entText(bucket('corep')) + ' active') +
+        radio(w.bucket === 'corec', 'wbucket', 'corec', 'Aramco company car', 'Assigned to you as Executive or VP · ' + entText(bucket('corec')) + ' active') + '</div>';
+    }
+    if (b.until) h += '<p class="hint">' + I('building') + '<span>As acting VP you get a Core Area sticker for a Saudi Aramco vehicle only, until your assignment ends on ' + fmt(b.until) + '.</span></p>';
+    if (b.max == null) {
+      h += '<div class="ent">' + I('home') + '<div><b>Ar-Rabiyah · unlimited</b><br><small>No count and no approval. The sticker is issued active at once.</small></div><span class="pill p-green">No limit</span></div>';
+    } else {
+      const l = left(b.key);
+      h += '<div class="ent">' + slotsBar(b) + '<div><b>' + entText(b) + ' ' + esc(b.label) + ' stickers active</b><br><small>Within entitlement no approval is needed.' + (b.beyond ? ' Beyond it: ' + esc(b.approver) + ' in AAE.' : '') + '</small></div>' +
+        '<span class="pill ' + (l ? 'p-green' : 'p-gold') + '">' + (l ? l + ' free' : 'Full') + '</span></div>' +
+        '<h3>How should the sticker start?</h3><div class="opts" role="radiogroup" aria-label="Sticker option">' +
+        radio(w.mode === 'activate', 'wset', 'mode:activate', 'Activate now', l ? 'Uses sticker ' + (used(b.key) + 1) + ' of ' + b.max + '. Issued at once, no approval.' : 'All ' + b.max + ' are in use today.', !l) +
+        radio(w.mode === 'inactive', 'wset', 'mode:inactive', 'Register as inactive', 'The vehicle and its sticker are saved. Switch it on when a slot is free.') +
+        radio(w.mode === 'temp', 'wset', 'mode:temp', 'Digital temporary sticker', !b.beyond ? 'Not offered for this entitlement.' : l ? 'Only needed beyond entitlement. You still have a free slot.' : 'One more active vehicle beyond entitlement. Needs approval.', !b.beyond || !!l) + '</div>';
+      if (w.askedTemp && b.beyond && l) h += '<p class="hint">' + I('info') + '<span>You asked for a temporary sticker, but ' + l + ' ' + esc(b.label) + ' slot' + (l > 1 ? 's are' : ' is') + ' free, so the vehicle can be activated within entitlement.</span></p>';
+      if (w.mode === 'temp') h += '<div class="sub"><div class="route">' + I('flow') + '<span>Decided in AAE by <b>' + esc(b.approver) + '</b> · valid up to ' + (ISO_TEMP_MONTHS[b.key] === 12 ? '1 year' : ISO_TEMP_MONTHS[b.key] + ' months') + ' from approval' + (b.until ? ', and no later than the end of your acting assignment (' + fmt(b.until) + ')' : '') + (hp ? ', and no later than ' + esc(hp.name) + '’s ID expiry (' + fmt(hp.idExpiry) + ')' : '') + ' · shorter for a rented car (6 months) · cannot be renewed</span></div>' +
+        fld('Justification', '<textarea data-w="just" rows="3" placeholder="Why do you need one more active vehicle?">' + esc(w.just) + '</textarea>', 'just', w) + '</div>';
+    }
+    if (w.errMsg) h += '<p class="err">' + I('alert') + esc(w.errMsg) + '</p>';
+    return h + '<div class="ffoot"><button class="btn btn-o" data-act="wcancel">Cancel</button><button class="btn btn-p" data-act="wnext">Proceed</button></div></section>';
+  }
+  function ownerBlock(w) {
+    const p = me(), b = wB(w), g = wVehicle(w);
+    if (!g && !manualEntry(w)) return '';
+    if (w.src === 'new' && companyCheck(w)) return '';
+    const hp = wHelper(w);
+    let h = '<h3>Ownership</h3><div class="fgrid">';
+    const lockTxt = { company: 'assigned company car', helper: 'registered to your sponsored helper', husband: 'IKLH: husband’s vehicle only' };
+    if (w.src === 'saved') h += fld('Vehicle Ownership', '<span class="lockchip">' + esc(OWNER[w.owner]) + (w.rel ? ' · ' + esc(w.rel) : '') + ' <small>· saved vehicle</small></span>', 'owner', w);
+    else if (w.ownerLocked) h += fld('Vehicle Ownership', '<span class="lockchip">' + I('lock') + esc(OWNER[w.owner]) + (w.rel ? ' · ' + esc(w.rel) : '') + ' <small>· ' + (lockTxt[w.owner] || 'set from the registration') + '</small></span>', 'owner', w);
+    else {
+      /* with a known registered owner, own / dependent / family types only come from a match; manual entry offers every allowed type */
+      const auto = ['own', 'dep', 'family', 'famco'];
+      const opts = allowedOwners(w).filter((o) => manualEntry(w) || !w.fetched || !w.fetched.regOwner || auto.indexOf(o) < 0);
+      h += fld('Vehicle Ownership', sel('owner', opts.map((o) => [o, OWNER[o]]), w.owner || '', 'Select Vehicle Ownership'), 'owner', w, w.fetched && w.fetched.regOwner ? 'Registered to ' + esc(w.fetched.regOwner) + ', so pick how you relate to it' : 'Only the owner types your applicant types allow are offered');
+      if (w.owner === 'dep') h += fld('Dependent', sel('dependent', p.dependents.map((d) => [d.name, d.name + ' · ' + d.rel]), w.dependent, 'Select dependent held in HR'), 'dependent', w);
+      if (w.owner === 'family') h += fld('Relationship', sel('rel', RELS, w.rel, 'Select relationship'), 'rel', w, 'Father, mother, husband, brother, sister, son or guardian');
+      if (w.owner === 'famco') h += fld('Family company', '<input data-w="famco" placeholder="Company name on the registration" value="' + esc(w.famco) + '">', 'famco', w, 'Company owned by your family');
+    }
+    h += '</div>';
+    const tmp = w.mode === 'temp';
+    const tE = tmp && w.owner ? tempEnd(b, w.owner, hp) : null;
+    const perm = tmp ? (tE ? 'Temporary sticker valid up to ' + fmt(tE.d) + ' if approved today: ' + tE.why + '. It cannot be renewed.' : 'Pick the ownership to see how long the temporary sticker lasts.') : 'Permanent within entitlement. No document needed.';
+    const note = {
+      own: perm, dep: perm, rent: perm + ' Rental status is read through the government service.', absher: 'The Absher authorisation is checked through the government service. ' + perm,
+      family: 'The relationship is checked against government family records. ' + perm, famco: 'The vehicle must carry no company body logo. ' + perm,
+      husband: 'The marriage is checked against government records. ' + perm, helper: hp ? 'Valid until ' + esc(hp.name) + '’s ID expires on ' + fmt(hp.idExpiry) + '. Counts against your Community entitlement.' : '',
+      company: b.until ? 'Ends with your acting assignment on ' + fmt(b.until) + '. Registered owner must be ' + ARAMCO + '.' : 'No end date while the car is assigned to you. Registered owner must be ' + ARAMCO + '.',
+    }[w.owner];
+    if (note) h += '<p class="hint">' + I(w.owner === 'company' ? 'building' : w.owner === 'absher' ? 'shield' : 'info') + '<span>' + note + '</span></p>';
+    return h;
+  }
+  /* saved vehicles = the vehicles on the holder's Car Sticker list; each one says why it cannot take this request's sticker */
+  function savedFor(w) {
+    const b = wB(w), al = allowedOwners(w), fam = TYPES[b.typeId].fam;
+    const why = (v) => {
+      if (!freeFor(v, fam)) return 'Already has a ' + FAM[fam] + ' sticker or an open request for one';
+      if (w.forWho) return v.owner === 'helper' && v.regOwner === w.forWho ? '' : 'Not registered to ' + w.forWho;
+      if (v.owner === 'helper') return 'Registered to your sponsored helper: choose them under Requested for';
+      if (al.indexOf(v.owner) < 0) return OWNER[v.owner] + ' is not allowed for ' + TYPES[b.typeId].name;
+      return '';
+    };
+    return myVehicles().filter((v) => display(v).length).map((v) => ({ v, why: why(v) })).sort((a, b2) => (a.why ? 1 : 0) - (b2.why ? 1 : 0));
+  }
+  /* the picked saved vehicle prefills the same fields as a new vehicle, read-only */
+  function savedDetails(w) {
+    if (!w.vehId) return '';
+    const v = veh(w.vehId), gcc = v.plate.c !== 'SA';
+    const ro = (label, val) => '<label class="fld"><span>' + label + '</span><input value="' + esc(val == null || val === '' ? '—' : val) + '" disabled></label>';
+    return '<h3>Vehicle <small class="muted" style="font-weight:500">· filled in from your saved vehicle</small></h3><div class="fgrid">' +
+      ro('Vehicle Origin', v.origin) + ro('Plate Type', v.plateType) + ro('Plate Number', v.plate.d) +
+      ro(gcc ? 'Plate Code' : 'Plate Characters', gcc ? v.plate.l : v.plate.l.split('').map((L) => L + ' - ' + (AR_LETTER[L] || '')).join('   ')) +
+      ro('Manufacturer', v.make) + ro('Model', v.model) + ro('Year', v.year) + ro('Vehicle Type', v.type) + ro('Vehicle Primary Color', v.color) + ro('Vehicle Secondary Color', v.color2) +
+      ro('Registered owner', v.regOwner) + '<div class="fld"><span>Preview</span>' + plate(v.plate) + '</div></div>';
+  }
+  function wizStep2(w) {
+    const b = wB(w), al = allowedOwners(w);
+    const fam = TYPES[b.typeId].fam;
+    const savedAll = savedFor(w), savedList = savedAll.filter((x) => !x.why).map((x) => x.v);
+    let h = '<section class="fcard"><h2>Vehicle Details</h2><div class="seg" role="group" aria-label="Vehicle source"><button data-act="wset" data-arg="src:saved" aria-pressed="' + (w.src === 'saved') + '">Saved vehicle (' + savedList.length + ')</button><button data-act="wset" data-arg="src:new" aria-pressed="' + (w.src === 'new') + '">New vehicle</button></div>';
+    if (w.src === 'saved') {
+      h += savedAll.length ? '<div class="opts list" role="radiogroup" aria-label="Saved vehicles">' + savedAll.map((x) => { const v = x.v;
+          const st = records(v).filter((i) => !i.ended).map((i) => typeLabel(i.x)).join(' + ') || 'no live sticker';
+          return radio(w.vehId === v.id, 'wpick', v.id, esc(vName(v)), esc(ownerText(v)) + ' · ' + esc(st) + (x.why ? '<br><span class="t-red">' + esc(x.why) + '</span>' : '') + '<br>' + plate(v.plate), !!x.why); }).join('') + '</div>' +
+        (w.err.vehId ? '<p class="err">' + I('alert') + esc(w.err.vehId) + '</p>' : '') + '<p class="hint">' + I('info') + '<span>Every vehicle on your Car Sticker list is shown. ' + (savedList.length ? savedList.length + ' of ' + savedAll.length + ' can take this ' + esc(TYPES[b.typeId].name) + ' sticker; pick one and its details are filled in for you.' : 'None of them can take this ' + esc(TYPES[b.typeId].name) + ' sticker. Add a new vehicle instead.') + '</span></p>' +
+        savedDetails(w)
+        : '<div class="empty" style="padding:30px">' + I('car') + '<b>No saved vehicles yet</b><span>Add a new vehicle instead.</span></div>';
+    } else {
+      const gcc = w.origin !== 'SA';
+      const locked = !manualEntry(w) && (w.fetched || w.busy);
+      h += '<div class="fgrid">' + fld('Vehicle Origin', sel('origin', Object.keys(GCC).map((k) => [k, GCC[k]]), w.origin, '', locked ? ' disabled' : ''), 'origin', w, 'Saudi Arabia or a gulf country (same rules)') +
+        fld('Plate Type', sel('plateType', ['Private', 'Commercial', 'Public transport'], w.plateType, '', locked ? ' disabled' : ''), 'plateType', w);
+      if (gcc) h += fld('Plate Number', '<input data-w="gnum" inputmode="numeric" maxlength="6" placeholder="e.g 48213" value="' + esc(w.gnum) + '">', 'gnum', w) +
+        fld('Plate Code', '<input data-w="gcode" maxlength="3" placeholder="e.g B" value="' + esc(w.gcode) + '">', 'gcode', w, 'Letter or number code on the plate');
+      else h += fld('Plate Number', '<input data-w="digits" inputmode="numeric" maxlength="4" placeholder="e.g 2471" value="' + esc(w.digits) + '"' + (locked ? ' disabled' : '') + '>', 'digits', w) +
+        fld('Plate Characters', '<span class="chars">' + ['l1', 'l2', 'l3'].map((k) => sel(k, LETTERS.map((L) => [L, L + ' - ' + AR_LETTER[L]]), w[k], 'A - ا', (locked ? ' disabled' : '') + ' aria-label="Plate character ' + k[1] + '"')).join('') + '</span>', 'chars', w);
+      h += '<div class="fld"><span>Preview</span>' + plate(wPlate(w)) + '</div></div>';
+      if (!manualEntry(w)) {
+        if (w.busy) h += '<div class="fetched" role="status"><div class="fetched-h">' + I('zap') + '<b>Reading vehicle data from the Government API…</b></div><div class="sk"></div><div class="sk" style="width:70%"></div></div>';
+        else if (w.fetched) { const g = w.fetched; h += '<div class="fetched"><div class="fetched-h"><span class="ok">' + I('check') + '</span><b>Vehicle found</b><small>Government API · display only</small><button class="lnk" data-act="wrefetch">Change plate</button></div><div class="kv4">' +
+          [['Manufacturer', g.make], ['Model', g.model], ['Year', g.year], ['Type', g.type], ['Primary Color', g.color], ['Secondary Color', g.color2 || '—'], ['Registered owner', g.regOwner || 'Not returned']].map((x) => '<div><small>' + x[0] + '</small><b>' + esc(x[1]) + '</b></div>').join('') + '</div></div>'; }
+        else h += '<div style="margin-top:18px"><button class="btn btn-p" data-act="fetch">' + I('search') + 'Get vehicle details</button></div>';
+        if (w.noRecord) h += '<p class="err">' + I('alert') + 'The Government API has no record for this plate. Manual entry is switched off by ISO, so the vehicle cannot be added here. Check the plate or contact ISO.</p>';
+      } else {
+        const m = w.manual;
+        h += '<h3>Vehicle</h3><div class="fgrid">' + fld('Manufacturer', sel('m.make', Object.keys(CATALOG), m.make, 'Select Vehicle Manufacturer'), 'make', w) +
+          fld('Model', sel('m.model', m.make ? CATALOG[m.make] : [], m.model, 'Select Vehicle Model', m.make ? '' : ' disabled'), 'model', w) +
+          fld('Year', sel('m.year', YEARS, m.year, 'Select Year'), 'year', w) + fld('Vehicle Type', sel('m.type', VTYPES, m.type, 'Select Vehicle Type'), 'type', w) +
+          fld('Vehicle Primary Color', sel('m.color', COLORS, m.color, 'Select Vehicle Primary Color'), 'color', w) +
+          fld('Vehicle Secondary Color <small>(optional)</small>', sel('m.color2', COLORS, m.color2, 'Select Vehicle Secondary Color'), 'color2', w) + '</div>' +
+          '<p class="hint">' + I('info') + '<span>' + (gcc ? 'The Government API covers Saudi registrations, so details of a gulf-country vehicle are entered here and checked at submit.' : 'ISO has set vehicle entry to manual. Details are checked at submit.') + '</span></p>';
+      }
+    }
+    if (w.errMsg) h += '<p class="err">' + I('alert') + esc(w.errMsg) + '</p>';
+    h += ownerBlock(w);
+    return h + '<div class="ffoot"><button class="btn btn-o l" data-act="wcancel">Cancel</button><button class="btn btn-o" data-act="wback">Back</button><button class="btn btn-p" data-act="wnext">Proceed</button></div></section>';
+  }
+  function wizStep3(w) {
+    const p = me(), b = wB(w), g = wVehicle(w), hp = wHelper(w), end = validity(b, w.owner, w.mode === 'temp', hp);
+    const modeTxt = !b.toggle ? 'Issued active (unlimited)' : { activate: 'Activate now', inactive: 'Register as inactive', temp: 'Digital temporary sticker (beyond entitlement)' }[w.mode];
+    const next = w.mode === 'temp' ? ['The request goes to AAE: ' + b.approver, 'You follow it under My Requests', 'The temporary sticker is issued only after approval and sent to the gates']
+      : w.mode === 'activate' || !b.toggle ? ['SAP re-runs the checks and issues the sticker at once', 'It is sent to iGATE, iGATE Lite and SAIF', 'The gate reads it at the next plate scan'] : ['The vehicle and its sticker are saved as inactive', 'Switch it on from the vehicle page when a slot is free'];
+    const tw = w.mode === 'temp' ? tempEnd(b, w.owner, hp) : null;
+    const endTxt = tw ? 'Up to ' + fmt(tw.d) + '<br><small class="muted" style="font-weight:400">' + esc(tw.why) + '. Set on the approval date; if approved later, the period counts from that day (an ID expiry or assignment end stays fixed).</small>'
+      : end ? fmt(end) + (hp ? ' (helper’s ID expiry)' : b.until ? ' (end of acting assignment)' : '') : w.owner === 'company' ? 'While assigned' : 'Permanent';
+    const own = OWNER[w.owner] + (w.rel ? ' · ' + w.rel : '') + (w.dependent ? ' · ' + w.dependent : '') + (w.famco ? ' · ' + w.famco : '');
+    const sec = (t, step, inner) => '<section class="revs"><div class="revs-h"><h3>' + t + '</h3>' + (step ? '<button class="btn btn-o btn-s" data-act="wgo" data-arg="' + step + '">Edit</button>' : '') + '</div>' + inner + '</section>';
+    return '<section class="fcard"><h2>Review</h2><div class="rev">' +
+      sec('Sticker', 1, '<div class="kv2"><div><small>Sticker type</small><b>' + esc(TYPES[b.typeId].name + (b.owners[0] === 'company' ? ' · company car' : '')) + '</b></div><div><small>Request</small><b>' + modeTxt + '</b></div><div><small>For</small><b>' + esc(hp ? hp.name + ' (sponsored by ' + p.name + ')' : p.name) + '</b></div><div><small>Counts against</small><b>' + (w.mode === 'temp' ? 'Beyond entitlement · ' + esc(b.approver) : b.max == null ? 'No count (unlimited)' : 'Your ' + esc(b.label) + ' entitlement') + '</b></div></div>' + (w.mode === 'temp' ? '<p class="hint">' + I('doc') + '<span>' + esc(w.just) + '</span></p>' : '')) +
+      sec('Vehicle', 2, plate(wPlate(w)) + '<div class="kv2" style="margin-top:12px"><div><small>Vehicle</small><b>' + esc(g.make + ' ' + g.model + ' ' + g.year) + '</b></div><div><small>Colors</small><b>' + esc(g.color + (g.color2 ? ' / ' + g.color2 : '')) + '</b></div><div><small>Ownership</small><b>' + esc(own) + '</b></div><div><small>Source</small><b>' + (w.src === 'saved' ? 'Saved vehicle' : manualEntry(w) ? 'Manual entry' : 'Government API') + '</b></div></div>') +
+      sec('Validity and documents', 0, '<div class="kv2"><div><small>Valid until</small><b>' + endTxt + '</b></div><div><small>Documents</small><b>None (no document verification)</b></div></div>') +
+      sec('What happens next', 0, '<ol class="nextl">' + next.map((x) => '<li>' + esc(x) + '</li>').join('') + '</ol>') + '</div>' +
+      '<div class="ffoot"><button class="btn btn-o l" data-act="wcancel">Cancel</button><button class="btn btn-o" data-act="wback">Back</button><button class="btn btn-p" data-act="wsubmit"' + (w.sending ? ' disabled' : '') + '>' + (w.sending ? 'Submitting…' : 'Submit') + '</button></div></section>';
+  }
+  function wizPage(rt) {
+    const w = S.ui.wiz; w.step = rt.step; const b = wB(w);
+    const title = w.mode === 'temp' ? 'Digital Temporary Sticker' : 'New Car Sticker';
+    const sub = w.mode === 'temp' ? 'One more active vehicle beyond your entitlement, for up to 1 year. Approved by the ' + b.approver + ' in AAE.' : 'Add a vehicle to a sticker you are eligible for. Within your entitlement it is issued at once, with no approval.';
+    return crumbs([['Dashboard', 'soon', 'Dashboard'], ['Car Sticker', 'tab', 'private'], [title + ' Request']]) +
+      '<div class="ph"><div class="ph-t"><button data-act="wcancel" aria-label="Cancel and go back">' + I('back') + '</button><div><h1>' + title + '</h1><p>' + esc(sub) + '</p></div></div>' +
+      '<div class="stepper"><ol aria-label="Progress">' + STEPS.map((x, i) => '<li class="' + (i + 1 < w.step ? 'done' : i + 1 === w.step ? 'now' : '') + '"><i aria-hidden="true">' + (i + 1) + '</i><span class="st-t">' + x + '</span></li>').join('') + '</ol><small>Step ' + w.step + ': ' + STEPS[w.step - 1] + '</small></div></div>' +
+      (w.step === 1 ? wizStep1(w) : w.step === 2 ? wizStep2(w) : wizStep3(w));
+  }
+  const holderPlateLive = (pl, fam) => S.stickers.some((s) => s.holder === S.persona && live(s) && (!fam || famOf(s) === fam) && plateKey(veh(s.vehId).plate) === plateKey(pl));
+  const holderPlatePending = (pl, fam) => S.requests.some((r) => r.holder === S.persona && r.status === 'pending' && (!fam || famOf(r) === fam) && plateKey(veh(r.vehId).plate) === plateKey(pl));
+  function companyCheck(w) {
+    /* registered-owner rules that block the request outright */
+    const p = me(), b = wB(w), g = w.fetched; if (!g || !g.regOwner) return '';
+    if (w.owner === 'company' && g.regOwner !== ARAMCO) return 'This vehicle is registered to ' + g.regOwner + ', not ' + ARAMCO + '. A Core Area company car sticker is only for the Aramco car assigned to you.';
+    if (w.owner !== 'company' && g.regOwner === ARAMCO) return 'This is an ' + ARAMCO + ' company car. ' + (p.ent.some((x) => x.owners.indexOf('company') > -1) ? 'Choose Core Area → Aramco company car in step 1.' : 'Only Executives and VPs get a sticker for an assigned company car.');
+    if (w.owner === 'helper' && g.regOwner !== w.forWho) return 'This vehicle is registered to ' + g.regOwner + ', not to ' + w.forWho + '. A sponsored helper’s sticker is for the helper’s own vehicle.';
+    if (w.owner === 'husband' && g.regOwner !== p.husband) return 'This vehicle is registered to ' + g.regOwner + '. As an IKLH expatriate female you can add only your husband’s vehicle (' + p.husband + ').';
+    return '';
+  }
+  function validate(w) {
+    w.err = {}; w.errMsg = ''; const b = wB(w);
+    if (w.step === 1) {
+      if (b.toggle && w.mode === 'activate' && left(b.key) < 1) w.errMsg = 'All ' + b.label + ' stickers are in use. Choose another option.';
+      if (w.mode === 'temp' && !b.beyond) w.errMsg = 'A temporary sticker is not offered for this entitlement.';
+      if (w.mode === 'temp' && !w.just.trim()) w.err.just = 'Add a short justification for the approver.';
+    }
+    if (w.step === 2) {
+      if (w.src === 'saved') { if (!w.vehId) w.err.vehId = 'Pick a saved vehicle.'; }
+      else {
+        const pl = wPlate(w), gcc = w.origin !== 'SA';
+        if (gcc) { if (!/^\d{1,6}$/.test(w.gnum)) w.err.gnum = 'Enter 1 to 6 numbers.'; if (!/^[A-Za-z0-9]{1,3}$/.test(w.gcode)) w.err.gcode = 'Enter the plate code.'; }
+        else if (!manualEntry(w) && !w.fetched) { if (!plateOK(pl)) { if (!/^\d{1,4}$/.test(w.digits)) w.err.digits = 'Enter 1 to 4 numbers.'; if (pl.l.length !== 3) w.err.chars = 'Pick 3 characters.'; } else w.errMsg = 'Get the vehicle details first.'; }
+        else if (manualEntry(w)) { if (!/^\d{1,4}$/.test(w.digits)) w.err.digits = 'Enter 1 to 4 numbers.'; if (pl.l.length !== 3) w.err.chars = 'Pick 3 characters.'; }
+        if (manualEntry(w)) ['make', 'model', 'year', 'type', 'color'].forEach((k) => { if (!w.manual[k]) w.err[k] = 'Required'; });
+        const fam = TYPES[b.typeId].fam;
+        if (plateOK(pl) && holderPlateLive(pl, fam)) w.errMsg = 'This vehicle already has a ' + FAM[fam] + ' sticker on your list.';
+        if (plateOK(pl) && holderPlatePending(pl, fam)) w.errMsg = 'This vehicle already has an open ' + FAM[fam] + ' request.';
+        if (plateOK(pl) && !w.errMsg && myVehicles().some((v) => plateKey(v.plate) === plateKey(pl))) w.errMsg = 'This vehicle is already in your saved vehicles. Pick it under Saved vehicle to add the ' + FAM[fam] + ' sticker.';
+        const cc = companyCheck(w); if (cc) w.errMsg = cc;
+      }
+      if (wVehicle(w) || manualEntry(w)) {
+        if (!w.owner) w.err.owner = 'Select the vehicle ownership.';
+        if (w.owner === 'dep' && !w.dependent) w.err.dependent = 'Select the dependent.';
+        if (w.owner === 'family' && !w.rel) w.err.rel = 'Select the relationship.';
+        if (w.owner === 'famco' && !w.famco.trim()) w.err.famco = 'Enter the family company name.';
+      }
+    }
+    return !w.errMsg && !Object.keys(w.err).length;
+  }
+  function submit(w) {
+    const p = me(), b = wB(w), hp = wHelper(w); let v;
+    if (w.src === 'saved') { v = veh(w.vehId); }
+    else {
+      const g = wVehicle(w), pl = wPlate(w);
+      v = { id: 'nv' + (S.seqV++), holder: p.id, plate: pl, origin: GCC[pl.c] || 'Saudi Arabia', plateType: w.plateType, make: g.make, model: g.model, year: +g.year, color: g.color, color2: g.color2 || '', type: g.type,
+        regOwner: g.regOwner || ({ own: p.name, dep: w.dependent, company: ARAMCO, helper: w.forWho, husband: p.husband, famco: w.famco }[w.owner] || null), owner: w.owner, source: manualEntry(w) ? 'manual' : 'api', dependent: w.dependent || null, rel: w.rel || null };
+      S.vehicles.push(v);
+    }
+    const helper = hp ? { name: hp.name, badge: hp.badge, rel: hp.rel } : null;
+    const r = { id: newReqNo(), vehId: v.id, holder: p.id, bucket: b.key, typeId: b.typeId, kind: w.mode === 'temp' ? 'temporary' : 'new', approver: w.mode === 'temp' ? b.approver : null, created: S.today, just: w.just.trim(), helper, decided: null, reason: '' };
+    if (w.mode === 'temp') { r.status = 'pending'; S.requests.push(r); return { r, v }; }
+    const st = !b.toggle || w.mode === 'activate' ? 'active' : 'inactive';
+    const s = { no: newStkNo(), vehId: v.id, holder: p.id, bucket: b.key, typeId: b.typeId, temp: false, status: st, start: S.today, end: validity(b, w.owner, false, hp), ver: 1,
+      pendingOff: null, pendingCancel: null, driver: null, doc: null, sponsored: helper, hist: [{ at: S.today, txt: 'Sticker issued' + (st === 'inactive' ? ' as inactive' : '') + (helper ? ' for sponsored helper ' + helper.name : '') + ' (' + r.id + ')' }] };
+    S.stickers.push(s); r.status = 'issued'; r.decided = S.today; r.stkNo = s.no; S.requests.push(r);
+    return { r, v, s };
+  }
+  function donePage() {
+    const d = S.ui.done, v = veh(d.vehId), r = S.requests.find((x) => x.id === d.reqId), s = d.stkNo ? S.stickers.find((x) => x.no === d.stkNo) : null;
+    const temp = r.kind === 'temporary';
+    const title = temp ? 'Request Submitted Successfully!' : 'Sticker Issued Successfully!';
+    const text = temp ? 'Your digital temporary sticker request ' + r.id + ' (' + TYPES[r.typeId].name + ') for ' + vName(v).toUpperCase() + ' (' + pText(v) + ') is in AAE with the ' + r.approver + '. Follow it under My Requests.'
+      : 'Your ' + typeLabel(s) + ' sticker ' + s.no + ' for ' + vName(v).toUpperCase() + ' (' + pText(v) + ') is ' + (s.status === 'active' ? 'active and has been sent to the gates' : 'saved as inactive; switch it on when a slot is free') + '. No further action is needed.';
+    return crumbs([['Dashboard', 'soon', 'Dashboard'], ['Car Sticker', 'tab', 'private'], [(temp ? 'Digital Temporary Sticker' : 'New Car Sticker') + ' Request']]) +
+      '<div class="ph"><div class="ph-t"><button data-act="tab" data-arg="private" aria-label="Back to Car Sticker">' + I('back') + '</button><div><h1>' + (temp ? 'Digital Temporary Sticker' : 'New Car Sticker') + '</h1><p>' + (temp ? 'Beyond entitlement · approval in AAE.' : 'Within entitlement · no approval needed.') + '</p></div></div>' +
+      '<div class="stepper"><ol aria-label="Progress">' + STEPS.map((x, i) => '<li class="done"><i aria-hidden="true">' + (i + 1) + '</i><span class="st-t">' + x + '</span></li>').join('') + '</ol><small>All Stages Completed!</small></div></div>' +
+      '<section class="fcard"><div class="okbox"><span class="okbox-ic' + (temp ? ' t' : '') + '">' + I(temp ? 'clock' : 'check') + '</span><h2' + (temp ? ' class="t"' : '') + '>' + title + '</h2><p>' + esc(text) + '</p><div class="okrow">' + sIcon(iconKey(s || r), 'md') + plate(v.plate) + '</div></div>' +
+      '<div class="ffoot"><button class="btn btn-o" data-act="tab" data-arg="' + (temp ? 'requests' : 'private') + '">' + (temp ? 'Go To My Requests' : 'Go Back To Car Sticker') + '</button><button class="btn btn-p" data-act="open" data-arg="' + v.id + '">View Vehicle</button></div></section>';
+  }
+
+  /* ================= modals ================= */
+  function modalHTML() {
+    const m = S.ui.modal; if (!m) return '';
+    return '<div class="scrim" data-act="closeModal" data-self="1"><div class="modal' + (m.wide ? ' wide' : '') + '" role="dialog" aria-modal="true" aria-labelledby="mt" tabindex="-1">' +
+      '<div class="modal-h">' + (m.icon ? '<span class="mi ' + (m.tone || '') + '">' + I(m.icon) + '</span>' : '') + '<h2 id="mt">' + esc(m.title) + '</h2><button data-act="closeModal" aria-label="Close">' + I('x') + '</button></div>' +
+      '<div class="modal-b">' + (typeof m.body === 'function' ? m.body() : m.body) + '</div>' +
+      '<div class="modal-f">' + (m.actions || []).map((a) => '<button class="btn ' + (a.cls || 'btn-p') + '" data-act="' + a.act + '"' + (a.arg ? ' data-arg="' + esc(a.arg) + '"' : '') + '>' + esc(a.label) + '</button>').join('') + '</div></div></div>';
+  }
+  const openModal = (m) => { S.ui.modal = m; render(); const el = document.querySelector('.modal'); if (el) el.focus(); };
+  function driverModal(no) {
+    const s = S.stickers.find((x) => x.no === no), p = me();
+    S.ui.drv = { pick: s.driver ? s.driver.name : '', q: '' };
+    openModal({ title: 'Change temporary driver', icon: 'user', wide: true, body: () => {
+      const d = S.ui.drv; const opt = (o, sub) => radio(d.pick === o.name, 'drvPick', o.name, esc(o.name), sub);
+      const hits = d.q.trim().length > 1 ? BADGES.filter((b) => (b.name + ' ' + b.badge).toLowerCase().indexOf(d.q.trim().toLowerCase()) > -1) : [];
+      const known = p.dependents.concat(p.drivers).some((x) => x.name === d.pick) || hits.some((b) => b.name === d.pick);
+      return '<p class="muted">A sticker has no driver or one temporary driver. The driver is sent to the gates with the sticker, so the officer sees owner and driver at the plate scan.</p><div class="pick" role="radiogroup" aria-label="Temporary driver">' +
+        radio(!d.pick, 'drvPick', '', 'No temporary driver', 'Only you, the holder') +
+        (p.dependents.length || p.drivers.length ? '<h4>From your dependents and drivers in HR</h4>' + p.dependents.map((x) => opt(x, x.rel)).join('') + p.drivers.map((x) => opt(x, x.rel + ' · badge ' + x.badge)).join('') : '') +
+        '<h4>Any other ID badge holder</h4><label class="fld"><span class="vh">Search badge holders</span><input data-model="drvq" placeholder="Search by name or badge number" value="' + esc(d.q) + '"></label>' +
+        hits.map((b) => opt(b, 'Badge ' + b.badge)).join('') + (d.pick && !known ? opt({ name: d.pick }, 'Selected') : '') + '</div>';
+    }, actions: [{ label: 'Cancel', act: 'closeModal', cls: 'btn-o' }, { label: 'Save driver', act: 'drvSave', arg: no }] });
+  }
+  /* SOW To-Be: Community stickers are permanent within entitlement, so there is no renewal step for them */
+  function renewModal() { toast('Community stickers are permanent within entitlement; there is nothing to renew', true); }
+  function reqModal(id) {
+    const r = S.requests.find((x) => x.id === id), v = veh(r.vehId);
+    openModal({ title: 'Request ' + r.id, icon: 'inbox', wide: true, body: '<div class="d-top" style="margin-bottom:12px"><div><small>' + esc(typeLabel(r)) + '</small><b style="margin:2px 0 0">' + esc(vName(v)) + '</b></div>' + plate(v.plate) + '</div>' + timeline(r),
+      actions: (r.status === 'pending' ? [{ label: 'Withdraw request', act: 'askWithdraw', arg: r.id, cls: 'btn-o' }] : []).concat([{ label: 'Open vehicle', act: 'open', arg: v.id, cls: 'btn-o' }, { label: 'Close', act: 'closeModal' }]) });
+  }
+
+  /* ================= render ================= */
+  let lastKey = '';
+  function render() {
+    const rt = route(); const app = document.getElementById('app');
+    const ae = document.activeElement; const fk = ae && ae.getAttribute ? (ae.getAttribute('data-w') || ae.getAttribute('data-model') || '') : '';
+    const caret = ae && typeof ae.selectionStart === 'number' && /text|search|tel|^$/.test(ae.type || '') ? ae.selectionStart : null;
+    const body = rt.page === 'vehicle' ? vehiclePage(rt.id) : rt.page === 'new' ? wizPage(rt) : rt.page === 'done' ? donePage() : listPage(rt);
+    app.innerHTML = presenter() + header() + '<main class="page">' + body + '</main>' + modalHTML();
+    const key = rt.page + (rt.id || rt.step || rt.tab || '');
+    if (key !== lastKey) { window.scrollTo(0, 0); lastKey = key; }
+    if (fk) { const el = app.querySelector('[data-w="' + fk + '"],[data-model="' + fk + '"]'); if (el && !el.disabled) { el.focus({ preventScroll: true }); if (caret != null && el.setSelectionRange) try { el.setSelectionRange(caret, caret); } catch (e) { /* not text */ } } }
+    document.title = 'Digital Sticker · ' + (rt.page === 'vehicle' ? vName(veh(rt.id)) : rt.page === 'new' ? 'New request' : 'Car Sticker');
+  }
+  let toastT;
+  function toast(msg, warn) {
+    const root = document.getElementById('toast-root'); root.innerHTML = '<div class="toast' + (warn ? ' warn' : '') + '">' + I(warn ? 'alert' : 'check') + '<span>' + esc(msg) + '</span></div>';
+    clearTimeout(toastT); toastT = setTimeout(() => { root.innerHTML = ''; }, window.__fast ? 400 : 4200);
+  }
+
+  /* ================= actions ================= */
+  const stk = (no) => S.stickers.find((s) => s.no === no);
+  const A = {
+    soon: (a) => toast((a || 'This') + ' is outside this prototype', true),
+    tab: (t) => { S.ui.tab = t; go('stickers-' + t); },
+    filter: (f) => { S.ui.filter = f; render(); },
+    tfilter: (f) => { S.ui.tfilter = f; render(); },
+    clearQ: () => { S.ui.q = ''; render(); },
+    search: () => { if (S.ui.q.trim()) { S.ui.filter = 'all'; S.ui.tfilter = 'all'; const hit = myVehicles().find(matches); const t = hit && display(hit).every((i) => i.temp) ? 'temporary' : 'private'; S.ui.tab = t; go('stickers-' + t); } else render(); },
+    menu: () => { S.ui.menu = !S.ui.menu; render(); },
+    pop: () => { S.ui.pop = !S.ui.pop; render(); },
+    open: (id) => { if (!id) return; S.ui.modal = null; go('vehicle-' + id); },
+    startNew: () => { S.ui.wiz = freshWiz({}); go('new-1'); },
+    startTemp: () => { S.ui.wiz = freshWiz({ temp: true }); go('new-1'); },
+    again: (arg) => { const [vid, key] = arg.split('|'); S.ui.modal = null; S.ui.wiz = freshWiz({ vehId: vid, bucket: bucket(key) ? key : me().ent[0].key }); go('new-1'); },
+    addTo: (arg) => { const [vid, key] = arg.split('|'); S.ui.modal = null; S.ui.wiz = freshWiz({ vehId: vid, bucket: key }); go('new-1'); },
+    toggle: (no) => {
+      const s = stk(no); const b = bucket(s.bucket);
+      if (s.status === 'active' && !s.pendingOff) {
+        openModal({ title: 'Deactivate this sticker?', icon: 'power', tone: 'gold', body: '<p>The sticker stays <b>active until the end of today</b> and the ' + esc(b.label) + ' slot frees on <b>' + fmt(tomorrow()) + '</b>. You can undo this today.</p><p class="muted">The change is sent to the gates now, with its effective date.</p>',
+          actions: [{ label: 'Keep active', act: 'closeModal', cls: 'btn-o' }, { label: 'Deactivate from tomorrow', act: 'doOff', arg: no, cls: 'btn-d' }] });
+      } else if (s.pendingOff) { A.undoOff(no); }
+      else if (left(b.key) > 0) { s.status = 'active'; log(s, 'Activated by holder'); render(); toast('Active now · ' + b.label + ' ' + entText(b) + ' · sent to the gates'); }
+      else {
+        openModal({ title: 'All ' + b.max + ' ' + b.label + ' stickers are in use', icon: 'alert', tone: 'gold',
+          body: '<p>To activate this sticker, deactivate another ' + esc(b.label) + ' sticker first (its slot frees tomorrow)' + (b.beyond ? ', or request a <b>digital temporary sticker</b> beyond your entitlement.' : '. A temporary sticker is not offered for this entitlement.') + '</p>' +
+            (b.beyond ? '<div class="sub"><div class="route">' + I('flow') + '<span>Approved by the <b>' + esc(b.approver) + '</b> in AAE · valid up to 1 year (shorter for rented cars, helpers and acting assignments) · cannot be renewed</span></div></div>' : ''),
+          actions: [{ label: 'Not now', act: 'closeModal', cls: b.beyond ? 'btn-o' : 'btn-p' }].concat(b.beyond ? [{ label: 'Request temporary sticker', act: 'tempFor', arg: s.vehId + '|' + s.bucket }] : []) });
+      }
+    },
+    tempFor: (arg) => { const [vid, key] = arg.split('|'); S.ui.modal = null; S.ui.wiz = freshWiz({ temp: true, vehId: vid, bucket: key }); S.ui.wiz.mode = 'temp'; go('new-1'); },
+    doOff: (no) => { const s = stk(no); s.pendingOff = tomorrow(); log(s, 'Deactivated by holder, effective ' + fmt(s.pendingOff)); S.ui.modal = null; render(); toast('Active until tonight · slot frees ' + fmt(s.pendingOff) + ' · sent to the gates'); },
+    undoOff: (no) => { const s = stk(no); s.pendingOff = null; log(s, 'Deactivation undone'); render(); toast('Deactivation undone · the sticker stays active'); },
+    askCancel: (no) => { const s = stk(no), b = bucket(s.bucket); openModal({ title: 'Cancel this sticker?', icon: 'xc', tone: 'red', body: '<p>Sticker <b>' + esc(s.no) + '</b> (' + esc(typeLabel(s)) + ') is removed from <b>' + fmt(tomorrow()) + '</b>' + (b.max != null ? ' and its slot frees then' : '') + '. The vehicle stays in your saved vehicles; raise a new request to use it again.</p>' + (s.temp ? '<p class="muted">A cancelled temporary sticker is not restored.</p>' : ''),
+      actions: [{ label: 'Keep sticker', act: 'closeModal', cls: 'btn-o' }, { label: 'Cancel sticker', act: 'doCancel', arg: no, cls: 'btn-d' }] }); },
+    doCancel: (no) => { const s = stk(no); s.pendingCancel = tomorrow(); s.pendingOff = null; log(s, 'Cancelled by holder, effective ' + fmt(s.pendingCancel)); S.ui.modal = null; render(); toast('Cancelled from ' + fmt(s.pendingCancel) + ' · sent to the gates'); },
+    driver: (no) => { if (no) driverModal(no); },
+    drvPick: (name) => { S.ui.drv.pick = name; render(); },
+    drvSave: (no) => { const s = stk(no), p = me(), n = S.ui.drv.pick;
+      const src = p.dependents.find((x) => x.name === n) || p.drivers.find((x) => x.name === n) || BADGES.find((x) => x.name === n);
+      s.driver = n ? { name: n, badge: (src && src.badge) || '', rel: (src && src.rel) || '' } : null;
+      log(s, n ? 'Temporary driver set: ' + n : 'Temporary driver removed'); S.ui.modal = null; render(); toast(n ? 'Driver saved: ' + n + ' · sent to the gates' : 'Temporary driver removed · sent to the gates'); },
+    renew: (no) => { if (no) renewModal(no); },
+    askWithdraw: (id) => openModal({ title: 'Withdraw this request?', icon: 'xc', tone: 'red', body: '<p>Request <b>' + esc(id) + '</b> is closed as Withdrawn and leaves the approver’s list in AAE. No sticker is issued. The vehicle stays in your saved vehicles.</p>',
+      actions: [{ label: 'Keep request', act: 'closeModal', cls: 'btn-o' }, { label: 'Withdraw request', act: 'doWithdraw', arg: id, cls: 'btn-d' }] }),
+    doWithdraw: (id) => { const r = S.requests.find((x) => x.id === id); r.status = 'withdrawn'; r.decided = S.today; S.ui.modal = null; render(); toast('Request ' + id + ' withdrawn'); },
+    viewReq: (id) => reqModal(id),
+    closeModal: (a, el, e) => { if (el && el.getAttribute('data-self') && e && e.target !== el) return; S.ui.modal = null; render(); },
+    pickFile: (a, el) => { const f = el.querySelector('input[type=file]'); if (f) f.click(); },
+    /* wizard */
+    wset: (arg) => { const w = S.ui.wiz; const i = arg.indexOf(':'); const k = arg.slice(0, i), v = arg.slice(i + 1); w[k] = v; w.err = {}; w.errMsg = '';
+      if (k === 'src') { resetVehicle(w); }
+      render(); },
+    wbucket: (key) => { const w = S.ui.wiz; if (w.bucket === key) return; w.bucket = key; w.mode = defaultMode(bucket(key), w.askedTemp); w.src = 'new'; resetVehicle(w); render(); },
+    wfor: (name) => { const w = S.ui.wiz; w.forWho = name; if (name) { const c = me().ent.find((x) => x.key === 'comm'); w.bucket = c.key; w.mode = defaultMode(c, w.askedTemp); } w.src = 'new'; resetVehicle(w); render(); },
+    wpick: (vid) => { const w = S.ui.wiz; w.vehId = vid; const v = veh(vid); w.owner = v.owner; w.dependent = v.dependent || ''; w.rel = v.rel || ''; w.ownerLocked = true; w.err = {}; w.errMsg = ''; render(); },
+    fetch: async () => {
+      const w = S.ui.wiz; const pl = wPlate(w); w.err = {}; w.errMsg = ''; w.noRecord = false; if (manualEntry(w)) return;
+      if (!/^\d{1,4}$/.test(w.digits)) w.err.digits = 'Enter 1 to 4 numbers.';
+      if (pl.l.length !== 3) w.err.chars = 'Pick 3 characters.';
+      if (Object.keys(w.err).length) { render(); return; }
+      if (holderPlateLive(pl, TYPES[wB(w).typeId].fam)) { w.errMsg = 'This vehicle already has a ' + FAM[TYPES[wB(w).typeId].fam] + ' sticker on your list.'; render(); return; }
+      if (myVehicles().find((v) => plateKey(v.plate) === plateKey(pl))) { w.errMsg = 'This vehicle is already in your saved vehicles. Pick it under Saved vehicle to add another sticker type.'; render(); return; }
+      w.busy = true; render(); await wait(1100); if (S.ui.wiz !== w) return; w.busy = false;
+      const g = govLookup(pl); if (!g) { w.noRecord = true; render(); return; }
+      w.fetched = g; autoOwner(w); w.errMsg = companyCheck(w); render();
+    },
+    wrefetch: () => { const w = S.ui.wiz; resetVehicle(w); render(); },
+    wnext: () => { const w = S.ui.wiz; if (!validate(w)) { render(); const e = document.querySelector('.fld.bad input,.fld.bad select,.fld.bad textarea'); if (e) e.focus(); return; } w.max = Math.max(w.max, w.step + 1); go('new-' + (w.step + 1)); },
+    wback: () => { const w = S.ui.wiz; w.err = {}; w.errMsg = ''; go('new-' + Math.max(1, w.step - 1)); },
+    wgo: (n) => go('new-' + n),
+    wcancel: () => { const w = S.ui.wiz; if (w && (w.fetched || w.vehId || w.digits || w.just)) { openModal({ title: 'Discard this request?', icon: 'xc', tone: 'red', body: '<p>What you entered will not be saved.</p>', actions: [{ label: 'Keep editing', act: 'closeModal', cls: 'btn-o' }, { label: 'Discard', act: 'wdiscard', cls: 'btn-d' }] }); return; } A.wdiscard(); },
+    wdiscard: () => { S.ui.wiz = null; S.ui.modal = null; go('stickers-' + S.ui.tab); },
+    wsubmit: async () => { const w = S.ui.wiz; if (w.sending) return; w.sending = true; render(); await wait(700); if (S.ui.wiz !== w) return;
+      /* every check runs again on the server at submit */
+      const b = wB(w);
+      if (b.toggle && w.mode === 'activate' && left(b.key) < 1) { w.sending = false; w.errMsg = 'Your slots changed: all ' + b.label + ' stickers are in use.'; go('new-1'); return; }
+      const res = submit(w); S.ui.wiz = null; S.ui.done = { vehId: res.v.id, reqId: res.r.id, stkNo: res.s ? res.s.no : null }; go('done'); },
+    /* presenter */
+    nextDay: () => { const n = nextDay(); render(); toast('Demo date is now ' + fmt(S.today) + (n ? ' · ' + n + ' sticker change' + (n > 1 ? 's' : '') + ' took effect' : '')); },
+    aae: (a) => { const r = aaeDecide(a === '1'); if (!r) return; render(); toast('AAE returned: ' + r.id + ' ' + r.status + (r.stkNo ? ' · temporary sticker ' + r.stkNo + ' issued' : '')); },
+    reset: () => { S = seed(); go('stickers-private'); toast('Demo data reset'); },
+  };
+  const CH = {
+    persona: (v) => { S.persona = v; S.ui.wiz = null; S.ui.done = null; S.ui.modal = null; S.ui.filter = 'all'; S.ui.tfilter = 'all'; S.ui.q = ''; S.ui.tab = 'private'; go('stickers-private'); },
+    entry: (v) => { S.entry = v; const w = S.ui.wiz; if (w && w.src === 'new') resetVehicle(w); render(); toast('ISO setting: vehicle entry by ' + (v === 'api' ? 'Government API' : 'manual entry')); },
+  };
+
+  document.addEventListener('click', (e) => {
+    if (e.target.tagName === 'INPUT' && e.target.type === 'file') return; /* let the native file dialog open */
+    const el = e.target.closest('[data-act]'); if (!el || el.disabled) return;
+    if (!e.target.closest('.menu,.newwrap') && S.ui.menu && el.getAttribute('data-act') !== 'menu') S.ui.menu = false;
+    const fn = A[el.getAttribute('data-act')]; if (fn) { if (el.tagName !== 'INPUT') e.preventDefault(); fn(el.getAttribute('data-arg'), el, e); }
+  });
+  document.addEventListener('mousedown', (e) => { if ((S.ui.menu || S.ui.pop) && !e.target.closest('.menu,.newwrap,.pop,.me')) { S.ui.menu = false; S.ui.pop = false; render(); } });
+  function setW(path, val) { const w = S.ui.wiz; if (!w) return; if (path.indexOf('m.') === 0) { w.manual[path.slice(2)] = val; if (path === 'm.make') w.manual.model = ''; } else w[path] = val; if (w.err) { delete w.err[path.replace('m.', '')]; } }
+  document.addEventListener('input', (e) => {
+    const el = e.target; if (!el.getAttribute) return;
+    const wk = el.getAttribute('data-w');
+    if (wk && el.tagName !== 'SELECT') { let val = el.value;
+      if (wk === 'gnum' || wk === 'gcode') { val = wk === 'gnum' ? val.replace(/\D/g, '').slice(0, 6) : val.replace(/[^A-Za-z0-9]/g, '').slice(0, 3).toUpperCase(); el.value = val; setW(wk, val); const pv = document.querySelector('.fld .plate'); if (pv) pv.outerHTML = plate(wPlate(S.ui.wiz)); return; }
+      if (wk === 'digits') { val = val.replace(/\D/g, '').slice(0, 4); el.value = val; setW(wk, val); const pv = document.querySelector('.fld .plate'); if (pv) pv.outerHTML = plate(wPlate(S.ui.wiz)); return; } setW(wk, val); return; }
+    const m = el.getAttribute('data-model');
+    if (m === 'q') { S.ui.q = el.value; if (route().page === 'list') render(); }
+    if (m === 'drvq') { S.ui.drv.q = el.value; render(); }
+    if (m === 'renEnd') S.ui.ren.end = el.value;
+  });
+  document.addEventListener('change', (e) => {
+    const el = e.target; if (!el.getAttribute) return;
+    const c = el.getAttribute('data-change'); if (c && CH[c]) { CH[c](el.value); return; }
+    const wk = el.getAttribute('data-w');
+    if (wk === 'forWho') { A.wfor(el.value); return; }
+    if (wk === 'origin') { const w = S.ui.wiz; w.origin = el.value; w.digits = ''; w.l1 = w.l2 = w.l3 = ''; w.gcode = ''; w.gnum = ''; resetVehicle(w); render(); return; }
+    if (wk === 'ftype') { const w = S.ui.wiz; const b = me().ent.find((x) => x.typeId === el.value); if (b && b.key !== w.bucket) A.wbucket(b.key); return; }
+    if (wk && el.tagName === 'SELECT') { setW(wk, el.value); if (wk === 'owner') { const w = S.ui.wiz; w.dependent = ''; w.rel = ''; w.famco = ''; } render(); return; }
+    if (wk && el.type === 'date') { setW(wk, el.value); render(); return; }
+    const f = el.getAttribute('data-file');
+    if (f && el.files && el.files[0]) { const n = el.files[0].name; if (f === 'doc') { S.ui.wiz.doc = n; delete S.ui.wiz.err.doc; } else S.ui.ren.doc = n; render(); }
+  });
+  document.addEventListener('keydown', (e) => {
+    const t = e.target;
+    if (e.key === 'Enter' && t.getAttribute && t.getAttribute('data-enter')) { e.preventDefault(); A[t.getAttribute('data-enter')](); return; }
+    if ((e.key === 'Enter' || e.key === ' ') && t.classList && t.classList.contains('file')) { e.preventDefault(); A.pickFile(null, t); return; }
+    if (e.key === 'Escape') { if (S.ui.modal) { S.ui.modal = null; render(); } else if (S.ui.menu || S.ui.pop) { S.ui.menu = false; S.ui.pop = false; render(); } }
+  });
+
+  window.DSW = { get state() { return S; }, render, A };
+  if (!location.hash) history.replaceState(null, '', '#stickers-private');
+  render();
+})();
+
+</script>
+</body>
+</html>
