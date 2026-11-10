@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>Digital Sticker · Community sticker web prototype</title>
-<!-- Digital Sticker — community sticker web app, concept prototype v2.0 (08 Nov 2026). UI: PrimeNG v21 Lara preset look, primary overridden to Aramco purple. Employee logins only: regular employee, Executive (Core Area), Ar-Rabiyah resident.
+<!-- Digital Sticker — community sticker web app, concept prototype v2.3 (10 Nov 2026). UI: PrimeNG v21 Lara preset look, primary overridden to Aramco purple. Employee logins only: regular employee, Executive (Core Area), Ar-Rabiyah resident.
      Functionality: Digital Sticker Community Sticker FDD V1.0. Visual language: mySecurity 2.0 tokens and the client web screenshots.
      Self-contained, no network. Sample people, plates and numbers only. Not an approved design. -->
 <style>
@@ -694,6 +694,14 @@ body{font-size:1rem;line-height:1.5;color:var(--p-text-color);background:var(--p
 @keyframes tin2{from{opacity:0;transform:translateY(-8px)}}
 
 @media (max-width:860px){.top-in,.page{padding-inline:1rem}.tabs button{padding:.75rem .9rem}.stepper .st-t{display:none}.stepper li+li::before{width:1.5rem}}
+.privbox{margin-top:1rem;padding:1rem 1.25rem;border:1px solid var(--p-content-border-color);border-radius:var(--p-radius-md);background:var(--p-surface-50)}
+.privbox>h3{font-size:1rem;font-weight:700;margin:0 0 .75rem;color:var(--p-surface-800)}
+.privbox .places{gap:1rem}.privbox .places h3{font-size:.875rem;margin-bottom:.4rem}.privbox .places li{font-size:.95rem;padding:2px 0}
+.privbox .places li small{display:block;font-size:.8rem;color:var(--o700)}
+.ptag{display:inline-flex;align-items:center;gap:.25rem;margin-left:.4rem;padding:.1rem .45rem;border-radius:var(--p-radius-md);background:var(--p-surface-800);color:#fff;font-size:.75rem;font-weight:700;line-height:1.4;vertical-align:middle;white-space:nowrap}
+.ptag .ic{width:.8rem;height:.8rem}
+.seg .ic{width:1rem;height:1rem;margin-right:.35rem;vertical-align:-2px}
+.modal .chips{margin:.25rem 0 .5rem}.modal h4{margin:1rem 0 .4rem}
 </style>
 </head>
 <body>
@@ -707,6 +715,7 @@ body{font-size:1rem;line-height:1.5;color:var(--p-text-color);background:var(--p
   const MON = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   const dt = (y, m, d) => new Date(y, m - 1, d);
   const addDays = (d, n) => { const x = new Date(d); x.setDate(x.getDate() + n); return x; };
+  const isoD = (d) => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
   const addMonths = (d, n) => { const x = new Date(d); x.setMonth(x.getMonth() + n); return x; };
   const fmt = (d) => (d ? String(d.getDate()).padStart(2, '0') + ' ' + MON[d.getMonth()] + ' ' + d.getFullYear() : '—');
   const iso = (d) => d.getFullYear() + '-' + String(d.getMonth() + 1).padStart(2, '0') + '-' + String(d.getDate()).padStart(2, '0');
@@ -724,6 +733,8 @@ body{font-size:1rem;line-height:1.5;color:var(--p-text-color);background:var(--p
     user: '<circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c.8-3.6 3.4-5.5 7-5.5s6.2 1.9 7 5.5"/>', refresh: '<path d="M19.5 12a7.5 7.5 0 1 1-2.2-5.3"/><path d="M19.5 4.5v4h-4"/>',
     xc: '<circle cx="12" cy="12" r="8.5"/><path d="M9 9l6 6M15 9l-6 6"/>', power: '<path d="M12 4v8"/><path d="M7 7a7 7 0 1 0 10 0"/>',
     doc: '<path d="M7 3h7l4 4v13a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/><path d="M14 3v4h4M9 12h6M9 16h6"/>',
+    tag: '<path d="M3.5 12.2V4.5a1 1 0 0 1 1-1h7.7l8.3 8.3a1 1 0 0 1 0 1.4l-7.2 7.2a1 1 0 0 1-1.4 0z"/><circle cx="8" cy="8" r="1.5"/>',
+    phone: '<rect x="7" y="2.5" width="10" height="19" rx="2"/><path d="M11 18.5h2"/>',
     upload: '<path d="M12 16V5M7.5 9.5L12 5l4.5 4.5"/><path d="M5 16v2a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-2"/>',
     flow: '<circle cx="6" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M6 8.5V14a4 4 0 0 0 4 4h5.5"/>',
     shield: '<path d="M12 3l7 3v5c0 4.6-2.9 8.3-7 10-4.1-1.7-7-5.4-7-10V6z"/><path d="M9 12l2.2 2.2 4-4.2"/>',
@@ -765,9 +776,9 @@ body{font-size:1rem;line-height:1.5;color:var(--p-text-color);background:var(--p
   const PLACES = [
     ['Bachelor camps', { c3: 1, c9: 1, c11: 1, core: 1, rab: 0 }], ['Administrative offices', { c3: 1, c9: 1, c11: 1, core: 1, rab: 0 }],
     ['Hospitals', { c3: 1, c9: 1, c11: 1, core: 1, rab: 0 }], ['Clinics', { c3: 1, c9: 1, c11: 1, core: 1, rab: 0 }],
-    ['Non-restricted areas', { c3: 1, c9: 1, c11: 1, core: 1, rab: 0 }], ['Family camps', { c3: 'For business, in business hours', c9: 1, c11: 1, core: 1, rab: 0 }],
+    ['Non-restricted areas', { c3: 1, c9: 1, c11: 1, core: 1, rab: 0 }], ['Family camps', { c3: 'For business only, during business hours', c9: 1, c11: 1, core: 1, rab: 0 }],
     ['Beaches', { c3: 0, c9: 0, c11: 1, core: 1, rab: 0 }], ['Dhahran core area', { c3: 0, c9: 0, c11: 0, core: 1, rab: 0 }],
-    ['Warehouses', { c3: 0, c9: 0, c11: 0, core: 1, rab: 0 }], ['Ar-Rabiyah compound', { c3: 0, c9: 0, c11: 0, core: 1, rab: 'Through designated gates' }],
+    ['Warehouses', { c3: 0, c9: 0, c11: 0, core: 1, rab: 0 }], ['Ar-Rabiyah compound', { c3: 0, c9: 0, c11: 0, core: 1, rab: 'Only through the designated security gates' }],
   ];
   const OWNER = {
     own: 'Own vehicle', dep: 'Dependent’s vehicle', rent: 'Rented vehicle', absher: 'Another person’s vehicle (Absher permission)', company: 'Aramco company car',
@@ -888,16 +899,19 @@ body{font-size:1rem;line-height:1.5;color:var(--p-text-color);background:var(--p
       V('n5', 'g9', '2121', 'GLR', 'Hyundai', 'Accent', 2024, 'White', '', 'Sedan', 'Yelo Rental', 'rent'),
       V('v11', 'emp', '7474', 'RKD', 'Toyota', 'Hilux', 2018, 'White', '', 'Pickup', 'Ramesh Kumar', 'helper'),
       V('a5', 'act', '1313', 'SAX', 'Chevrolet', 'Tahoe', 2024, 'Black', '', 'SUV', ARAMCO, 'company'),
+      V('r6', 'rab', '4646', 'HDS', 'Hyundai', 'Creta', 2025, 'Red', '', 'SUV', 'Mohammed Al-Shehri', 'own'),
+      V('f5', 'fem', '5757', 'NQS', 'Hyundai', 'Santa Fe', 2024, 'Grey', '', 'SUV', 'Noor Al-Qahtani', 'own'),
       V('f4', 'fem', '6868', 'NRA', 'Toyota', 'Camry', 2021, 'Silver', '', 'Sedan', 'Noor Al-Qahtani', 'own'),
       V('i2', 'iklh', '5959', 'RHD', 'Nissan', 'Altima', 2020, 'White', '', 'Sedan', 'Imtiaz Rahman', 'husband'),
       V('a4', 'act', '8484', 'HZD', 'Honda', 'Accord', 2019, 'Grey', '', 'Sedan', 'Hamad Al-Rashid', 'own'),
     ];
     const K = (no, vehId, holder, bucket, typeId, status, start, end, extra) => Object.assign({ no, vehId, holder, bucket, typeId, temp: false, status, start, end, ver: 1, pendingOff: null, pendingCancel: null, driver: null, doc: null,
       hist: [{ at: start, txt: 'Sticker issued' }] }, extra || {});
+    [['e1', '24518'], ['a1', '31207'], ['a5', '31244']].forEach(([id, d]) => { vehicles.find((v) => v.id === id).door = d; });
     const stickers = [
-      K('DS-26-000311', 'v1', 'emp', 'comm', 'c11', 'active', dt(2025, 3, 14), null),
+      K('DS-26-000311', 'v1', 'emp', 'comm', 'c11', 'active', dt(2025, 3, 14), null, { medium: 'physical' }),
       K('DS-26-000312', 'v2', 'emp', 'comm', 'c11', 'active', dt(2025, 3, 22), null, { driver: { name: 'Ramesh Kumar', badge: 'D-55120', rel: 'Family driver' } }),
-      K('DS-26-000313', 'v4', 'emp', 'comm', 'c11', 'active', dt(2026, 5, 18), null),
+      K('DS-26-000313', 'v4', 'emp', 'comm', 'c11', 'active', dt(2026, 5, 18), dt(2026, 11, 18)),
       K('DS-26-000314', 'v5', 'emp', 'comm', 'c11', 'inactive', dt(2025, 8, 9), null),
       K('DS-26-000315', 'v6', 'emp', 'comm', 'c11', 'expired', dt(2025, 10, 30), dt(2026, 10, 30), { temp: true }),
       K('DS-26-000309', 'v7', 'emp', 'comm', 'c11', 'cancelled', dt(2024, 6, 2), null, { closed: dt(2026, 9, 15) }),
@@ -907,12 +921,12 @@ body{font-size:1rem;line-height:1.5;color:var(--p-text-color);background:var(--p
       K('DS-26-000204', 'e4', 'exe', 'comm', 'c11', 'active', dt(2024, 2, 11), null),
       K('DS-26-000208', 'e3', 'exe', 'comm', 'c11', 'inactive', dt(2025, 4, 2), null),
       K('DS-26-000205', 'e5', 'exe', 'comm', 'c11', 'inactive', dt(2025, 9, 1), null),
-      K('DS-26-000206', 'e6', 'exe', 'comm', 'c11', 'active', dt(2026, 6, 20), null),
-      K('DS-26-000207', 'e8', 'exe', 'comm', 'c11', 'active', dt(2026, 2, 1), dt(2027, 8, 15), { sponsored: { name: 'Joseph Mathew', badge: 'D-61822', rel: 'Family driver' } }),
-      K('DS-26-000291', 'f1', 'fem', 'comm', 'c9', 'active', dt(2025, 4, 3), null),
-      K('DS-26-000292', 'f2', 'fem', 'comm', 'c9', 'active', dt(2026, 1, 19), null),
+      K('DS-26-000206', 'e6', 'exe', 'comm', 'c11', 'active', dt(2026, 6, 20), dt(2026, 12, 20)),
+      K('DS-26-000207', 'e8', 'exe', 'comm', 'c11', 'active', dt(2026, 2, 1), dt(2027, 2, 1), { sponsored: { name: 'Joseph Mathew', badge: 'D-61822', rel: 'Family driver' } }),
+      K('DS-26-000291', 'f1', 'fem', 'comm', 'c9', 'active', dt(2026, 4, 3), dt(2027, 4, 3)),
+      K('DS-26-000292', 'f2', 'fem', 'comm', 'c9', 'active', dt(2026, 1, 19), dt(2027, 1, 19)),
       K('DS-26-000293', 'f3', 'fem', 'comm', 'c9', 'inactive', dt(2025, 11, 2), null),
-      K('DS-26-000295', 'i1', 'iklh', 'comm', 'c11', 'active', dt(2025, 7, 21), null),
+      K('DS-26-000295', 'i1', 'iklh', 'comm', 'c11', 'active', dt(2026, 7, 21), dt(2027, 7, 21)),
       K('DS-26-000301', 'a1', 'act', 'acore', 'core', 'active', dt(2026, 8, 1), dt(2027, 1, 31)),
       K('DS-26-000302', 'a2', 'act', 'comm', 'c11', 'active', dt(2023, 5, 14), null),
       K('DS-26-000303', 'a3', 'act', 'comm', 'c11', 'inactive', dt(2024, 1, 9), null),
@@ -922,7 +936,7 @@ body{font-size:1rem;line-height:1.5;color:var(--p-text-color);background:var(--p
       K('DS-26-000274', 'g34', 'g3', 'comm', 'c3', 'active', dt(2026, 6, 10), dt(2027, 6, 10), { temp: true }),
       K('DS-26-000270', 'g35', 'g3', 'comm', 'c3', 'cancelled', dt(2026, 3, 1), null, { closed: dt(2026, 8, 31) }),
       K('DS-26-000281', 'n1', 'g9', 'comm', 'c9', 'active', dt(2025, 1, 12), null),
-      K('DS-26-000282', 'n2', 'g9', 'comm', 'c9', 'active', dt(2026, 3, 15), null),
+      K('DS-26-000282', 'n2', 'g9', 'comm', 'c9', 'active', dt(2026, 3, 15), dt(2027, 3, 15)),
       K('DS-26-000283', 'n3', 'g9', 'comm', 'c9', 'inactive', dt(2024, 10, 5), null),
       K('DS-26-000251', 'r1', 'rab', 'comm', 'c3', 'active', dt(2025, 7, 7), null),
       K('DS-26-000252', 'r2', 'rab', 'comm', 'c3', 'inactive', dt(2024, 3, 3), null),
@@ -952,6 +966,8 @@ body{font-size:1rem;line-height:1.5;color:var(--p-text-color);background:var(--p
     H('DS-26-000301', dt(2026, 8, 1), 'Issued for the acting assignment, ends 31 Jan 2027');
     H('DS-26-000282', dt(2026, 3, 15), 'Absher permission checked');
     const requests = [
+      { id: 'DSR-26-00431', vehId: 'r6', holder: 'rab', bucket: 'comm', typeId: 'c3', kind: 'new', approver: 'ISO Sticker Office', status: 'appointment', created: dt(2026, 11, 3), decided: dt(2026, 11, 5), appt: new Date(2026, 10, 8, 9, 30), medium: 'physical', office: 'DHAHRAN MAIN STICKER OFFICE', mode: 'activate', just: '', reason: '' },
+      { id: 'DSR-26-00433', vehId: 'f5', holder: 'fem', bucket: 'comm', typeId: 'c9', kind: 'new', approver: 'ISO Sticker Office', status: 'pending', created: dt(2026, 11, 4), decided: null, medium: 'physical', office: 'ABQAIQ STICKER OFFICE', mode: 'activate', just: '', reason: '' },
       { id: 'DSR-26-00412', vehId: 'v10', holder: 'emp', bucket: 'comm', typeId: 'c11', kind: 'temporary', approver: DIRECTOR, status: 'pending', created: dt(2026, 11, 2), just: 'Fourth family vehicle, used for the school run.', decided: null, reason: '' },
       { id: 'DSR-26-00350', vehId: 'v4', holder: 'emp', bucket: 'comm', typeId: 'c11', kind: 'new', status: 'issued', created: dt(2026, 5, 18), decided: dt(2026, 5, 18), stkNo: 'DS-26-000313' },
       { id: 'DSR-26-00417', vehId: 'e7', holder: 'exe', bucket: 'corep', typeId: 'core', kind: 'temporary', approver: ISOVP, status: 'pending', created: dt(2026, 11, 3), just: 'Third private car, used for official visitors to the Dhahran core area.', decided: null, reason: '' },
@@ -963,7 +979,9 @@ body{font-size:1rem;line-height:1.5;color:var(--p-text-color);background:var(--p
       { id: 'DSR-26-00398', vehId: 'a5', holder: 'act', bucket: 'acore', typeId: 'core', kind: 'temporary', approver: ISOVP, status: 'approved', created: dt(2026, 10, 12), decided: dt(2026, 10, 15), just: 'Second pool car for visiting delegations during the acting period.', stkNo: 'DS-26-000304' },
       { id: 'DSR-26-00338', vehId: 'r4', holder: 'rab', bucket: 'rab', typeId: 'rab', kind: 'new', status: 'issued', created: dt(2025, 10, 1), decided: dt(2025, 10, 1), stkNo: 'DS-26-000254' },
     ];
-    return { today: START, persona: 'emp', entry: 'api', people, vehicles, stickers, requests, seqR: 420, seqS: 330, seqV: 1,
+    const phys = { on: true, rules: { designation: ['Employee', 'Executive', 'Vice President', 'Acting VP'], gender: ['Male', 'Female'], grade: ['SC 3-8', 'SC 9-10', 'SC 11+'],
+      residence: ['Saudi Aramco community', 'Ar-Rabiyah', 'Local community'], sticker: ['Community', 'Core Area'] } };
+    return { today: START, persona: 'emp', entry: 'api', phys, people, vehicles, stickers, requests, seqR: 420, seqS: 330, seqV: 1,
       ui: { tab: 'private', filter: 'all', tfilter: 'all', q: '', menu: false, pop: false, modal: null, wiz: null, done: null } };
   }
   let S = seed();
@@ -978,7 +996,37 @@ body{font-size:1rem;line-height:1.5;color:var(--p-text-color);background:var(--p
   const myReqs = () => S.requests.filter((r) => r.holder === S.persona).sort((a, b) => b.created - a.created);
   const live = (s) => s.status === 'active' || s.status === 'inactive';
   /* active count per entitlement bucket; a deactivation counts until it takes effect tomorrow */
-  const used = (key) => S.stickers.filter((s) => s.holder === S.persona && !s.temp && s.bucket === key && s.status === 'active').length;
+  /* an open physical request that will start active holds its slot until the appointment (it is issued active there) */
+  const openPhys = (r) => r.medium === 'physical' && r.kind !== 'temporary' && r.mode === 'activate' && (r.status === 'pending' || r.status === 'appointment');
+  const used = (key) => S.stickers.filter((s) => s.holder === S.persona && !s.temp && s.bucket === key && s.status === 'active').length + S.requests.filter((r) => r.holder === S.persona && r.bucket === key && openPhys(r)).length;
+  /* physical sticker: request approved in AAE, then affixed at an appointment (approver and office To Be Confirmed) */
+  const PHYS_APPROVER = 'ISO Sticker Office';
+  /* ISO configuration: is the physical option on, and which employees may request it. An employee is eligible when every criterion matches.
+     The criteria and their values are a sample for the demo (To Be Confirmed with ISO). */
+  const PHYS_DIMS = [['designation', 'Designation', ['Employee', 'Executive', 'Vice President', 'Acting VP']], ['gender', 'Gender', ['Male', 'Female']],
+    ['grade', 'Grade', ['SC 3-8', 'SC 9-10', 'SC 11+']], ['residence', 'Residence', ['Saudi Aramco community', 'Ar-Rabiyah', 'Local community']], ['sticker', 'Sticker type', ['Community', 'Core Area', 'Ar-Rabiyah']]];
+  function personAttrs(P, b) {
+    return { designation: P.type === 'Executive' ? 'Executive' : P.type === 'Acting VP' ? 'Acting VP' : P.type === 'Vice President' ? 'Vice President' : 'Employee',
+      gender: P.classes.some((c) => /female/i.test(c)) ? 'Female' : 'Male', grade: /^SC 3-8/.test(P.grade) ? 'SC 3-8' : /^SC 9-10/.test(P.grade) ? 'SC 9-10' : 'SC 11+',
+      residence: P.residence === 'Ar-Rabiyah' ? 'Ar-Rabiyah' : /^Local/.test(P.residence) ? 'Local community' : 'Saudi Aramco community',
+      sticker: { comm: 'Community', core: 'Core Area', rab: 'Ar-Rabiyah' }[TYPES[b.typeId].fam] };
+  }
+  function physCheck(P, b) {
+    if (!S.phys.on) return { on: false, ok: false };
+    const a = personAttrs(P, b);
+    for (const [k, label] of PHYS_DIMS) if (S.phys.rules[k].indexOf(a[k]) < 0) return { on: true, ok: false, why: label + ': ' + a[k] };
+    return { on: true, ok: true };
+  }
+  /* sticker offices offered for the appointment (client list; "ALL OFFICES" is a filter value, not an office) */
+  const OFFICES = ['ABQAIQ STICKER OFFICE', 'Abu Ali', 'Al-Kharj Sticker Office', 'BERRI STICKER OFFICE', 'CONTRACTOR OFF', 'DHAHRAN CONT. STICKER OFFICE', 'DHAHRAN MAIN STICKER OFFICE', 'DHAHRAN-1', 'DHAHRAN-2',
+    'DUBA STICKER OFFICE', 'E/W PS #3 Sticker Office', 'Hawta Sticker Office', 'Jeddah Sticker Office', 'Jizan Sticker Office', 'Juaymah Sticker Office', 'Mubarraz Sticker Office', 'Najran Sticker Office', 'Qassim Sticker Office',
+    'RT Cont. Sticker Office', 'RT Main Sticker Office', 'Rabigh Sticker Office', 'Riyadh Cont. Sticker Office', 'Riyadh Main Sticker Office', 'Shedgum Sticker Office', 'Sulayyil Sticker Office', 'Tabuk Sticker Office',
+    'Tanajib Sticker Office', 'Udhailiyah Sticker Office', 'Yanbu Admin Sticker Office'];
+  const isOpen = (r) => r.status === 'pending' || r.status === 'appointment';
+  const fmtDT = (d) => fmt(d) + ', ' + String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0');
+  /* next working day (Sun-Thu) after the approval, 09:30 */
+  function apptSlot(from) { let d = addDays(from, 1); while (d.getDay() === 5 || d.getDay() === 6) d = addDays(d, 1); d.setHours(9, 30, 0, 0); return d; }
+  const physTag = (x) => (x && x.medium === 'physical' ? ' <span class="ptag">' + I('tag') + 'Physical sticker</span>' : '');
   const left = (key) => { const b = bucket(key); return !b || b.max == null ? Infinity : Math.max(0, b.max - used(key)); };
   const tempActive = () => S.stickers.filter((s) => s.holder === S.persona && s.temp && s.status === 'active').length;
   const tomorrow = () => addDays(S.today, 1);
@@ -995,7 +1043,7 @@ body{font-size:1rem;line-height:1.5;color:var(--p-text-color);background:var(--p
     FAM_ORDER.forEach((f) => {
       const fs = ss.filter((s) => famOf(s) === f), fr = rr.filter((r) => famOf(r) === f);
       const lv = fs.filter(live).sort((a, b) => (a.status === 'active' ? 0 : 1) - (b.status === 'active' ? 0 : 1));
-      const pend = fr.filter((r) => r.status === 'pending');
+      const pend = fr.filter(isOpen);
       lv.forEach((s) => out.push({ s, x: s, fam: f, temp: s.temp, ended: false }));
       pend.forEach((r) => out.push({ r, x: r, fam: f, temp: r.kind === 'temporary', ended: false }));
       if (!lv.length && !pend.length) {
@@ -1030,6 +1078,7 @@ body{font-size:1rem;line-height:1.5;color:var(--p-text-color);background:var(--p
       return s.status === 'active' ? ['Active', 'p-green'] : ['Inactive', 'p-grey'];
     }
     if (c.r && c.r.status === 'pending') return ['Pending approval', 'p-gold'];
+    if (c.r && c.r.status === 'appointment') return ['Appointment scheduled', 'p-lav'];
     if (c.r && c.r.status === 'rejected') return ['Rejected', 'p-red'];
     if (c.r && c.r.status === 'withdrawn') return ['Withdrawn', 'p-grey'];
     if (c.s) return c.s.status === 'expired' ? ['Expired', 'p-red'] : ['Cancelled', 'p-red'];
@@ -1047,25 +1096,28 @@ body{font-size:1rem;line-height:1.5;color:var(--p-text-color);background:var(--p
      the ownership cap from the duration table (SRS AOD: rented 6 months, Absher / family / family company / husband 1 year);
      the sponsored helper's ID expiry (AOD-2); the end of the acting assignment (AOD-14). */
   const ISO_TEMP_MONTHS = { comm: 12, corep: 12, corec: 12, acore: 12 };
+  /* SRS glossary, Sticker Duration (Applicant x Ownership), Community stickers: the longest a sticker lasts for each ownership.
+     Own and dependent's vehicles are permanent (AOD-1, AOD-4); Core Area and Ar-Rabiyah are permanent for own and rented (AOD-13, 15, 17-19). */
   const OWNER_CAP = { rent: [6, 'Rented vehicle: up to 6 months (AOD-5)'], absher: [12, 'Absher permission: up to 1 year (AOD-6)'], family: [12, 'Family member’s vehicle: up to 1 year (AOD-8)'],
     famco: [12, 'Family company vehicle: up to 1 year (AOD-7, AOD-11)'], husband: [12, 'Husband’s vehicle: up to 1 year (AOD-9)'] };
-  function tempEnd(b, owner, helper, from) {
-    const f = from || S.today, m = ISO_TEMP_MONTHS[b.key] || 12;
-    const c = [{ d: addMonths(f, m), why: 'ISO period for a temporary sticker: ' + (m === 12 ? '1 year' : m + ' months') + ' from approval' }];
-    if (OWNER_CAP[owner]) c.push({ d: addMonths(f, OWNER_CAP[owner][0]), why: OWNER_CAP[owner][1] });
-    if (helper && helper.idExpiry) c.push({ d: helper.idExpiry, why: 'Sponsored helper’s ID expiry' });
-    if (b.until) c.push({ d: b.until, why: 'End of the acting assignment' });
-    return c.reduce((a, x) => (x.d < a.d ? x : a));
+  /* end date = the earliest of every limit that applies; null = permanent */
+  function endRule(b, owner, helper, from, temp, rentEnd) {
+    const f = from || S.today, c = [];
+    if (temp) { const m = ISO_TEMP_MONTHS[b.key] || 12; c.push({ d: addMonths(f, m), why: 'ISO period for an additional temporary sticker: ' + (m === 12 ? '1 year' : m + ' months') + ' from approval' }); }
+    if (TYPES[b.typeId].fam === 'comm' && OWNER_CAP[owner]) c.push({ d: addMonths(f, OWNER_CAP[owner][0]), why: OWNER_CAP[owner][1] });
+    if (owner === 'rent' && rentEnd) c.push({ d: rentEnd, why: 'Rental agreement end date' });
+    if (helper && helper.idExpiry) { c.push({ d: helper.idExpiry, why: 'Sponsored helper’s ID expiry (AOD-2)' }); c.push({ d: addMonths(f, 12), why: 'Sponsored helper: ID validity, at most 1 year (AOD-2)' }); }
+    if (b.until) c.push({ d: b.until, why: 'End of the acting assignment (AOD-14)' });
+    return c.length ? c.reduce((x, y) => (y.d < x.d ? y : x)) : null;
   }
+  const tempEnd = (b, owner, helper, from, rentEnd) => endRule(b, owner, helper, from, true, rentEnd);
   const helperOf = (x, person) => (x && (x.helper || x.sponsored) ? ((person || me()).helpers || []).find((h) => h.name === (x.helper || x.sponsored).name) || null : null);
-  /* the rule that set a temporary sticker's end date, worked out again from its start */
-  function tempWhy(s) { const P = S.people[s.holder], b = bucket(s.bucket, P), v = veh(s.vehId); return b ? tempEnd(b, v.owner, helperOf(s, P), s.start).why : ''; }
-  function validity(b, owner, temp, helper) {
-    if (temp) return tempEnd(b, owner, helper).d;
-    if (helper) return helper.idExpiry;
-    if (b.until) return b.until;
-    return null;
-  }
+  /* the rule that set a sticker's end date, worked out again from its start */
+  function endWhy(s) { const P = S.people[s.holder], b = bucket(s.bucket, P), v = veh(s.vehId); const r = b ? endRule(b, v.owner, helperOf(s, P), s.start, s.temp, s.rentEnd) : null; return r ? r.why : ''; }
+  const tempWhy = endWhy;
+  const parseD = (x) => { if (!x) return null; const a = String(x).split('-'); return a.length === 3 ? dt(+a[0], +a[1], +a[2]) : null; };
+  const rentEndOf = (w) => (w.owner === 'rent' ? parseD(w.rentEnd) : null);
+  function validity(b, owner, temp, helper, rentEnd) { const r = endRule(b, owner, helper, S.today, temp, rentEnd); return r ? r.d : null; }
   function endText(s, v) {
     if (!s) return '—';
     if (s.end) return fmt(s.end);
@@ -1077,12 +1129,26 @@ body{font-size:1rem;line-height:1.5;color:var(--p-text-color);background:var(--p
   const newStkNo = () => 'DS-26-000' + (S.seqS++);
   const newReqNo = () => 'DSR-26-00' + (S.seqR++);
 
+  /* the physical sticker is affixed at the appointment; from then on it is the same sticker record as a digital one */
+  function issuePhysical(r) {
+    const v = veh(r.vehId), P = S.people[r.holder], b = bucket(r.bucket, P), helper = r.helper ? (P.helpers || []).find((h) => h.name === r.helper.name) : null;
+    const ex = r.kind === 'temporary' ? null : S.stickers.find((x) => x.vehId === v.id && x.holder === r.holder && !x.temp && x.status === 'inactive' && x.bucket === r.bucket);
+    if (ex) { ex.medium = 'physical'; ex.status = r.mode === 'activate' ? 'active' : 'inactive'; ex.ver++; log(ex, 'Physical sticker affixed at the appointment (' + r.id + ')'); r.stkNo = ex.no; r.status = 'issued'; return ex; }
+    const temp = r.kind === 'temporary', rule = endRule(b, v.owner, helper, S.today, temp, r.rentEnd);
+    const st = temp || r.mode === 'activate' || !b.toggle ? 'active' : 'inactive';
+    const s = { no: newStkNo(), vehId: v.id, holder: r.holder, bucket: r.bucket, typeId: r.typeId, temp, medium: 'physical', status: st, start: S.today, end: rule ? rule.d : null, ver: 1, rentEnd: r.rentEnd || null,
+      pendingOff: null, pendingCancel: null, driver: null, doc: r.doc || null, sponsored: r.helper || null,
+      hist: [{ at: S.today, txt: 'Physical ' + (temp ? 'additional temporary ' : '') + 'sticker affixed at ' + (r.office || 'the appointment') + ' and issued' + (st === 'inactive' ? ' as inactive' : '') + ' (' + r.id + ')' }] };
+    if (temp) S.stickers.filter((x) => x.vehId === v.id && x.holder === r.holder && !x.temp && x.status === 'inactive' && TYPES[x.typeId].fam === TYPES[r.typeId].fam).forEach((x) => { x.status = 'cancelled'; x.closed = S.today; log(x, 'Replaced by additional temporary sticker ' + s.no + ' (' + r.id + ')'); });
+    S.stickers.push(s); r.stkNo = s.no; r.status = temp ? 'approved' : 'issued'; return s;
+  }
   function nextDay() {
     S.today = addDays(S.today, 1); let n = 0;
+    S.requests.filter((r) => r.status === 'appointment' && r.appt && addDays(r.appt, 0).setHours(0, 0, 0, 0) <= +S.today).forEach((r) => { issuePhysical(r); n++; });
     S.stickers.forEach((s) => {
       if (s.pendingCancel && s.pendingCancel <= S.today) { s.status = 'cancelled'; s.closed = S.today; s.pendingCancel = null; s.pendingOff = null; log(s, 'Cancelled (effective today)'); n++; return; }
       if (s.pendingOff && s.pendingOff <= S.today) { s.status = 'inactive'; s.pendingOff = null; log(s, 'Inactive (effective today); slot freed'); n++; }
-      if (s.status === 'active' && s.end && s.end < S.today) { s.status = 'expired'; s.closed = S.today; log(s, 'Expired at end of validity'); n++; }
+      if ((s.status === 'active' || s.status === 'inactive') && s.end && s.end < S.today) { s.status = 'expired'; s.closed = S.today; log(s, 'Expired at end of validity'); n++; }
     });
     return n;
   }
@@ -1091,10 +1157,13 @@ body{font-size:1rem;line-height:1.5;color:var(--p-text-color);background:var(--p
     r.decided = S.today;
     if (!approve) { r.status = 'rejected'; r.reason = 'Justification does not support a vehicle beyond entitlement.'; return r; }
     const v = veh(r.vehId), b = bucket(r.bucket);
+    if (r.medium === 'physical') { r.status = 'appointment'; r.appt = apptSlot(S.today); return r; }
     /* SAP re-checks the vehicle and issues the temporary sticker beyond entitlement */
-    const s = { no: newStkNo(), vehId: v.id, holder: r.holder, bucket: r.bucket, typeId: r.typeId, temp: true, status: 'active', start: S.today, end: tempEnd(b, v.owner, helperOf(r, S.people[r.holder])).d, ver: 1,
-      pendingOff: null, pendingCancel: null, driver: null, doc: r.doc || null, hist: [{ at: S.today, txt: 'Temporary sticker issued after approval in AAE (' + r.id + '), valid to ' + fmt(tempEnd(b, v.owner, helperOf(r, S.people[r.holder])).d) }] };
+    const s = { no: newStkNo(), vehId: v.id, holder: r.holder, bucket: r.bucket, typeId: r.typeId, temp: true, status: 'active', start: S.today, end: tempEnd(b, v.owner, helperOf(r, S.people[r.holder]), null, r.rentEnd).d, ver: 1, rentEnd: r.rentEnd || null,
+      pendingOff: null, pendingCancel: null, driver: null, doc: r.doc || null, hist: [{ at: S.today, txt: 'Additional temporary sticker issued after approval in AAE (' + r.id + '), valid to ' + fmt(tempEnd(b, v.owner, helperOf(r, S.people[r.holder]), null, r.rentEnd).d) }] };
     if (r.helper) s.sponsored = r.helper;
+    /* a vehicle registered as inactive keeps one sticker of each type: the temporary sticker replaces its inactive one */
+    S.stickers.filter((x) => x.vehId === v.id && x.holder === r.holder && !x.temp && x.status === 'inactive' && TYPES[x.typeId].fam === TYPES[r.typeId].fam).forEach((x) => { x.status = 'cancelled'; x.closed = S.today; log(x, 'Replaced by additional temporary sticker ' + s.no + ' (' + r.id + ')'); });
     S.stickers.push(s); r.status = 'approved'; r.stkNo = s.no; return r;
   }
 
@@ -1125,6 +1194,7 @@ body{font-size:1rem;line-height:1.5;color:var(--p-text-color);background:var(--p
     return '<div class="pres" role="region" aria-label="Presenter controls, not part of the product"><b>PROTOTYPE · SAMPLE DATA</b>' +
       '<label>view as <select data-change="persona" aria-label="View as">' + Object.keys(S.people).map((k) => '<option value="' + k + '"' + (k === S.persona ? ' selected' : '') + '>' + esc(lab[k]) + '</option>').join('') + '</select></label>' +
       '<label>ISO vehicle entry <select data-change="entry" aria-label="ISO setting: vehicle entry"><option value="api"' + (S.entry === 'api' ? ' selected' : '') + '>Government API</option><option value="manual"' + (S.entry === 'manual' ? ' selected' : '') + '>Manual entry</option></select></label>' +
+      '<label>ISO physical sticker <select data-change="physOn" aria-label="ISO setting: physical sticker option"><option value="on"' + (S.phys.on ? ' selected' : '') + '>Enabled</option><option value="off"' + (S.phys.on ? '' : ' selected') + '>Disabled</option></select></label><button data-act="physRules"' + (S.phys.on ? '' : ' disabled') + ' title="Which employees may request a physical sticker">Eligibility</button>' +
       '<span class="grp">AAE <button data-act="aae" data-arg="1"' + (pend ? '' : ' disabled') + ' title="Play the approver decision returned by AAE">Approve</button><button data-act="aae" data-arg="0"' + (pend ? '' : ' disabled') + '>Reject</button></span>' +
       '<span class="grp sp">demo date ' + fmt(S.today) + ' <button data-act="nextDay">Next day ›</button><button data-act="reset" aria-label="Reset demo data">Reset</button></span></div>';
   }
@@ -1146,15 +1216,15 @@ body{font-size:1rem;line-height:1.5;color:var(--p-text-color);background:var(--p
     const one = items.length === 1 ? items[0] : null, s = one && one.s;
     const st = one ? status(one) : ['' + items.length + ' stickers', 'p-lav'];
     const band = keys.length > 1 ? ';--band:linear-gradient(90deg,' + keys.map((k, i) => SCOLOR[k] + ' ' + (i * 100 / keys.length) + '% ' + ((i + 1) * 100 / keys.length) + '%').join(',') + ')' : '';
-    const exp = one ? (s ? endText(s, v) : one.r && one.r.status === 'pending' ? (one.r.kind === 'temporary' && bucket(one.r.bucket) ? 'Up to ' + fmt(tempEnd(bucket(one.r.bucket), v.owner, helperOf(one.r)).d) : 'After approval') : '—') : '';
+    const exp = one ? (s ? endText(s, v) : one.r && one.r.status === 'appointment' ? fmtDT(one.r.appt) : one.r && one.r.status === 'pending' ? (one.r.kind === 'temporary' && bucket(one.r.bucket) ? 'Up to ' + fmt(tempEnd(bucket(one.r.bucket), v.owner, helperOf(one.r), null, one.r.rentEnd).d) : 'After approval') : '—') : '';
     const expCls = s && (soon(s) || s.status === 'expired') ? ' class="t-red"' : '';
     const types = items.map((i) => typeLabel(i.x)).join(' + ');
     return '<button class="vcard tinted' + (ended ? ' ended' : '') + '" style="' + tint(keys[0]) + band + '" data-act="open" data-arg="' + v.id + '" aria-label="' + esc(vName(v) + ', ' + pText(v) + ', ' + types + ', ' + st[0]) + '">' +
       '<div class="vcard-h"><span class="icons">' + keys.map((k) => sIcon(k, items.length > 1 ? 'card multi' : 'card')).join('') + '</span>' + pill(st) + '</div>' +
       '<div><h3>' + esc(v.model + ' ' + v.year) + '</h3><small>' + esc(v.make) + '</small></div>' +
-      '<div class="kv2"><div><small>Plate No</small><b>' + esc(pLabel(v)) + '</b></div><div><small>Sticker Type</small><b>' + esc(types || '—') + '</b></div>' +
-      (one ? '<div><small>Driver</small><b>' + esc(driverName(s)) + '</b></div><div><small>Expiry Date</small><b' + expCls + '>' + exp + '</b></div></div>'
-        : '</div><ul class="mrows">' + items.map((i) => '<li>' + sIcon(iconKey(i.x), 'xs') + '<span>' + esc(typeLabel(i.x)) + '</span>' + pill(status(i)) + '</li>').join('') + '</ul>') +
+      '<div class="kv2"><div><small>Plate No</small><b>' + esc(pLabel(v)) + '</b></div><div><small>Sticker Type</small><b>' + esc(types || '—') + (one ? physTag(one.x) : '') + '</b></div>' +
+      (one ? '<div><small>Driver</small><b>' + esc(driverName(s)) + '</b></div><div><small>' + (one.r && one.r.status === 'appointment' ? 'Appointment' : 'Expiry Date') + '</small><b' + expCls + '>' + exp + '</b></div></div>'
+        : '</div><ul class="mrows">' + items.map((i) => '<li>' + sIcon(iconKey(i.x), 'xs') + '<span>' + esc(typeLabel(i.x)) + physTag(i.x) + '</span>' + pill(status(i)) + '</li>').join('') + '</ul>') +
       (s && s.sponsored ? '<div class="end spn">Sponsored helper · counts against your entitlement</div>' : '') +
       (s && s.pendingOff ? '<div class="end">Slot frees ' + fmt(s.pendingOff) + '</div>' : s && soon(s) ? '<div class="end">Ends ' + fmt(s.end) + '</div>' : '') + '</button>';
   }
@@ -1185,35 +1255,40 @@ body{font-size:1rem;line-height:1.5;color:var(--p-text-color);background:var(--p
           '<div class="chips" role="group" aria-label="Filter by status">' + [['all', 'All'], ['active', 'Active'], ['inactive', 'Inactive'], ['ended', 'Ended']].map((x) => '<button data-act="filter" data-arg="' + x[0] + '" aria-pressed="' + (S.ui.filter === x[0]) + '">' + x[1] + '</button>').join('') + '</div>' : '') +
         (S.ui.q ? '<span class="q">Search: “' + esc(S.ui.q) + '” · <button class="lnk" data-act="clearQ">Clear</button></span>' : '') + '</div>' +
         '<div class="grid">' + (shown.length ? shown.map(card).join('') :
-          '<div class="empty">' + I(rt.tab === 'temporary' ? 'clock' : 'car') + '<b>' + (rt.tab === 'temporary' ? 'No digital temporary stickers' : 'No vehicles in this view') + '</b><span>' +
+          '<div class="empty">' + I(rt.tab === 'temporary' ? 'clock' : 'car') + '<b>' + (rt.tab === 'temporary' ? 'No additional temporary stickers' : 'No vehicles in this view') + '</b><span>' +
           (rt.tab === 'temporary' ? 'A temporary sticker is raised when you need one more active vehicle than your entitlement allows. It needs approval in AAE and lasts up to 1 year: 6 months for a rented car, and never past a sponsored helper’s ID expiry or the end of an acting assignment. It cannot be renewed.' : 'Change the filter or search.') + '</span></div>') + '</div>';
     }
     const canTemp = p.ent.some((b) => b.beyond);
     return crumbs([['Dashboard', 'soon', 'Dashboard'], ['Car Sticker']]) +
-      '<div class="ph"><div class="ph-t"><button data-act="soon" data-arg="Dashboard" aria-label="Back to dashboard">' + I('back') + '</button><div><h1>Car Sticker</h1><p>In here, you can view your vehicle stickers and request a fully digital sticker for one or multiple vehicles.</p>' +
-      '<div class="tabs" role="tablist">' + [['private', 'car', 'Private Sticker', 0], ['temporary', 'clock', 'Digital Temporary Sticker', 0], ['requests', 'inbox', 'My Requests', pendN]].map((t) => '<button role="tab" data-act="tab" data-arg="' + t[0] + '" aria-selected="' + (rt.tab === t[0]) + '">' + I(t[1]) + t[2] + (t[3] ? '<em>' + t[3] + '</em>' : '') + '</button>').join('') + '</div></div></div>' +
+      '<div class="ph"><div class="ph-t"><button data-act="soon" data-arg="Dashboard" aria-label="Back to dashboard">' + I('back') + '</button><div><h1>Car Sticker</h1><p>In here, you can view your vehicle stickers and request a digital or physical sticker for one or multiple vehicles.</p>' +
+      '<div class="tabs" role="tablist">' + [['private', 'car', 'Private Sticker', 0], ['temporary', 'clock', 'Additional Temporary Sticker', 0], ['requests', 'inbox', 'My Requests', pendN]].map((t) => '<button role="tab" data-act="tab" data-arg="' + t[0] + '" aria-selected="' + (rt.tab === t[0]) + '">' + I(t[1]) + t[2] + (t[3] ? '<em>' + t[3] + '</em>' : '') + '</button>').join('') + '</div></div></div>' +
       '<div class="newwrap"><button class="btn btn-p" data-act="menu" aria-expanded="' + !!S.ui.menu + '" aria-haspopup="menu">' + I('plus') + 'New Car Sticker</button>' +
       (S.ui.menu ? '<div class="menu" role="menu"><button role="menuitem" data-act="startNew">' + I('car') + '<span>New Car Sticker<small>' + esc(p.ent.map((b) => TYPES[b.typeId].name).filter((x, i, a) => a.indexOf(x) === i).join(' · ')) + ' · within entitlement</small></span>' + I('chev') + '</button>' +
-        (canTemp ? '<button role="menuitem" data-act="startTemp">' + I('clock') + '<span>Digital Temporary Sticker<small>Beyond entitlement · approval in AAE · up to 1 year</small></span>' + I('chev') + '</button>' : '') + '</div>' : '') + '</div></div>' + body;
+        (canTemp ? '<button role="menuitem" data-act="startTemp">' + I('clock') + '<span>Additional Temporary Sticker<small>Beyond entitlement · approval in AAE · up to 1 year</small></span>' + I('chev') + '</button>' : '') + '</div>' : '') + '</div></div>' + body;
   }
   function requestsTable() {
     const rs = myReqs();
     if (!rs.length) return '<div class="grid"><div class="empty">' + I('inbox') + '<b>No requests yet</b></div></div>';
-    const lab = { pending: ['Pending approval', 'p-gold'], approved: ['Approved', 'p-green'], issued: ['Completed', 'p-green'], rejected: ['Rejected', 'p-red'], withdrawn: ['Withdrawn', 'p-grey'] };
+    const lab = { appointment: ['Appointment scheduled', 'p-lav'], pending: ['Pending approval', 'p-gold'], approved: ['Approved', 'p-green'], issued: ['Completed', 'p-green'], rejected: ['Rejected', 'p-red'], withdrawn: ['Withdrawn', 'p-grey'] };
     return '<div class="tbl-wrap"><table class="table"><thead><tr><th>Request</th><th>Vehicle</th><th>Type</th><th>Submitted</th><th>Status</th><th>Outcome</th><th><span class="vh">Action</span></th></tr></thead><tbody>' +
-      rs.map((r) => { const v = veh(r.vehId); return '<tr><td><b>' + r.id + '</b></td><td><b>' + esc(vName(v)) + '</b><small>' + esc(pText(v)) + (r.helper ? ' · for ' + esc(r.helper.name) : '') + '</small></td><td><span class="tcell">' + sIcon(iconKey(r), 'xs') + '<span>' + (r.kind === 'renew' ? 'Renewal · ' : r.kind === 'temporary' ? '' : 'New · ') + esc(typeLabel(r)) + '</span></span></td>' +
-        '<td>' + fmt(r.created) + '</td><td>' + pill(lab[r.status]) + '</td><td><small>' + (r.status === 'pending' ? 'In AAE with ' + esc(r.approver) : r.stkNo ? 'Sticker ' + r.stkNo : r.status === 'rejected' ? 'No sticker issued' : 'Closed ' + fmt(r.decided)) + '</small></td>' +
-        '<td style="text-align:right;white-space:nowrap"><button class="lnk" data-act="viewReq" data-arg="' + r.id + '">View</button>' + (r.status === 'pending' ? ' · <button class="lnk" data-act="askWithdraw" data-arg="' + r.id + '">Withdraw</button>' : '') + '</td></tr>'; }).join('') + '</tbody></table></div>';
+      rs.map((r) => { const v = veh(r.vehId); return '<tr><td><b>' + r.id + '</b></td><td><b>' + esc(vName(v)) + '</b><small>' + esc(pText(v)) + (r.helper ? ' · for ' + esc(r.helper.name) : '') + '</small></td><td><span class="tcell">' + sIcon(iconKey(r), 'xs') + '<span>' + (r.kind === 'renew' ? 'Renewal · ' : r.kind === 'temporary' ? '' : 'New · ') + esc(typeLabel(r)) + physTag(r) + '</span></span></td>' +
+        '<td>' + fmt(r.created) + '</td><td>' + pill(lab[r.status]) + '</td><td><small>' + (r.status === 'pending' ? 'In AAE with ' + esc(r.approver) : r.status === 'appointment' ? 'Appointment ' + fmtDT(r.appt) + ' · ' + esc(r.office || '') : r.stkNo ? 'Sticker ' + r.stkNo : r.status === 'rejected' ? 'No sticker issued' : 'Closed ' + fmt(r.decided)) + '</small></td>' +
+        '<td style="text-align:right;white-space:nowrap"><button class="lnk" data-act="viewReq" data-arg="' + r.id + '">View</button>' + (isOpen(r) ? ' · <button class="lnk" data-act="askWithdraw" data-arg="' + r.id + '">Withdraw</button>' : '') + '</td></tr>'; }).join('') + '</tbody></table></div>';
   }
   function timeline(r) {
     const rows = ['<li class="ok"><i>' + I('check') + '</i><div><b>Submitted</b><span>' + fmt(r.created) + ' · Web · ' + esc(S.people[r.holder].name) + '</span></div></li>',
       '<li class="ok"><i>' + I('check') + '</i><div><b>Vehicle and entitlement checked</b><span>' + fmt(r.created) + ' · re-run by SAP at submit</span></div></li>'];
-    if (r.kind === 'temporary') {
-      const st = r.status === 'pending' ? 'now' : r.status === 'approved' ? 'ok' : r.status === 'rejected' ? 'bad' : '';
+    if (r.kind === 'temporary' || r.medium === 'physical') {
+      const st = r.status === 'pending' ? 'now' : r.status === 'approved' || r.status === 'appointment' || r.status === 'issued' ? 'ok' : r.status === 'rejected' ? 'bad' : '';
       rows.push('<li class="' + st + '"><i>' + (st === 'ok' ? I('check') : st === 'bad' ? I('x') : '') + '</i><div><b>' + esc(r.approver) + ' <span class="chip-x">AAE · external system</span></b><span>' +
-        (r.status === 'pending' ? 'Waiting for decision · approvers act in AAE; this page shows the status only' : r.status === 'approved' ? 'Approved ' + fmt(r.decided) : r.status === 'rejected' ? 'Rejected ' + fmt(r.decided) + ' · ' + esc(r.reason) : 'Withdrawn by you ' + fmt(r.decided) + ' before the decision') + '</span></div></li>');
+        (r.status === 'pending' ? 'Waiting for decision · approvers act in AAE; this page shows the status only' : r.status === 'approved' || r.status === 'appointment' || r.status === 'issued' ? 'Approved ' + fmt(r.decided) : r.status === 'rejected' ? 'Rejected ' + fmt(r.decided) + ' · ' + esc(r.reason) : 'Withdrawn by you ' + fmt(r.decided) + ' before the decision') + '</span></div></li>');
     }
     const issued = r.stkNo; const end = r.status === 'rejected' || r.status === 'withdrawn';
+    if (r.medium === 'physical') {
+      const st = r.status === 'appointment' ? 'now' : issued ? 'ok' : end ? 'bad' : '';
+      rows.push('<li class="' + st + '"><i>' + (st === 'ok' ? I('check') : st === 'bad' ? I('x') : '') + '</i><div><b>Appointment to affix the physical sticker</b><span>' +
+        (r.status === 'appointment' ? 'Scheduled ' + fmtDT(r.appt) + ' · ' + esc(r.office || PHYS_APPROVER) : issued ? 'Affixed ' + fmtDT(r.appt) + ' · ' + esc(r.office || PHYS_APPROVER) : end ? 'Not scheduled' : 'Booked after approval') + '</span></div></li>');
+    }
     rows.push('<li class="' + (issued ? 'ok' : end ? 'bad' : '') + '"><i>' + (issued ? I('check') : end ? I('x') : '') + '</i><div><b>' + (end ? 'No sticker issued' : 'Sticker issued') + '</b><span>' + (issued ? r.stkNo + ' · sent to the gates' : end ? 'You can raise a new request' : 'Only after the final approval') + '</span></div></li>');
     return '<ol class="tl">' + rows.join('') + '</ol>' + (r.just ? '<p class="hint">' + I('doc') + '<span><b>Justification:</b> ' + esc(r.just) + '</span></p>' : '');
   }
@@ -1231,13 +1306,14 @@ body{font-size:1rem;line-height:1.5;color:var(--p-text-color);background:var(--p
     const p = me();
     if (!it.s) {
       const r = it.r, ik = iconKey(r);
-      return '<section class="panel tinted spanel' + (it.ended ? ' ended' : '') + '" style="' + tint(ik) + '"><div class="sp-h">' + sIcon(ik, 'md') + '<div class="sp-t"><b>' + esc(typeLabel(r)) + ' Sticker</b><small>Request ' + r.id + (r.helper ? ' · for ' + esc(r.helper.name) : '') + '</small></div>' + pill(status({ r })) + '</div>' +
-        (r.kind === 'temporary' && r.status === 'pending' && bucket(r.bucket) ? (() => { const t = tempEnd(bucket(r.bucket), v.owner, helperOf(r)); return '<div class="note n-lav">' + I('clock') + '<div><b>Valid up to ' + fmt(t.d) + ' if approved today</b>' + esc(t.why) + '. The end date is set on the approval date and the sticker cannot be renewed.</div></div>'; })() : '') + timeline(r) +
-        '<div class="sactions">' + (r.status === 'pending' ? '<button class="btn btn-o btn-s" data-act="askWithdraw" data-arg="' + r.id + '">' + I('xc') + 'Withdraw request</button>' : '<button class="btn btn-p btn-s" data-act="again" data-arg="' + v.id + '|' + r.bucket + '">' + I('plus') + 'Raise a new request</button>') + '</div></section>';
+      return '<section class="panel tinted spanel' + (it.ended ? ' ended' : '') + '" style="' + tint(ik) + '"><div class="sp-h">' + sIcon(ik, 'md') + '<div class="sp-t"><b>' + esc(typeLabel(r)) + ' Sticker' + physTag(r) + '</b><small>Request ' + r.id + (r.helper ? ' · for ' + esc(r.helper.name) : '') + '</small></div>' + pill(status({ r })) + '</div>' +
+        (r.status === 'appointment' ? '<div class="note n-lav">' + I('clock') + '<div><b>Appointment scheduled · ' + fmtDT(r.appt) + '</b>Bring the vehicle to <b>' + esc(r.office || PHYS_APPROVER) + '</b> to have the physical sticker affixed. The sticker is issued and sent to the gates at the appointment.</div></div>' : '') +
+        (r.kind === 'temporary' && r.status === 'pending' && bucket(r.bucket) ? (() => { const t = tempEnd(bucket(r.bucket), v.owner, helperOf(r), null, r.rentEnd); return '<div class="note n-lav">' + I('clock') + '<div><b>Valid up to ' + fmt(t.d) + ' if approved today</b>' + esc(t.why) + '. The end date is set on the approval date and the sticker cannot be renewed.</div></div>'; })() : '') + timeline(r) +
+        '<div class="sactions">' + (isOpen(r) ? '<button class="btn btn-o btn-s" data-act="askWithdraw" data-arg="' + r.id + '">' + I('xc') + (r.status === 'appointment' ? 'Withdraw request and appointment' : 'Withdraw request') + '</button>' : '<button class="btn btn-p btn-s" data-act="again" data-arg="' + v.id + '|' + r.bucket + '">' + I('plus') + 'Raise a new request</button>') + '</div></section>';
     }
     const s = it.s, b = bucket(s.bucket), ik = iconKey(s), isLive = live(s), st = status({ s });
     const holder = s.sponsored ? esc(s.sponsored.name) + ' · Badge ' + esc(s.sponsored.badge) + ' · ' + esc(s.sponsored.rel) + ' · sponsored by ' + esc(p.name) : esc(p.name) + ' · Badge ' + esc(p.badge);
-    let h = '<section class="panel tinted spanel' + (isLive ? '' : ' ended') + '" style="' + tint(ik) + '" id="stk-' + s.no + '"><div class="sp-h">' + sIcon(ik, 'md') + '<div class="sp-t"><b>' + esc(typeLabel(s)) + ' Sticker</b><small>' + esc(s.no) + ' · v' + s.ver + '</small></div>' + pill(st) + '</div>' +
+    let h = '<section class="panel tinted spanel' + (isLive ? '' : ' ended') + '" style="' + tint(ik) + '" id="stk-' + s.no + '"><div class="sp-h">' + sIcon(ik, 'md') + '<div class="sp-t"><b>' + esc(typeLabel(s)) + ' Sticker' + physTag(s) + '</b><small>' + esc(s.no) + ' · v' + s.ver + (s.medium === 'physical' ? ' · affixed on the vehicle' : '') + '</small></div>' + pill(st) + '</div>' +
       '<div class="kv3"><div><small>Holder</small><b class="sm">' + holder + '</b></div><div><small>Driver</small><b>' + esc(driverName(s)) + (s.driver ? ' <span class="pill p-lav" style="vertical-align:middle">Temporary</span>' : '') + '</b></div>' +
       '<div><small>Expiry Date</small><b' + (s.status === 'expired' ? ' class="t-red"' : '') + '>' + endText(s, v) + (soon(s) ? '<em>Ends soon</em>' : '') + '</b></div></div>' +
       '<hr class="sep">' + placesHTML(s.typeId);
@@ -1255,7 +1331,7 @@ body{font-size:1rem;line-height:1.5;color:var(--p-text-color);background:var(--p
       (canDrv ? '<button class="btn btn-o btn-s" data-act="driver" data-arg="' + s.no + '">' + I('user') + (s.driver ? 'Change driver' : 'Add temporary driver') + '</button>' : '') +
       (isLive && !s.pendingCancel ? '<button class="btn btn-o btn-s danger" data-act="askCancel" data-arg="' + s.no + '">' + I('xc') + 'Cancel sticker</button>' : '') +
       (!isLive ? '<button class="btn btn-p btn-s" data-act="again" data-arg="' + v.id + '|' + s.bucket + '">' + I('plus') + 'Request again</button>' : '') +
-      '<span class="sa-note">' + (s.temp ? 'Ends ' + fmt(s.end) + ' · ' + esc(tempWhy(s)) + ' · not renewed' : s.sponsored ? 'Ends with the helper’s ID' : b && b.until ? 'Ends with the acting assignment' : 'Permanent within entitlement') + '</span></div></section>';
+      '<span class="sa-note">' + (s.end ? 'Ends ' + fmt(s.end) + ' · ' + esc(endWhy(s)) + (s.temp ? ' · not renewed' : '') : v.owner === 'company' ? 'No end date while assigned' : 'Permanent within entitlement') + '</span></div></section>';
     return h;
   }
   function vehiclePage(id) {
@@ -1264,11 +1340,11 @@ body{font-size:1rem;line-height:1.5;color:var(--p-text-color);background:var(--p
     const backTab = shown.length && shown.every((i) => i.temp) ? 'temporary' : 'private';
     const add = addable(v);
     const vpanel = '<section class="panel vpanel"><div class="d-top"><div><small>Vehicle</small><b>' + esc(vName(v)) + '</b><div class="vtags">' +
-      (shown.length ? shown : ended).map((i) => '<span class="tag tc" style="' + tint(iconKey(i.x)) + '">' + sIcon(iconKey(i.x), 'xs') + esc(typeLabel(i.x)) + '</span>').join('') + '</div></div>' +
+      (shown.length ? shown : ended).map((i) => '<span class="tag tc" style="' + tint(iconKey(i.x)) + '">' + sIcon(iconKey(i.x), 'xs') + esc(typeLabel(i.x)) + '</span>' + physTag(i.x)).join('') + '</div></div>' +
       '<div class="r">' + plate(v.plate) + '</div></div>' +
       '<div class="kv3"><div><small>Plate Origin</small><b>' + esc(v.origin) + '</b></div><div><small>Plate Number</small><b>' + esc(pLabel(v)) + '</b></div><div><small>Type</small><b>' + esc(v.type) + '</b></div>' +
       '<div><small>Primary Color</small><b>' + esc(v.color) + '</b></div><div><small>Secondary Color</small><b>' + esc(v.color2 || '—') + '</b></div><div><small>Ownership Type</small><b>' + esc(ownerText(v)) + '</b></div>' +
-      '<div><small>Registered owner</small><b>' + esc(v.regOwner || 'Not returned') + '</b></div><div><small>Stickers on this vehicle</small><b>' + shown.length + ' active or pending</b></div></div></section>';
+      '<div><small>Registered owner</small><b>' + esc(v.regOwner || 'Not returned') + '</b></div>' + (v.door ? '<div><small>Door Number</small><b>' + esc(v.door) + '</b></div>' : '') + '<div><small>Stickers on this vehicle</small><b>' + shown.length + ' active or pending</b></div></div></section>';
     const qa = '<section class="panel qa"><h2>Add a sticker to this vehicle</h2>' + (add.length ? add.map((b) => {
         const k = TYPE_ICON[b.typeId];
         return '<button data-act="addTo" data-arg="' + v.id + '|' + b.key + '">' + sIcon(k, 'xs') + '<span>Add ' + esc(TYPES[b.typeId].name) + (b.owners[0] === 'company' ? ' · company car' : '') + '<small>' + (b.max == null ? 'Unlimited · no approval' : entText(b) + ' ' + esc(b.label) + ' active') + '</small></span>' + I('chev') + '</button>';
@@ -1298,7 +1374,7 @@ body{font-size:1rem;line-height:1.5;color:var(--p-text-color);background:var(--p
     const w = { step: 1, max: 1, bucket: b.key, mode: defaultMode(b, o.temp), askedTemp: !!o.temp, just: '', forWho: '',
       src: o.vehId ? 'saved' : 'new', vehId: o.vehId || null, origin: 'SA', plateType: 'Private', digits: '', l1: '', l2: '', l3: '', gcode: '', gnum: '',
       busy: false, fetched: null, noRecord: false, manual: { make: '', model: '', year: '', type: '', color: '', color2: '' },
-      owner: null, ownerLocked: false, dependent: '', rel: '', famco: '', err: {}, errMsg: '' };
+      owner: null, ownerLocked: false, dependent: '', rel: '', famco: '', door: '', rentEnd: '', doc: '', medium: 'digital', office: '', err: {}, errMsg: '' };
     resetVehicle(w);
     if (o.vehId) { const v = veh(o.vehId); w.vehId = v.id; w.owner = v.owner; w.dependent = v.dependent || ''; w.rel = v.rel || ''; w.ownerLocked = true;
       const s = stkOf(v.id)[0]; if (s && s.sponsored) w.forWho = s.sponsored.name; }
@@ -1345,8 +1421,17 @@ body{font-size:1rem;line-height:1.5;color:var(--p-text-color);background:var(--p
       fld('Requested for', sel('forWho', forOpts, w.forWho, '', (p.helpers || []).length ? '' : ' disabled'), 'forWho', w, (p.helpers || []).length ? 'You can sponsor your domestic helper or driver; the sticker counts against your Community entitlement' : 'Sponsoring a helper is for Executives, VPs and SC11-14 / SC15+ employees') +
       fld('Sticker Type', sel('ftype', typeIds.map((t) => [t, TYPES[t].name]), b.typeId, '', hp ? ' disabled' : ''), 'ftype', w, hp ? 'A sponsored helper gets your Community sticker grade' : 'Only the stickers your applicant types allow: ' + esc(p.classes.join(', '))) + '</div>';
     if (hp) h += '<p class="hint">' + I('user') + '<span><b>' + esc(hp.name) + '</b> · badge ' + esc(hp.badge) + ' · ID valid to ' + fmt(hp.idExpiry) + '. The sticker is for the helper’s own vehicle and ends with the helper’s ID.</span></p>';
+    const pc = physCheck(p, b);
+    if (!pc.ok) w.medium = 'digital';
+    if (pc.on) h += '<h3>Sticker medium</h3><div class="seg" role="group" aria-label="Sticker medium">' +
+      '<button data-act="wset" data-arg="medium:digital" aria-pressed="' + (w.medium !== 'physical') + '">' + I('phone') + 'Digital</button>' +
+      '<button data-act="wset" data-arg="medium:physical" aria-pressed="' + (w.medium === 'physical') + '"' + (pc.ok ? '' : ' disabled title="Not offered for your profile"') + '>' + I('tag') + 'Physical</button></div>' +
+      (pc.ok ? '' : '<p class="hint" style="margin-top:-8px">' + I('info') + '<span>A physical sticker is not offered for this request under the ISO configuration (' + esc(pc.why) + '). The sticker is digital.</span></p>') +
+      (pc.ok ? '<p class="hint" style="margin-top:-8px">' + I('info') + '<span>' + (w.medium === 'physical' ? 'A physical sticker is approved in AAE by the ' + esc(w.mode === 'temp' ? b.approver : PHYS_APPROVER) + ', then an appointment is booked at the sticker office you choose to affix it on the vehicle. It is issued at the appointment and works like a digital sticker from then on.' : 'A digital sticker is read by the gates from the plate.' + (w.mode === 'temp' ? '' : ' Within entitlement it is issued at once.')) + '</span></p>' : '') +
+      (w.medium === 'physical' ? '<div class="fgrid">' + fld('Appointment Office', sel('office', OFFICES, w.office, 'Choose a sticker office'), 'office', w, 'Where the physical sticker is affixed on the vehicle') + '</div>' : '');
     const pk = iconKey({ typeId: b.typeId, temp: w.mode === 'temp' });
-    h += '<div class="stkprev" style="' + tint(pk) + '">' + sIcon(pk, 'md') + '<div><b>' + esc((w.mode === 'temp' ? 'Temporary · ' : '') + TYPES[b.typeId].name + (b.owners[0] === 'company' ? ' · company car' : '')) + '</b><small>The sticker this request issues</small></div></div>';
+    h += '<div class="stkprev" style="' + tint(pk) + '">' + sIcon(pk, 'md') + '<div><b>' + esc((w.mode === 'temp' ? 'Temporary · ' : '') + TYPES[b.typeId].name + (b.owners[0] === 'company' ? ' · company car' : '')) + '</b><small>The sticker this request issues</small></div></div>' +
+      '<div class="privbox"><h3>Privileges and constraints</h3>' + placesHTML(b.typeId) + '</div>';
     if (b.typeId === 'core' && (bucket('corep') || bucket('corec'))) {
       h += '<h3>Core Area vehicle</h3><div class="opts list" role="radiogroup" aria-label="Core Area vehicle">' +
         radio(w.bucket === 'corep', 'wbucket', 'corep', 'Private vehicle', 'Own or leased · ' + entText(bucket('corep')) + ' active') +
@@ -1362,7 +1447,7 @@ body{font-size:1rem;line-height:1.5;color:var(--p-text-color);background:var(--p
         '<h3>How should the sticker start?</h3><div class="opts" role="radiogroup" aria-label="Sticker option">' +
         radio(w.mode === 'activate', 'wset', 'mode:activate', 'Activate now', l ? 'Uses sticker ' + (used(b.key) + 1) + ' of ' + b.max + '. Issued at once, no approval.' : 'All ' + b.max + ' are in use today.', !l) +
         radio(w.mode === 'inactive', 'wset', 'mode:inactive', 'Register as inactive', 'The vehicle and its sticker are saved. Switch it on when a slot is free.') +
-        radio(w.mode === 'temp', 'wset', 'mode:temp', 'Digital temporary sticker', !b.beyond ? 'Not offered for this entitlement.' : l ? 'Only needed beyond entitlement. You still have a free slot.' : 'One more active vehicle beyond entitlement. Needs approval.', !b.beyond || !!l) + '</div>';
+        radio(w.mode === 'temp', 'wset', 'mode:temp', 'Additional temporary sticker', !b.beyond ? 'Not offered for this entitlement.' : l ? 'Only needed beyond entitlement. You still have a free slot.' : 'One more active vehicle beyond entitlement. Needs approval.', !b.beyond || !!l) + '</div>';
       if (w.askedTemp && b.beyond && l) h += '<p class="hint">' + I('info') + '<span>You asked for a temporary sticker, but ' + l + ' ' + esc(b.label) + ' slot' + (l > 1 ? 's are' : ' is') + ' free, so the vehicle can be activated within entitlement.</span></p>';
       if (w.mode === 'temp') h += '<div class="sub"><div class="route">' + I('flow') + '<span>Decided in AAE by <b>' + esc(b.approver) + '</b> · valid up to ' + (ISO_TEMP_MONTHS[b.key] === 12 ? '1 year' : ISO_TEMP_MONTHS[b.key] + ' months') + ' from approval' + (b.until ? ', and no later than the end of your acting assignment (' + fmt(b.until) + ')' : '') + (hp ? ', and no later than ' + esc(hp.name) + '’s ID expiry (' + fmt(hp.idExpiry) + ')' : '') + ' · shorter for a rented car (6 months) · cannot be renewed</span></div>' +
         fld('Justification', '<textarea data-w="just" rows="3" placeholder="Why do you need one more active vehicle?">' + esc(w.just) + '</textarea>', 'just', w) + '</div>';
@@ -1388,24 +1473,42 @@ body{font-size:1rem;line-height:1.5;color:var(--p-text-color);background:var(--p
       if (w.owner === 'family') h += fld('Relationship', sel('rel', RELS, w.rel, 'Select relationship'), 'rel', w, 'Father, mother, husband, brother, sister, son or guardian');
       if (w.owner === 'famco') h += fld('Family company', '<input data-w="famco" placeholder="Company name on the registration" value="' + esc(w.famco) + '">', 'famco', w, 'Company owned by your family');
     }
+    const ex = activatesExisting(w);
+    if (w.owner === 'rent' && !ex) {
+      const commCap = TYPES[b.typeId].fam === 'comm';
+      h += fld('Rental end date <small class="muted">(optional)</small>', '<input type="date" data-w="rentEnd" value="' + esc(w.rentEnd || '') + '" min="' + isoD(addDays(S.today, 1)) + '">', 'rentEnd', w, commCap ? 'From the rental agreement. The sticker ends on this date, and no later than 6 months from today' : 'From the rental agreement, kept with the request');
+      h += fld('Rental agreement <small class="muted">(optional)</small>', '<div class="file' + (w.doc ? ' has' : '') + '" role="button" tabindex="0" data-act="pickFile">' + I(w.doc ? 'doc' : 'upload') + '<span>' + (w.doc ? esc(w.doc) : 'Upload the rental agreement (PDF or image)') + '</span><input type="file" data-file="doc" accept=".pdf,image/*" hidden></div>', 'doc', w, 'Not required and not verified; kept with the request for ISO');
+    }
+    if (w.owner === 'company') h += w.src === 'saved' ? fld('Door Number', '<input value="' + esc(veh(w.vehId).door || '—') + '" disabled>', 'door', w, 'Saved with the company car')
+      : fld('Door Number', '<input data-w="door" placeholder="Door number painted on the car" value="' + esc(w.door || '') + '">', 'door', w, 'The fleet door number of the assigned company car');
     h += '</div>';
     const tmp = w.mode === 'temp';
-    const tE = tmp && w.owner ? tempEnd(b, w.owner, hp) : null;
-    const perm = tmp ? (tE ? 'Temporary sticker valid up to ' + fmt(tE.d) + ' if approved today: ' + tE.why + '. It cannot be renewed.' : 'Pick the ownership to see how long the temporary sticker lasts.') : 'Permanent within entitlement. No document needed.';
+    const rE = w.owner ? (ex ? (ex.end ? { d: ex.end, why: endWhy(ex) } : null) : endRule(b, w.owner, hp, null, tmp, rentEndOf(w))) : null;
+    const perm = tmp ? (rE ? 'Additional temporary sticker valid up to ' + fmt(rE.d) + ' if approved today: ' + rE.why + '. It cannot be renewed.' : 'Pick the ownership to see how long the sticker lasts.')
+      : rE ? 'Valid to ' + fmt(rE.d) + ': ' + rE.why + '.' : 'Permanent within entitlement. No document needed.';
     const note = {
       own: perm, dep: perm, rent: perm + ' Rental status is read through the government service.', absher: 'The Absher authorisation is checked through the government service. ' + perm,
       family: 'The relationship is checked against government family records. ' + perm, famco: 'The vehicle must carry no company body logo. ' + perm,
-      husband: 'The marriage is checked against government records. ' + perm, helper: hp ? 'Valid until ' + esc(hp.name) + '’s ID expires on ' + fmt(hp.idExpiry) + '. Counts against your Community entitlement.' : '',
-      company: b.until ? 'Ends with your acting assignment on ' + fmt(b.until) + '. Registered owner must be ' + ARAMCO + '.' : 'No end date while the car is assigned to you. Registered owner must be ' + ARAMCO + '.',
+      husband: 'The marriage is checked against government records. ' + perm, helper: hp ? perm + ' Counts against your Community entitlement.' : '',
+      company: (tmp ? perm + ' ' : b.until ? 'Ends with your acting assignment on ' + fmt(b.until) + '. ' : 'No end date while the car is assigned to you. ') + 'Registered owner must be ' + ARAMCO + '.',
     }[w.owner];
     if (note) h += '<p class="hint">' + I(w.owner === 'company' ? 'building' : w.owner === 'absher' ? 'shield' : 'info') + '<span>' + note + '</span></p>';
     return h;
   }
   /* saved vehicles = the vehicles on the holder's Car Sticker list; each one says why it cannot take this request's sticker */
+  /* the inactive sticker of the request's type on the picked saved vehicle, if any */
+  function inactiveOf(v, b) {
+    const cur = v ? records(v).find((i) => i.fam === TYPES[b.typeId].fam && !i.ended) : null;
+    return cur && cur.s && cur.s.status === 'inactive' && !cur.s.temp && !cur.s.pendingCancel && cur.s.bucket === b.key ? cur.s : null;
+  }
+  /* "Activate now" on a saved vehicle registered as inactive switches its existing sticker on; no second sticker */
+  const activatesExisting = (w) => (w.src === 'saved' && w.vehId && w.mode === 'activate' ? inactiveOf(veh(w.vehId), wB(w)) : null);
   function savedFor(w) {
     const b = wB(w), al = allowedOwners(w), fam = TYPES[b.typeId].fam;
     const why = (v) => {
-      if (!freeFor(v, fam)) return 'Already has a ' + FAM[fam] + ' sticker or an open request for one';
+      const cur = records(v).find((i) => i.fam === fam && !i.ended);
+      if (cur && !inactiveOf(v, b)) return cur.r ? 'Has an open ' + typeLabel(cur.x) + ' request' : 'Already has an active ' + typeLabel(cur.x) + ' sticker';
+      if (cur && w.mode === 'inactive') return 'Already registered as inactive: switch it on from the vehicle page when a slot is free';
       if (w.forWho) return v.owner === 'helper' && v.regOwner === w.forWho ? '' : 'Not registered to ' + w.forWho;
       if (v.owner === 'helper') return 'Registered to your sponsored helper: choose them under Requested for';
       if (al.indexOf(v.owner) < 0) return OWNER[v.owner] + ' is not allowed for ' + TYPES[b.typeId].name;
@@ -1422,7 +1525,7 @@ body{font-size:1rem;line-height:1.5;color:var(--p-text-color);background:var(--p
       ro('Vehicle Origin', v.origin) + ro('Plate Type', v.plateType) + ro('Plate Number', v.plate.d) +
       ro(gcc ? 'Plate Code' : 'Plate Characters', gcc ? v.plate.l : v.plate.l.split('').map((L) => L + ' - ' + (AR_LETTER[L] || '')).join('   ')) +
       ro('Manufacturer', v.make) + ro('Model', v.model) + ro('Year', v.year) + ro('Vehicle Type', v.type) + ro('Vehicle Primary Color', v.color) + ro('Vehicle Secondary Color', v.color2) +
-      ro('Registered owner', v.regOwner) + '<div class="fld"><span>Preview</span>' + plate(v.plate) + '</div></div>';
+      ro('Registered owner', v.regOwner) + (v.door ? ro('Door Number', v.door) : '') + '<div class="fld"><span>Preview</span>' + plate(v.plate) + '</div></div>';
   }
   function wizStep2(w) {
     const b = wB(w), al = allowedOwners(w);
@@ -1431,9 +1534,10 @@ body{font-size:1rem;line-height:1.5;color:var(--p-text-color);background:var(--p
     let h = '<section class="fcard"><h2>Vehicle Details</h2><div class="seg" role="group" aria-label="Vehicle source"><button data-act="wset" data-arg="src:saved" aria-pressed="' + (w.src === 'saved') + '">Saved vehicle (' + savedList.length + ')</button><button data-act="wset" data-arg="src:new" aria-pressed="' + (w.src === 'new') + '">New vehicle</button></div>';
     if (w.src === 'saved') {
       h += savedAll.length ? '<div class="opts list" role="radiogroup" aria-label="Saved vehicles">' + savedAll.map((x) => { const v = x.v;
-          const st = records(v).filter((i) => !i.ended).map((i) => typeLabel(i.x)).join(' + ') || 'no live sticker';
+          const st = records(v).filter((i) => !i.ended).map((i) => typeLabel(i.x) + ' · ' + status(i)[0]).join(' + ') || 'no live sticker';
           return radio(w.vehId === v.id, 'wpick', v.id, esc(vName(v)), esc(ownerText(v)) + ' · ' + esc(st) + (x.why ? '<br><span class="t-red">' + esc(x.why) + '</span>' : '') + '<br>' + plate(v.plate), !!x.why); }).join('') + '</div>' +
         (w.err.vehId ? '<p class="err">' + I('alert') + esc(w.err.vehId) + '</p>' : '') + '<p class="hint">' + I('info') + '<span>Every vehicle on your Car Sticker list is shown. ' + (savedList.length ? savedList.length + ' of ' + savedAll.length + ' can take this ' + esc(TYPES[b.typeId].name) + ' sticker; pick one and its details are filled in for you.' : 'None of them can take this ' + esc(TYPES[b.typeId].name) + ' sticker. Add a new vehicle instead.') + '</span></p>' +
+        (w.vehId && inactiveOf(veh(w.vehId), b) ? '<div class="note n-lav">' + I('info') + '<div><b>This vehicle is registered as inactive</b>' + (w.mode === 'temp' ? 'When the additional temporary sticker is approved it replaces the inactive ' + esc(TYPES[b.typeId].name) + ' sticker ' + inactiveOf(veh(w.vehId), b).no + '.' : 'Its inactive ' + esc(TYPES[b.typeId].name) + ' sticker ' + inactiveOf(veh(w.vehId), b).no + ' is switched on and uses a free slot. No new sticker is issued.') + '</div></div>' : '') +
         savedDetails(w)
         : '<div class="empty" style="padding:30px">' + I('car') + '<b>No saved vehicles yet</b><span>Add a new vehicle instead.</span></div>';
     } else {
@@ -1468,24 +1572,28 @@ body{font-size:1rem;line-height:1.5;color:var(--p-text-color);background:var(--p
   }
   function wizStep3(w) {
     const p = me(), b = wB(w), g = wVehicle(w), hp = wHelper(w), end = validity(b, w.owner, w.mode === 'temp', hp);
-    const modeTxt = !b.toggle ? 'Issued active (unlimited)' : { activate: 'Activate now', inactive: 'Register as inactive', temp: 'Digital temporary sticker (beyond entitlement)' }[w.mode];
-    const next = w.mode === 'temp' ? ['The request goes to AAE: ' + b.approver, 'You follow it under My Requests', 'The temporary sticker is issued only after approval and sent to the gates']
+    const phys = w.medium === 'physical';
+    const modeTxt = !b.toggle ? 'Issued active (unlimited)' : { activate: 'Activate now', inactive: 'Register as inactive', temp: 'Additional temporary sticker (beyond entitlement)' }[w.mode];
+    const next = phys ? ['The request goes to AAE: ' + (w.mode === 'temp' ? b.approver : PHYS_APPROVER), 'After approval an appointment is booked at ' + w.office + ' on the next working day and shown under My Requests', 'The physical sticker is affixed at the appointment, issued' + (w.mode === 'inactive' ? ' as inactive' : '') + ' and sent to the gates']
+      : w.mode === 'temp' ? ['The request goes to AAE: ' + b.approver, 'You follow it under My Requests', 'The temporary sticker is issued only after approval and sent to the gates']
       : w.mode === 'activate' || !b.toggle ? ['SAP re-runs the checks and issues the sticker at once', 'It is sent to iGATE, iGATE Lite and SAIF', 'The gate reads it at the next plate scan'] : ['The vehicle and its sticker are saved as inactive', 'Switch it on from the vehicle page when a slot is free'];
-    const tw = w.mode === 'temp' ? tempEnd(b, w.owner, hp) : null;
-    const endTxt = tw ? 'Up to ' + fmt(tw.d) + '<br><small class="muted" style="font-weight:400">' + esc(tw.why) + '. Set on the approval date; if approved later, the period counts from that day (an ID expiry or assignment end stays fixed).</small>'
-      : end ? fmt(end) + (hp ? ' (helper’s ID expiry)' : b.until ? ' (end of acting assignment)' : '') : w.owner === 'company' ? 'While assigned' : 'Permanent';
+    const ex = activatesExisting(w);
+    const tw = ex ? (ex.end ? { d: ex.end, why: endWhy(ex) } : null) : endRule(b, w.owner, hp, null, w.mode === 'temp', rentEndOf(w));
+    const endTxt = tw ? (w.mode === 'temp' ? 'Up to ' : '') + fmt(tw.d) + '<br><small class="muted" style="font-weight:400">' + esc(tw.why) + (w.mode === 'temp' ? '. Set on the approval date; if approved later, the period counts from that day (an ID expiry or assignment end stays fixed).' : '') + '</small>'
+      : w.owner === 'company' ? 'No end date while assigned' : 'Permanent';
+    const docTxt = w.owner === 'rent' ? (w.doc ? 'Rental agreement: ' + esc(w.doc) + ' (optional, not verified)' : 'Rental agreement not attached (optional)') : 'None (no document verification)';
     const own = OWNER[w.owner] + (w.rel ? ' · ' + w.rel : '') + (w.dependent ? ' · ' + w.dependent : '') + (w.famco ? ' · ' + w.famco : '');
     const sec = (t, step, inner) => '<section class="revs"><div class="revs-h"><h3>' + t + '</h3>' + (step ? '<button class="btn btn-o btn-s" data-act="wgo" data-arg="' + step + '">Edit</button>' : '') + '</div>' + inner + '</section>';
     return '<section class="fcard"><h2>Review</h2><div class="rev">' +
-      sec('Sticker', 1, '<div class="kv2"><div><small>Sticker type</small><b>' + esc(TYPES[b.typeId].name + (b.owners[0] === 'company' ? ' · company car' : '')) + '</b></div><div><small>Request</small><b>' + modeTxt + '</b></div><div><small>For</small><b>' + esc(hp ? hp.name + ' (sponsored by ' + p.name + ')' : p.name) + '</b></div><div><small>Counts against</small><b>' + (w.mode === 'temp' ? 'Beyond entitlement · ' + esc(b.approver) : b.max == null ? 'No count (unlimited)' : 'Your ' + esc(b.label) + ' entitlement') + '</b></div></div>' + (w.mode === 'temp' ? '<p class="hint">' + I('doc') + '<span>' + esc(w.just) + '</span></p>' : '')) +
-      sec('Vehicle', 2, plate(wPlate(w)) + '<div class="kv2" style="margin-top:12px"><div><small>Vehicle</small><b>' + esc(g.make + ' ' + g.model + ' ' + g.year) + '</b></div><div><small>Colors</small><b>' + esc(g.color + (g.color2 ? ' / ' + g.color2 : '')) + '</b></div><div><small>Ownership</small><b>' + esc(own) + '</b></div><div><small>Source</small><b>' + (w.src === 'saved' ? 'Saved vehicle' : manualEntry(w) ? 'Manual entry' : 'Government API') + '</b></div></div>') +
-      sec('Validity and documents', 0, '<div class="kv2"><div><small>Valid until</small><b>' + endTxt + '</b></div><div><small>Documents</small><b>None (no document verification)</b></div></div>') +
+      sec('Sticker', 1, '<div class="kv2"><div><small>Sticker type</small><b>' + esc(TYPES[b.typeId].name + (b.owners[0] === 'company' ? ' · company car' : '')) + '</b></div><div><small>Request</small><b>' + modeTxt + '</b></div><div><small>Sticker medium</small><b>' + (phys ? 'Physical sticker · appointment at ' + esc(w.office) : 'Digital') + '</b></div><div><small>For</small><b>' + esc(hp ? hp.name + ' (sponsored by ' + p.name + ')' : p.name) + '</b></div><div><small>Counts against</small><b>' + (w.mode === 'temp' ? 'Beyond entitlement · ' + esc(b.approver) : b.max == null ? 'No count (unlimited)' : 'Your ' + esc(b.label) + ' entitlement') + '</b></div></div>' + (w.mode === 'temp' ? '<p class="hint">' + I('doc') + '<span>' + esc(w.just) + '</span></p>' : '')) +
+      sec('Vehicle', 2, plate(wPlate(w)) + '<div class="kv2" style="margin-top:12px"><div><small>Vehicle</small><b>' + esc(g.make + ' ' + g.model + ' ' + g.year) + '</b></div><div><small>Colors</small><b>' + esc(g.color + (g.color2 ? ' / ' + g.color2 : '')) + '</b></div><div><small>Ownership</small><b>' + esc(own) + '</b></div><div><small>Source</small><b>' + (w.src === 'saved' ? 'Saved vehicle' : manualEntry(w) ? 'Manual entry' : 'Government API') + '</b></div>' + (w.owner === 'company' ? '<div><small>Door Number</small><b>' + esc(w.src === 'saved' ? veh(w.vehId).door || '—' : w.door || '—') + '</b></div>' : '') + '</div>') +
+      sec('Validity and documents', 0, '<div class="kv2"><div><small>Valid until</small><b>' + endTxt + '</b></div><div><small>Documents</small><b>' + docTxt + '</b></div></div>') +
       sec('What happens next', 0, '<ol class="nextl">' + next.map((x) => '<li>' + esc(x) + '</li>').join('') + '</ol>') + '</div>' +
       '<div class="ffoot"><button class="btn btn-o l" data-act="wcancel">Cancel</button><button class="btn btn-o" data-act="wback">Back</button><button class="btn btn-p" data-act="wsubmit"' + (w.sending ? ' disabled' : '') + '>' + (w.sending ? 'Submitting…' : 'Submit') + '</button></div></section>';
   }
   function wizPage(rt) {
     const w = S.ui.wiz; w.step = rt.step; const b = wB(w);
-    const title = w.mode === 'temp' ? 'Digital Temporary Sticker' : 'New Car Sticker';
+    const title = w.mode === 'temp' ? 'Additional Temporary Sticker' : 'New Car Sticker';
     const sub = w.mode === 'temp' ? 'One more active vehicle beyond your entitlement, for up to 1 year. Approved by the ' + b.approver + ' in AAE.' : 'Add a vehicle to a sticker you are eligible for. Within your entitlement it is issued at once, with no approval.';
     return crumbs([['Dashboard', 'soon', 'Dashboard'], ['Car Sticker', 'tab', 'private'], [title + ' Request']]) +
       '<div class="ph"><div class="ph-t"><button data-act="wcancel" aria-label="Cancel and go back">' + I('back') + '</button><div><h1>' + title + '</h1><p>' + esc(sub) + '</p></div></div>' +
@@ -1509,6 +1617,8 @@ body{font-size:1rem;line-height:1.5;color:var(--p-text-color);background:var(--p
       if (b.toggle && w.mode === 'activate' && left(b.key) < 1) w.errMsg = 'All ' + b.label + ' stickers are in use. Choose another option.';
       if (w.mode === 'temp' && !b.beyond) w.errMsg = 'A temporary sticker is not offered for this entitlement.';
       if (w.mode === 'temp' && !w.just.trim()) w.err.just = 'Add a short justification for the approver.';
+      if (w.medium === 'physical' && !physCheck(me(), b).ok) { w.medium = 'digital'; w.errMsg = 'A physical sticker is not offered for this request. It is now digital.'; }
+      if (w.medium === 'physical' && !w.office) w.err.office = 'Choose the sticker office for the appointment.';
     }
     if (w.step === 2) {
       if (w.src === 'saved') { if (!w.vehId) w.err.vehId = 'Pick a saved vehicle.'; }
@@ -1529,6 +1639,8 @@ body{font-size:1rem;line-height:1.5;color:var(--p-text-color);background:var(--p
         if (w.owner === 'dep' && !w.dependent) w.err.dependent = 'Select the dependent.';
         if (w.owner === 'family' && !w.rel) w.err.rel = 'Select the relationship.';
         if (w.owner === 'famco' && !w.famco.trim()) w.err.famco = 'Enter the family company name.';
+        if (w.owner === 'company' && w.src !== 'saved' && !(w.door || '').trim()) w.err.door = 'Enter the door number of the company car.';
+        if (w.owner === 'rent' && w.rentEnd && !(parseD(w.rentEnd) > S.today)) w.err.rentEnd = 'The rental end date must be after today.';
       }
     }
     return !w.errMsg && !Object.keys(w.err).length;
@@ -1539,26 +1651,33 @@ body{font-size:1rem;line-height:1.5;color:var(--p-text-color);background:var(--p
     else {
       const g = wVehicle(w), pl = wPlate(w);
       v = { id: 'nv' + (S.seqV++), holder: p.id, plate: pl, origin: GCC[pl.c] || 'Saudi Arabia', plateType: w.plateType, make: g.make, model: g.model, year: +g.year, color: g.color, color2: g.color2 || '', type: g.type,
-        regOwner: g.regOwner || ({ own: p.name, dep: w.dependent, company: ARAMCO, helper: w.forWho, husband: p.husband, famco: w.famco }[w.owner] || null), owner: w.owner, source: manualEntry(w) ? 'manual' : 'api', dependent: w.dependent || null, rel: w.rel || null };
+        regOwner: g.regOwner || ({ own: p.name, dep: w.dependent, company: ARAMCO, helper: w.forWho, husband: p.husband, famco: w.famco }[w.owner] || null), owner: w.owner, source: manualEntry(w) ? 'manual' : 'api', dependent: w.dependent || null, rel: w.rel || null,
+        door: w.owner === 'company' ? w.door.trim() : undefined };
       S.vehicles.push(v);
     }
     const helper = hp ? { name: hp.name, badge: hp.badge, rel: hp.rel } : null;
-    const r = { id: newReqNo(), vehId: v.id, holder: p.id, bucket: b.key, typeId: b.typeId, kind: w.mode === 'temp' ? 'temporary' : 'new', approver: w.mode === 'temp' ? b.approver : null, created: S.today, just: w.just.trim(), helper, decided: null, reason: '' };
-    if (w.mode === 'temp') { r.status = 'pending'; S.requests.push(r); return { r, v }; }
+    const rentEnd = rentEndOf(w), doc = w.owner === 'rent' && w.doc ? w.doc : null;
+    const phys = w.medium === 'physical';
+    const r = { id: newReqNo(), vehId: v.id, holder: p.id, bucket: b.key, typeId: b.typeId, kind: w.mode === 'temp' ? 'temporary' : 'new', approver: w.mode === 'temp' ? b.approver : phys ? PHYS_APPROVER : null, created: S.today, just: w.just.trim(), helper, decided: null, reason: '', rentEnd, doc,
+      medium: phys ? 'physical' : 'digital', office: phys ? w.office : null, mode: b.toggle ? w.mode : 'activate' };
+    if (w.mode === 'temp' || phys) { r.status = 'pending'; S.requests.push(r); return { r, v }; }
+    const ex = activatesExisting(w);
+    if (ex) { ex.status = 'active'; ex.pendingOff = null; ex.ver++; log(ex, 'Activated from request ' + r.id + ' (saved vehicle)'); r.status = 'issued'; r.decided = S.today; r.stkNo = ex.no; S.requests.push(r); return { r, v, s: ex }; }
     const st = !b.toggle || w.mode === 'activate' ? 'active' : 'inactive';
-    const s = { no: newStkNo(), vehId: v.id, holder: p.id, bucket: b.key, typeId: b.typeId, temp: false, status: st, start: S.today, end: validity(b, w.owner, false, hp), ver: 1,
-      pendingOff: null, pendingCancel: null, driver: null, doc: null, sponsored: helper, hist: [{ at: S.today, txt: 'Sticker issued' + (st === 'inactive' ? ' as inactive' : '') + (helper ? ' for sponsored helper ' + helper.name : '') + ' (' + r.id + ')' }] };
+    const s = { no: newStkNo(), vehId: v.id, holder: p.id, bucket: b.key, typeId: b.typeId, temp: false, status: st, start: S.today, end: validity(b, w.owner, false, hp, rentEnd), ver: 1, rentEnd,
+      pendingOff: null, pendingCancel: null, driver: null, doc, sponsored: helper, hist: [{ at: S.today, txt: 'Sticker issued' + (st === 'inactive' ? ' as inactive' : '') + (helper ? ' for sponsored helper ' + helper.name : '') + ' (' + r.id + ')' }] };
     S.stickers.push(s); r.status = 'issued'; r.decided = S.today; r.stkNo = s.no; S.requests.push(r);
     return { r, v, s };
   }
   function donePage() {
     const d = S.ui.done, v = veh(d.vehId), r = S.requests.find((x) => x.id === d.reqId), s = d.stkNo ? S.stickers.find((x) => x.no === d.stkNo) : null;
-    const temp = r.kind === 'temporary';
-    const title = temp ? 'Request Submitted Successfully!' : 'Sticker Issued Successfully!';
-    const text = temp ? 'Your digital temporary sticker request ' + r.id + ' (' + TYPES[r.typeId].name + ') for ' + vName(v).toUpperCase() + ' (' + pText(v) + ') is in AAE with the ' + r.approver + '. Follow it under My Requests.'
-      : 'Your ' + typeLabel(s) + ' sticker ' + s.no + ' for ' + vName(v).toUpperCase() + ' (' + pText(v) + ') is ' + (s.status === 'active' ? 'active and has been sent to the gates' : 'saved as inactive; switch it on when a slot is free') + '. No further action is needed.';
-    return crumbs([['Dashboard', 'soon', 'Dashboard'], ['Car Sticker', 'tab', 'private'], [(temp ? 'Digital Temporary Sticker' : 'New Car Sticker') + ' Request']]) +
-      '<div class="ph"><div class="ph-t"><button data-act="tab" data-arg="private" aria-label="Back to Car Sticker">' + I('back') + '</button><div><h1>' + (temp ? 'Digital Temporary Sticker' : 'New Car Sticker') + '</h1><p>' + (temp ? 'Beyond entitlement · approval in AAE.' : 'Within entitlement · no approval needed.') + '</p></div></div>' +
+    const temp = r.kind === 'temporary', phys = r.medium === 'physical' && !s;
+    const title = temp || phys ? 'Request Submitted Successfully!' : 'Sticker Issued Successfully!';
+    const text = phys && !temp ? 'Your physical ' + TYPES[r.typeId].name + ' sticker request ' + r.id + ' for ' + vName(v).toUpperCase() + ' (' + pText(v) + ') is in AAE with the ' + r.approver + '. After approval an appointment at ' + r.office + ' is booked to affix the sticker and shown under My Requests.'
+      : temp ? 'Your ' + (r.medium === 'physical' ? 'physical ' : '') + 'additional temporary sticker request ' + r.id + ' (' + TYPES[r.typeId].name + ') for ' + vName(v).toUpperCase() + ' (' + pText(v) + ') is in AAE with the ' + r.approver + '. Follow it under My Requests.'
+      : 'Your ' + typeLabel(s) + ' sticker ' + s.no + ' for ' + vName(v).toUpperCase() + ' (' + pText(v) + ') is ' + (s.status === 'active' ? 'active and has been sent to the gates' : 'saved as inactive; switch it on when a slot is free') + (s.end ? ' It is valid to ' + fmt(s.end) + ' (' + endWhy(s) + ').' : '') + '. No further action is needed.';
+    return crumbs([['Dashboard', 'soon', 'Dashboard'], ['Car Sticker', 'tab', 'private'], [(temp ? 'Additional Temporary Sticker' : 'New Car Sticker') + ' Request']]) +
+      '<div class="ph"><div class="ph-t"><button data-act="tab" data-arg="private" aria-label="Back to Car Sticker">' + I('back') + '</button><div><h1>' + (temp ? 'Additional Temporary Sticker' : 'New Car Sticker') + '</h1><p>' + (temp ? 'Beyond entitlement · approval in AAE.' : 'Within entitlement · no approval needed.') + '</p></div></div>' +
       '<div class="stepper"><ol aria-label="Progress">' + STEPS.map((x, i) => '<li class="done"><i aria-hidden="true">' + (i + 1) + '</i><span class="st-t">' + x + '</span></li>').join('') + '</ol><small>All Stages Completed!</small></div></div>' +
       '<section class="fcard"><div class="okbox"><span class="okbox-ic' + (temp ? ' t' : '') + '">' + I(temp ? 'clock' : 'check') + '</span><h2' + (temp ? ' class="t"' : '') + '>' + title + '</h2><p>' + esc(text) + '</p><div class="okrow">' + sIcon(iconKey(s || r), 'md') + plate(v.plate) + '</div></div>' +
       '<div class="ffoot"><button class="btn btn-o" data-act="tab" data-arg="' + (temp ? 'requests' : 'private') + '">' + (temp ? 'Go To My Requests' : 'Go Back To Car Sticker') + '</button><button class="btn btn-p" data-act="open" data-arg="' + v.id + '">View Vehicle</button></div></section>';
@@ -1592,7 +1711,7 @@ body{font-size:1rem;line-height:1.5;color:var(--p-text-color);background:var(--p
   function reqModal(id) {
     const r = S.requests.find((x) => x.id === id), v = veh(r.vehId);
     openModal({ title: 'Request ' + r.id, icon: 'inbox', wide: true, body: '<div class="d-top" style="margin-bottom:12px"><div><small>' + esc(typeLabel(r)) + '</small><b style="margin:2px 0 0">' + esc(vName(v)) + '</b></div>' + plate(v.plate) + '</div>' + timeline(r),
-      actions: (r.status === 'pending' ? [{ label: 'Withdraw request', act: 'askWithdraw', arg: r.id, cls: 'btn-o' }] : []).concat([{ label: 'Open vehicle', act: 'open', arg: v.id, cls: 'btn-o' }, { label: 'Close', act: 'closeModal' }]) });
+      actions: (isOpen(r) ? [{ label: 'Withdraw request', act: 'askWithdraw', arg: r.id, cls: 'btn-o' }] : []).concat([{ label: 'Open vehicle', act: 'open', arg: v.id, cls: 'btn-o' }, { label: 'Close', act: 'closeModal' }]) });
   }
 
   /* ================= render ================= */
@@ -1639,7 +1758,7 @@ body{font-size:1rem;line-height:1.5;color:var(--p-text-color);background:var(--p
       else if (left(b.key) > 0) { s.status = 'active'; log(s, 'Activated by holder'); render(); toast('Active now · ' + b.label + ' ' + entText(b) + ' · sent to the gates'); }
       else {
         openModal({ title: 'All ' + b.max + ' ' + b.label + ' stickers are in use', icon: 'alert', tone: 'gold',
-          body: '<p>To activate this sticker, deactivate another ' + esc(b.label) + ' sticker first (its slot frees tomorrow)' + (b.beyond ? ', or request a <b>digital temporary sticker</b> beyond your entitlement.' : '. A temporary sticker is not offered for this entitlement.') + '</p>' +
+          body: '<p>To activate this sticker, deactivate another ' + esc(b.label) + ' sticker first (its slot frees tomorrow)' + (b.beyond ? ', or request a <b>additional temporary sticker</b> beyond your entitlement.' : '. A temporary sticker is not offered for this entitlement.') + '</p>' +
             (b.beyond ? '<div class="sub"><div class="route">' + I('flow') + '<span>Approved by the <b>' + esc(b.approver) + '</b> in AAE · valid up to 1 year (shorter for rented cars, helpers and acting assignments) · cannot be renewed</span></div></div>' : ''),
           actions: [{ label: 'Not now', act: 'closeModal', cls: b.beyond ? 'btn-o' : 'btn-p' }].concat(b.beyond ? [{ label: 'Request temporary sticker', act: 'tempFor', arg: s.vehId + '|' + s.bucket }] : []) });
       }
@@ -1669,7 +1788,7 @@ body{font-size:1rem;line-height:1.5;color:var(--p-text-color);background:var(--p
       render(); },
     wbucket: (key) => { const w = S.ui.wiz; if (w.bucket === key) return; w.bucket = key; w.mode = defaultMode(bucket(key), w.askedTemp); w.src = 'new'; resetVehicle(w); render(); },
     wfor: (name) => { const w = S.ui.wiz; w.forWho = name; if (name) { const c = me().ent.find((x) => x.key === 'comm'); w.bucket = c.key; w.mode = defaultMode(c, w.askedTemp); } w.src = 'new'; resetVehicle(w); render(); },
-    wpick: (vid) => { const w = S.ui.wiz; w.vehId = vid; const v = veh(vid); w.owner = v.owner; w.dependent = v.dependent || ''; w.rel = v.rel || ''; w.ownerLocked = true; w.err = {}; w.errMsg = ''; render(); },
+    wpick: (vid) => { const w = S.ui.wiz; w.vehId = vid; w.rentEnd = ''; w.doc = ''; const v = veh(vid); w.owner = v.owner; w.dependent = v.dependent || ''; w.rel = v.rel || ''; w.ownerLocked = true; w.err = {}; w.errMsg = ''; render(); },
     fetch: async () => {
       const w = S.ui.wiz; const pl = wPlate(w); w.err = {}; w.errMsg = ''; w.noRecord = false; if (manualEntry(w)) return;
       if (!/^\d{1,4}$/.test(w.digits)) w.err.digits = 'Enter 1 to 4 numbers.';
@@ -1694,11 +1813,20 @@ body{font-size:1rem;line-height:1.5;color:var(--p-text-color);background:var(--p
       const res = submit(w); S.ui.wiz = null; S.ui.done = { vehId: res.v.id, reqId: res.r.id, stkNo: res.s ? res.s.no : null }; go('done'); },
     /* presenter */
     nextDay: () => { const n = nextDay(); render(); toast('Demo date is now ' + fmt(S.today) + (n ? ' · ' + n + ' sticker change' + (n > 1 ? 's' : '') + ' took effect' : '')); },
-    aae: (a) => { const r = aaeDecide(a === '1'); if (!r) return; render(); toast('AAE returned: ' + r.id + ' ' + r.status + (r.stkNo ? ' · temporary sticker ' + r.stkNo + ' issued' : '')); },
+    aae: (a) => { const r = aaeDecide(a === '1'); if (!r) return; render(); toast('AAE returned: ' + r.id + ' ' + (r.status === 'appointment' ? 'approved · appointment ' + fmtDT(r.appt) : r.status) + (r.stkNo ? ' · temporary sticker ' + r.stkNo + ' issued' : '')); },
+    physRule: (arg) => { const [k, v] = arg.split('|'); const l = S.phys.rules[k]; const i = l.indexOf(v); if (i > -1) l.splice(i, 1); else l.push(v); render(); },
+    physRules: () => openModal({ title: 'Physical sticker eligibility', icon: 'tag', wide: true, body: () => {
+      const rows = Object.values(S.people).map((P) => '<tr><td><b>' + esc(P.name) + '</b><small>' + esc(P.grade + ' · ' + P.classes.slice(-1)[0]) + '</small></td><td>' +
+        P.ent.filter((b, i, a) => a.findIndex((x) => TYPES[x.typeId].fam === TYPES[b.typeId].fam) === i).map((b) => { const c = physCheck(P, b); return '<span class="pill ' + (c.ok ? 'p-green' : 'p-grey') + '" title="' + esc(c.why || 'Eligible') + '">' + esc(personAttrs(P, b).sticker) + (c.ok ? ' · yes' : ' · no') + '</span>'; }).join(' ') + '</td></tr>').join('');
+      return '<p class="muted">ISO configuration. An employee can choose a physical sticker only when every criterion matches. Changes apply to new requests at once; issued stickers and open requests stay as they are. Sample criteria, to be confirmed with ISO.</p>' +
+        PHYS_DIMS.map(([k, label, vals]) => '<h4>' + esc(label) + '</h4><div class="chips">' + vals.map((v) => '<button data-act="physRule" data-arg="' + esc(k + '|' + v) + '" aria-pressed="' + (S.phys.rules[k].indexOf(v) > -1) + '">' + esc(v) + '</button>').join('') + '</div>').join('') +
+        '<h4>Demo users today</h4><div class="tbl-wrap"><table class="table"><thead><tr><th>User</th><th>Physical sticker allowed for</th></tr></thead><tbody>' + rows + '</tbody></table></div>'; },
+      actions: [{ label: 'Done', act: 'closeModal' }] }),
     reset: () => { S = seed(); go('stickers-private'); toast('Demo data reset'); },
   };
   const CH = {
     persona: (v) => { S.persona = v; S.ui.wiz = null; S.ui.done = null; S.ui.modal = null; S.ui.filter = 'all'; S.ui.tfilter = 'all'; S.ui.q = ''; S.ui.tab = 'private'; go('stickers-private'); },
+    physOn: (v) => { S.phys.on = v === 'on'; if (S.ui.wiz && !S.phys.on) S.ui.wiz.medium = 'digital'; render(); toast('ISO setting: physical sticker option ' + (S.phys.on ? 'enabled' : 'disabled')); },
     entry: (v) => { S.entry = v; const w = S.ui.wiz; if (w && w.src === 'new') resetVehicle(w); render(); toast('ISO setting: vehicle entry by ' + (v === 'api' ? 'Government API' : 'manual entry')); },
   };
 
@@ -1728,7 +1856,7 @@ body{font-size:1rem;line-height:1.5;color:var(--p-text-color);background:var(--p
     if (wk === 'forWho') { A.wfor(el.value); return; }
     if (wk === 'origin') { const w = S.ui.wiz; w.origin = el.value; w.digits = ''; w.l1 = w.l2 = w.l3 = ''; w.gcode = ''; w.gnum = ''; resetVehicle(w); render(); return; }
     if (wk === 'ftype') { const w = S.ui.wiz; const b = me().ent.find((x) => x.typeId === el.value); if (b && b.key !== w.bucket) A.wbucket(b.key); return; }
-    if (wk && el.tagName === 'SELECT') { setW(wk, el.value); if (wk === 'owner') { const w = S.ui.wiz; w.dependent = ''; w.rel = ''; w.famco = ''; } render(); return; }
+    if (wk && el.tagName === 'SELECT') { setW(wk, el.value); if (wk === 'owner') { const w = S.ui.wiz; w.dependent = ''; w.rel = ''; w.famco = ''; w.rentEnd = ''; w.doc = ''; } render(); return; }
     if (wk && el.type === 'date') { setW(wk, el.value); render(); return; }
     const f = el.getAttribute('data-file');
     if (f && el.files && el.files[0]) { const n = el.files[0].name; if (f === 'doc') { S.ui.wiz.doc = n; delete S.ui.wiz.err.doc; } else S.ui.ren.doc = n; render(); }
